@@ -10,7 +10,7 @@
  *   1. 必需文件缺失时**硬失败**，而不是静默上线一个空壳站；
  *   2. 打印产物文件数与最大单文件，直接对照 Pages 的 20000 文件 / 25 MiB 上限。
  */
-import { cp, mkdir, rm, readdir, stat } from 'node:fs/promises';
+import { cp, mkdir, rm, readdir, readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,10 +19,16 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist');
 
 /** 白名单：仓库根下这些条目会进入发布目录 */
-const ENTRIES = ['index.html', 'about.html', 'privacy.html', '404.html', 'robots.txt', 'css', 'js'];
+const ENTRIES = ['index.html', 'about.html', 'privacy.html', '404.html', 'robots.txt', '_redirects', 'css', 'js'];
 
-/** 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站 */
-const REQUIRED = ['index.html'];
+/**
+ * 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站。
+ *
+ * _redirects 必须列为必需：Cloudflare Pages 会把 *.html 统一 308 到干净 URL，
+ * 站内链接用的是干净 URL，靠这份规则表做 200 重写才一定命中。丢了这个文件，
+ * /about、/privacy 就会 404。
+ */
+const REQUIRED = ['index.html', '_redirects'];
 
 /** Pages 的硬上限（Files: 20000, 单文件 25 MiB） */
 const MAX_FILES = 20000;
@@ -70,6 +76,29 @@ if (files.length > MAX_FILES) {
 if (oversized.length > 0) {
   console.error(`ERROR 以下文件超过单文件 25 MiB 上限:`);
   for (const f of oversized) console.error(`  ${f.rel} (${(f.size / 1024 / 1024).toFixed(2)} MiB)`);
+  process.exit(1);
+}
+
+/**
+ * 守卫：产物里不允许出现站内 .html 链接。
+ *
+ * Cloudflare Pages 会把 *.html 统一 308 到干净 URL（HTML URL 规范化），
+ * 链接写成 .html 形态时整站可爬链接都指向重定向，Search Console 会报
+ * "Page with redirect"。本地预览服务器不复现这个行为，只看本地发现不了，
+ * 所以在构建时直接拦下来。
+ */
+const offenders = [];
+for (const file of files.filter(f => f.rel.endsWith('.html'))) {
+  const html = await readFile(join(OUT, file.rel), 'utf8');
+  for (const [, href] of html.matchAll(/href="([^"]+)"/g)) {
+    if (/^([a-z][a-z0-9+.-]*:)?\/\//i.test(href) || href.startsWith('#')) continue;
+    if (href.endsWith('.html')) offenders.push(`${file.rel} → ${href}`);
+  }
+}
+if (offenders.length > 0) {
+  console.error('ERROR 产物里存在站内 .html 链接，Cloudflare Pages 会把它们 308 掉:');
+  for (const o of offenders) console.error(`  ${o}`);
+  console.error('改用干净 URL（/about 而不是 /about.html），并在 _redirects 里加 200 重写。');
   process.exit(1);
 }
 
