@@ -1,0 +1,53 @@
+name: verify
+
+# 只做质量门禁，不负责发布。
+# 发布由 Cloudflare Pages 的 Git 集成负责（push main 即自动构建上线）。
+# 两条链路职责不重叠 —— Actions 答"能不能发"，Cloudflare 答"发"。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: 组装发布目录
+        run: node scripts/build.mjs
+
+      - name: 校验产物内容
+        run: |
+          set -euo pipefail
+
+          test -f dist/index.html || { echo "::error::dist/index.html 缺失"; exit 1; }
+
+          # 根目录没有 404.html 时 Pages 会按 SPA 兜底：未知路径返回 200 + index.html，
+          # 形成软 404，搜索引擎会收录一堆空壳页。这里把它变成硬性检查。
+          test -f dist/404.html || { echo "::error::dist/404.html 缺失（Pages 会软 404 兜底）"; exit 1; }
+
+          # 仓库元文件不该被当成静态资源发出去
+          for f in README.md LICENSE CNAME .gitignore .gitattributes .nvmrc; do
+            if [ -e "dist/$f" ]; then
+              echo "::error::$f 不该出现在发布产物里"
+              exit 1
+            fi
+          done
+
+          echo "产物文件数: $(find dist -type f | wc -l)"
+
+      - name: 上传产物（便于人工核对）
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7

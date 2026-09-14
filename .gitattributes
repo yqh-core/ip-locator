@@ -1,0 +1,17 @@
+# 仓库内一律存 LF，避免 CRLF 污染带语义的文本文件
+* text=auto
+
+# 二进制资源：不让 git 做行尾转换或 diff
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
+
+# 行尾有语义的文件必须钉死 LF
+.nvmrc text eol=lf

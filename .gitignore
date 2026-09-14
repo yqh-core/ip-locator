@@ -1,0 +1,9 @@
+# IDE / 编辑器
+.idea
+.claude
+.vscode
+node_modules
+
+# 构建产物（Cloudflare Pages 从构建命令产出，不进版本库）
+# 注意开头的 / 不能少：不带斜杠的模式会在仓库任意层级匹配
+/dist
