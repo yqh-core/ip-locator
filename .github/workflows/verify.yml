@@ -45,7 +45,15 @@ jobs:
 
           echo "产物文件数: $(find dist -type f | wc -l)"
 
+      # 这一步是便利项，不是门禁。
+      # 实测 GitHub 的 artifacts 后端会偶发失败：
+      #   ##[error]Failed to FinalizeArtifact: Received non-retryable error:
+      #   Failed request: (403) Forbidden: Error from intermediary
+      # 产物内容其实已上传成功，卡在最后的 Finalize 阶段；配额也正常
+      # （全账号 artifacts 合计仅约 12 MiB），同一步骤在其他仓库能成功。
+      # 这种后端抖动不该把仓库标红。真门禁是上面那两步。
       - name: 上传产物（便于人工核对）
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: dist
