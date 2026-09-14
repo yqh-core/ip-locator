@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP归属地查询工具 - 快速查询IP地址归属地信息</title>
-    <meta name="description" content="免费在线IP归属地查询工具，支持查询任意IP地址的国家、地区、城市、运营商等详细信息。">
-    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IP定位,IP地理位置">
+    <title>IP 归属地查询 - YQH 工具箱</title>
+    <meta name="description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，多数据源自动降级。">
+    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IP定位,IP地理位置,ASN查询,YQH工具箱">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <meta name="theme-color" content="#0f766e">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -31,13 +35,13 @@
                     placeholder="请输入IP地址（如：8.8.8.8）"
                     autocomplete="off"
                 >
-                <button id="searchBtn" onclick="queryIP()">
+                <button id="searchBtn" type="button">
                     <span class="btn-text">查询</span>
                     <span class="btn-icon">🔍</span>
                 </button>
             </div>
             <div class="quick-actions">
-                <button class="btn-secondary" onclick="queryMyIP()">
+                <button id="myIpBtn" class="btn-secondary" type="button">
                     <span>📍 查询我的IP</span>
                 </button>
             </div>
@@ -76,6 +80,10 @@
                     <span class="info-value" id="zip"></span>
                 </div>
                 <div class="info-item">
+                    <span class="info-label">🔢 ASN</span>
+                    <span class="info-value" id="asn"></span>
+                </div>
+                <div class="info-item">
                     <span class="info-label">🌐 运营商</span>
                     <span class="info-value" id="isp"></span>
                 </div>
@@ -98,6 +106,8 @@
                 <h3>🗺️ 地理位置</h3>
                 <div id="mapLink" class="map-link"></div>
             </div>
+
+            <p id="sourceNote" class="source-note"></p>
         </div>
 
         <div class="instructions">
@@ -110,16 +120,23 @@
                 <li>支持查看IP地理位置的地图链接</li>
             </ul>
             <div class="api-notice">
-                <strong>提示：</strong>本工具使用免费API服务，查询结果仅供参考。
+                <strong>提示：</strong>本工具依次尝试多个免费 IP 库，任一可用即返回结果；
+                查询结果来自第三方数据库，仅供参考，定位精度以城市级为主。
             </div>
+
+            <h3>🔗 同站工具</h3>
+            <ul class="sibling-links">
+                <li><a href="https://yqh-devtools.pages.dev" target="_blank" rel="noopener">开发者工具集</a> — 常用在线开发工具</li>
+                <li><a href="https://yqh-fangdai.pages.dev" target="_blank" rel="noopener">房贷计算器</a> — 月供与利息测算</li>
+            </ul>
         </div>
 
         <footer>
-            <p>数据来源：<a href="https://ipinfo.io" target="_blank">IPinfo.io</a></p>
-            <p>© 2025 IP归属地查询工具 | <a href="/about">关于我们</a> | <a href="/privacy">隐私政策</a></p>
+            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://github.com/yqh-core/yqh-iplocate" target="_blank" rel="noopener">YQH 工具箱</a></p>
+            <p><a href="/about">关于</a> | <a href="/privacy">隐私政策</a></p>
         </footer>
     </div>
 
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -725,3 +725,26 @@ footer a:hover {
         font-size: 14px;
     }
 }
+
+/* ---- 数据来源说明 & 同站工具（v1.1.0 新增） ---- */
+.source-note {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.sibling-links {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+}
+
+.sibling-links li {
+    padding: 6px 0;
+    border-bottom: 1px dashed #e5e7eb;
+}
+
+.sibling-links li:last-child {
+    border-bottom: none;
+}

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>关于我们 - IP归属地查询工具</title>
+    <title>关于 - IP 归属地查询 · YQH 工具箱</title>
     <meta name="description" content="了解IP归属地查询工具，一个免费、快速、准确的IP地址查询服务。">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <meta name="theme-color" content="#0f766e">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -79,7 +83,7 @@
                 <p>本工具基于以下技术构建：</p>
                 <ul>
                     <li><strong>前端技术：</strong>使用HTML5、CSS3和原生JavaScript开发，确保快速加载和流畅体验。</li>
-                    <li><strong>API服务：</strong>使用 <a href="https://ipinfo.io" target="_blank">IPinfo.io</a> 提供的免费API服务获取IP地理位置数据。</li>
+                    <li><strong>API服务：</strong>依次尝试 ipapi.co、ipwho.is、ipinfo.io 三个免费 IP 库，任一可用即返回结果；归一化层把各家字段统一后再渲染。</li>
                     <li><strong>响应式设计：</strong>支持桌面、平板和手机等多种设备访问。</li>
                     <li><strong>隐私保护：</strong>所有查询请求通过HTTPS加密传输，不存储用户查询记录。</li>
                 </ul>
@@ -101,6 +105,15 @@
             <div class="about-section">
                 <h2>🔄 更新日志</h2>
                 <div class="changelog">
+                    <div class="changelog-item">
+                        <h4>v1.1.0 (2026年9月)</h4>
+                        <ul>
+                            <li>数据源改为多源自动降级（ipapi.co → ipwho.is → ipinfo.io）</li>
+                            <li>拆分数据源适配层与界面层，新增 ASN 字段</li>
+                            <li>修正组织名显示为 AS 号的问题</li>
+                            <li>统一 YQH 工具箱品牌标识</li>
+                        </ul>
+                    </div>
                     <div class="changelog-item">
                         <h4>v1.0.0 (2025年1月)</h4>
                         <ul>
@@ -140,7 +153,7 @@
                 <h2>❤️ 致谢</h2>
                 <p>感谢以下服务和项目：</p>
                 <ul>
-                    <li><a href="https://ipinfo.io" target="_blank">IPinfo.io</a> - 提供可靠的IP地理位置数据API</li>
+                    <li><a href="https://ipapi.co" target="_blank" rel="noopener">ipapi.co</a>、<a href="https://ipwho.is" target="_blank" rel="noopener">ipwho.is</a>、<a href="https://ipinfo.io" target="_blank" rel="noopener">ipinfo.io</a> - 提供 IP 地理位置数据 API</li>
                     <li>所有使用和支持本工具的用户</li>
                     <li>开源社区的无私贡献</li>
                 </ul>
@@ -152,7 +165,8 @@
         </div>
 
         <footer>
-            <p>© 2025 IP归属地查询工具 | <a href="/about">关于我们</a> | <a href="/privacy">隐私政策</a></p>
+            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://github.com/yqh-core/yqh-iplocate" target="_blank" rel="noopener">YQH 工具箱</a></p>
+            <p><a href="/about">关于</a> | <a href="/privacy">隐私政策</a></p>
         </footer>
     </div>
 </body>
