@@ -30,6 +30,17 @@ function toText(value) {
 }
 
 /**
+ * ASN 统一成 "AS4837" 形态。
+ * ipwho.is 给的是纯数字 4837，ipinfo.io 给的是 "AS4837"，不统一的话界面上
+ * 同一个字段会随数据源变样。
+ */
+export function formatAsn(raw) {
+  const s = toText(raw);
+  if (!s) return null;
+  return /^AS/i.test(s) ? s.toUpperCase() : `AS${s}`;
+}
+
+/**
  * 拆分 "AS4837 CHINA UNICOM Backbone" 这类字段。
  * 返回 { asn, org }，两者都可能为 null。
  */
@@ -138,7 +149,7 @@ export const IP_SOURCES = [
         lat: toNumber(raw.latitude),
         lon: toNumber(raw.longitude),
         timezone: toText(raw.timezone),
-        asn: toText(raw.asn) || asn,
+        asn: formatAsn(toText(raw.asn) ?? asn),
         org,
         isp: org,
       });
@@ -161,7 +172,7 @@ export const IP_SOURCES = [
         lat: toNumber(raw.latitude),
         lon: toNumber(raw.longitude),
         timezone: toText(tz),
-        asn: toText(conn.asn) ? String(conn.asn).toUpperCase() : null,
+        asn: formatAsn(conn.asn),
         org: toText(conn.org) || toText(conn.isp),
         isp: toText(conn.isp) || toText(conn.org),
       });
@@ -184,7 +195,7 @@ export const IP_SOURCES = [
         lat: toNumber(lat),
         lon: toNumber(lon),
         timezone: toText(raw.timezone),
-        asn,
+        asn: formatAsn(asn),
         org,
         isp: org,
       });
