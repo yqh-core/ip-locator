@@ -19,16 +19,10 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist');
 
 /** 白名单：仓库根下这些条目会进入发布目录 */
-const ENTRIES = ['index.html', 'about.html', 'privacy.html', '404.html', 'robots.txt', '_redirects', 'css', 'js'];
+const ENTRIES = ['index.html', 'about.html', 'privacy.html', '404.html', 'robots.txt', 'css', 'js'];
 
-/**
- * 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站。
- *
- * _redirects 必须列为必需：Cloudflare Pages 会把 *.html 统一 308 到干净 URL，
- * 站内链接用的是干净 URL，靠这份规则表做 200 重写才一定命中。丢了这个文件，
- * /about、/privacy 就会 404。
- */
-const REQUIRED = ['index.html', '_redirects'];
+/** 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站 */
+const REQUIRED = ['index.html'];
 
 /** Pages 的硬上限（Files: 20000, 单文件 25 MiB） */
 const MAX_FILES = 20000;

@@ -15,7 +15,3 @@
 
 # 行尾有语义的文件必须钉死 LF
 .nvmrc text eol=lf
-
-# Cloudflare Pages 读取的路由规则表：多一个 \r 会让每条规则解析错，
-# 表现为规则静默失效（深链 404）而不是报错。
-_redirects text eol=lf
