@@ -195,25 +195,43 @@ function isPlausibleIP(ip) {
   return /^[0-9a-fA-F:.]{3,45}$/.test(ip);
 }
 
-/** 依次尝试上游，返回第一个拿到 IP 的结果；全失败返回 null */
+/**
+ * 并发问所有上游，谁先给出可用结果就用谁。
+ *
+ * 一开始写的是串行降级，但线上观察发现排第一的 ipwho.is 在边缘节点
+ * 常年超时（本机直连却是好的，怀疑是它对 Cloudflare 出口 IP 有限制），
+ * 于是每次查询都要先白等 4 秒才轮到 ipinfo.io。
+ *
+ * 改成并发后总耗时取决于最快的那个源，慢的源不阻塞。
+ * 因为有 24 小时缓存兜着，真正打到上游的请求很少，多发的那几路可以接受。
+ */
 async function lookupUpstreams(ip) {
-  for (const upstream of UPSTREAMS) {
-    try {
-      const response = await fetch(upstream.build(ip), {
-        signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-        headers: { Accept: 'application/json', 'User-Agent': 'yqh-iplocate/1.0' },
-        // 上游结果我们自己按 IP 缓存，这里不让 Cloudflare 再插一层
-        cf: { cacheTtl: 0 },
-      });
-      if (!response.ok) continue;
+  let settled = false;
 
-      const info = upstream.normalize(await response.json());
-      if (info && info.ip) return { info, source: upstream.id };
-    } catch {
-      // 超时或网络错误：换下一个源
-    }
-  }
-  return null;
+  return new Promise((resolve) => {
+    const attempts = UPSTREAMS.map(async (upstream) => {
+      try {
+        const response = await fetch(upstream.build(ip), {
+          signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+          headers: { Accept: 'application/json', 'User-Agent': 'yqh-iplocate/1.0' },
+          // 上游结果我们自己按 IP 缓存，这里不让 Cloudflare 再插一层
+          cf: { cacheTtl: 0 },
+        });
+        if (!response.ok) return;
+
+        const info = upstream.normalize(await response.json());
+        if (info && info.ip && !settled) {
+          settled = true;
+          resolve({ info, source: upstream.id });
+        }
+      } catch {
+        // 超时或网络错误：这一路作废，等其他路
+      }
+    });
+
+    // 全部落空才判失败
+    Promise.allSettled(attempts).then(() => { if (!settled) resolve(null); });
+  });
 }
 
 /**
