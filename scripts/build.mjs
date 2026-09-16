@@ -19,7 +19,22 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist');
 
 /** 白名单：仓库根下这些条目会进入发布目录 */
-const ENTRIES = ['index.html', 'about.html', 'privacy.html', '404.html', 'robots.txt', 'css', 'js', 'images'];
+const ENTRIES = [
+  'index.html',
+  'about.html',
+  'privacy.html',
+  'terms.html',
+  'contact.html',
+  'faq.html',
+  'guides.html',
+  'docs.html',
+  '404.html',
+  'robots.txt',
+  'sitemap.xml',
+  'css',
+  'js',
+  'images',
+];
 
 /** 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站 */
 const REQUIRED = ['index.html'];
