@@ -7,3 +7,6 @@ node_modules
 # 构建产物（Cloudflare Pages 从构建命令产出，不进版本库）
 # 注意开头的 / 不能少：不带斜杠的模式会在仓库任意层级匹配
 /dist
+
+# wrangler 本地沙箱（pages dev）产生的缓存与状态
+/.wrangler

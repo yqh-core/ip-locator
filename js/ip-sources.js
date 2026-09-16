@@ -133,6 +133,23 @@ function withTimeout(signal, timeout) {
  */
 export const IP_SOURCES = [
   {
+    /**
+     * 本站服务端代理（functions/api/ip.js）。
+     *
+     * 排在第一位是有意的：它不限流、带 24 小时边缘缓存，命中缓存时比直连更快。
+     * 万一 Pages Functions 没生效（本地打开、或路由未部署），这里会拿到 404 / HTML，
+     * json() 抛错，下面的降级逻辑会自动换直连源，不会让用户卡住。
+     */
+    id: 'yqh-server',
+    label: '本站服务端',
+    build: ip => (ip ? `/api/ip?ip=${encodeURIComponent(ip)}` : '/api/ip'),
+    normalize(raw) {
+      // 服务端返回的已经是统一的 IPInfo 结构，这里只做校验
+      if (!raw || raw.error || !raw.ip) return null;
+      return normalizeInfo(raw);
+    },
+  },
+  {
     id: 'ipapi.co',
     label: 'ipapi.co',
     /** ip 为空时查询本机公网 IP */
