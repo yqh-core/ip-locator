@@ -169,6 +169,27 @@ const UPSTREAMS = [
   },
 ];
 
+/**
+ * 把 2 字母国家码补成完整国家名。
+ *
+ * 各家给的形态不一致：ipwho.is 给 "United States"，ipinfo.io 给 "US"，
+ * 直接用会让界面上同一个字段随数据源变样。这里统一成完整国家名。
+ *
+ * 用 Intl.DisplayNames 而不是维护一张国家表 —— Workers 自带完整 ICU 数据，
+ * 零维护成本，也不会漏国家。拿不到就原样返回，宁可显示码也不要出错。
+ */
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+function expandCountryName(country) {
+  const s = toText(country);
+  if (!s || !/^[A-Za-z]{2}$/.test(s)) return s;
+  try {
+    return regionNames.of(s.toUpperCase()) ?? s;
+  } catch {
+    return s;
+  }
+}
+
 /** 粗略校验：只放行 IPv4 / IPv6 的合法字符，避免把奇怪的东西拼进上游 URL */
 function isPlausibleIP(ip) {
   return /^[0-9a-fA-F:.]{3,45}$/.test(ip);
@@ -203,7 +224,7 @@ function infoFromRequestCf(ip, cf) {
   if (!cf) return null;
   return normalizeInfo({
     ip,
-    country: toText(cf.country),
+    country: expandCountryName(cf.country),
     region: toText(cf.region) || toText(cf.regionCode),
     city: toText(cf.city),
     postal: toText(cf.postalCode),
@@ -249,7 +270,8 @@ export async function onRequestGet(context) {
     return jsonResponse({ error: 'invalid_ip', message: 'IP 格式不正确' }, 400);
   }
 
-  const cacheKey = new URL(`https://ip-api-cache.yqh/${targetIP}`).toString();
+  // key 带版本号：归一化规则变了（比如国家名统一）时换个版本就能让旧缓存整体失效
+  const cacheKey = new URL(`https://ip-api-cache.yqh/v2/${targetIP}`).toString();
   const cache = caches.default;
 
   // 命中缓存直接返回，第三方一次都不用打
@@ -268,7 +290,12 @@ export async function onRequestGet(context) {
   let status = 200;
 
   if (upstreamResult) {
-    payload = { ...upstreamResult.info, source: upstreamResult.source, cached: false };
+    payload = {
+      ...upstreamResult.info,
+      country: expandCountryName(upstreamResult.info.country),
+      source: upstreamResult.source,
+      cached: false,
+    };
   } else {
     // 上游全挂：查自身 IP 时还能用 Cloudflare 自带的地理信息兜底
     const fallback = isSelfQuery ? infoFromRequestCf(targetIP, request.cf) : null;
