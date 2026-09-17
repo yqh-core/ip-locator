@@ -1,6 +1,6 @@
-# IP 归属地查询 · YQH 工具箱
+# IP 归属地查询 · IP 归属地查询
 
-一个简洁易用的纯前端 IP 地址归属地查询应用。属于 [YQH 工具箱](https://github.com/yqh-core) 的一员。
+一个简洁易用的纯前端 IP 地址归属地查询应用。属于 [IP 归属地查询](https://github.com/yqh-core) 的一员。
 
 ## 功能特点
 
@@ -306,8 +306,8 @@ docker run -d -p 80:80 --name ip-location ip-location
 - [ipapi.co](https://ipapi.co) — 主数据源
 - [ipwho.is](https://ipwho.is) — 备用数据源
 - [ipinfo.io](https://ipinfo.io) — 备用数据源
-- [YQH 工具箱 · 开发者工具集](https://yqh-devtools.pages.dev)
-- [YQH 工具箱 · 房贷计算器](https://yqh-fangdai.pages.dev)
+- [IP 归属地查询 · 开发者工具集](https://coderkit.pages.dev)
+- [IP 归属地查询 · 房贷计算器](https://repaycalc.pages.dev)
 
 ## 联系方式
 

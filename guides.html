@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>使用教程 - 如何用 IP 归属地查询排查问题 | YQH 工具箱</title>
+    <title>使用教程 - 如何用 IP 归属地查询排查问题 | IP 归属地查询</title>
     <meta name="description" content="IP 归属地查询实操教程：查询单个 IP、查询自己的公网 IP、读懂 ASN 与运营商字段、用 API 批量取数、结合日志排查异常访问。">
-    <link rel="canonical" href="https://yqh-iplocate.pages.dev/guides">
+    <link rel="canonical" href="https://locip.pages.dev/guides">
     <meta property="og:type" content="article">
     <meta property="og:title" content="使用教程 - 如何用 IP 归属地查询排查问题">
     <meta property="og:description" content="从查询单个 IP 到结合日志排查异常访问的四步实操教程。">
-    <meta property="og:url" content="https://yqh-iplocate.pages.dev/guides">
-    <meta property="og:site_name" content="IP 归属地查询 · YQH 工具箱">
+    <meta property="og:url" content="https://locip.pages.dev/guides">
+    <meta property="og:site_name" content="IP 归属地查询 · IP 归属地查询">
     <meta property="og:locale" content="zh_CN">
     <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
@@ -74,7 +74,7 @@
                 </div>
                 <p>一个最小可用的 curl 示例：</p>
                 <div class="disclaimer">
-                    <p><code>curl "https://yqh-iplocate.pages.dev/api/ip?ip=8.8.8.8"</code></p>
+                    <p><code>curl "https://locip.pages.dev/api/ip?ip=8.8.8.8"</code></p>
                 </div>
                 <p>结果会被边缘节点缓存（指定 IP 缓存 24 小时，自身 IP 缓存 5 分钟），因此重复查询同一地址响应极快。请勿高并发调用，上游数据源有频率限制。</p>
             </div>
@@ -108,7 +108,7 @@
         </div>
 
         <footer>
-            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://github.com/yqh-core/yqh-iplocate" target="_blank" rel="noopener">YQH 工具箱</a></p>
+            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://github.com/yqh-core/ip-locator" target="_blank" rel="noopener">IP 归属地查询</a></p>
             <p><a href="/about">关于</a> | <a href="/guides">使用教程</a> | <a href="/docs">文档</a> | <a href="/faq">常见问题</a> | <a href="/contact">联系</a> | <a href="/privacy">隐私政策</a> | <a href="/terms">服务条款</a></p>
         </footer>
     </div>

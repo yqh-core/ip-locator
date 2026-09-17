@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # 站点地图
-Sitemap: https://yqh-iplocate.pages.dev/sitemap.xml
+Sitemap: https://locip.pages.dev/sitemap.xml
