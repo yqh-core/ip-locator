@@ -213,7 +213,7 @@ async function lookupUpstreams(ip) {
       try {
         const response = await fetch(upstream.build(ip), {
           signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-          headers: { Accept: 'application/json', 'User-Agent': 'yqh-iplocate/1.0' },
+          headers: { Accept: 'application/json', 'User-Agent': 'locip/1.0' },
           // 上游结果我们自己按 IP 缓存，这里不让 Cloudflare 再插一层
           cf: { cacheTtl: 0 },
         });
@@ -289,7 +289,7 @@ export async function onRequestGet(context) {
   }
 
   // key 带版本号：归一化规则变了（比如国家名统一）时换个版本就能让旧缓存整体失效
-  const cacheKey = new URL(`https://ip-api-cache.yqh/v2/${targetIP}`).toString();
+  const cacheKey = new URL(`https://ip-api-cache.locip/v2/${targetIP}`).toString();
   const cache = caches.default;
 
   // 命中缓存直接返回，第三方一次都不用打

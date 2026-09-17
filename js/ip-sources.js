@@ -140,7 +140,7 @@ export const IP_SOURCES = [
      * 万一 Pages Functions 没生效（本地打开、或路由未部署），这里会拿到 404 / HTML，
      * json() 抛错，下面的降级逻辑会自动换直连源，不会让用户卡住。
      */
-    id: 'yqh-server',
+    id: 'locip-server',
     label: '本站服务端',
     build: ip => (ip ? `/api/ip?ip=${encodeURIComponent(ip)}` : '/api/ip'),
     normalize(raw) {
