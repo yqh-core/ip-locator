@@ -1,0 +1,101 @@
+/* ==========================================================================
+   DigDevBox · dd-tokens.css — 设计令牌（变量层）· 单一事实来源
+   --------------------------------------------------------------------------
+   @sync-hash: 639db1d59d3b
+   版本 v1.1 | 2026-09-18 | 由 _ops/sync-design-tokens.mjs 分发到各站，勿手改副本
+
+   用法：本文件只定义 CSS 变量与主题切换，不含任何类选择器，可安全引入任何页面。
+   引入顺序：dd-tokens.css → dd-shell.css →（站点自有样式）
+
+   设计取向：Linear / Vercel / Raycast 的克制极简 + teal 科技感。
+   主色 teal #0f766e，暗底 navy #0b1220。
+   ========================================================================== */
+
+:root {
+  /* ---------- 品牌主色 (Primary / Teal) ---------- */
+  --dd-primary: #0f766e;          /* teal-700 · 亮色：实心底/链接/强调 */
+  --dd-primary-hover: #0d9488;    /* teal-600 */
+  --dd-primary-active: #115e59;   /* teal-800 */
+  --dd-primary-soft: #ccfbf1;     /* teal-100 · 浅色底高亮块 */
+  --dd-on-primary: #ffffff;       /* 主色之上的文字 */
+
+  /* ---------- 语义色 (Semantic) ---------- */
+  --dd-success: #059669;
+  --dd-success-bg: #ecfdf5;
+  --dd-success-line: #a7f3d0;
+  --dd-danger: #dc2626;
+  --dd-danger-bg: #fef2f2;
+  --dd-warning: #d97706;
+  --dd-warning-bg: #fffbeb;
+
+  /* ---------- 中性色 · 亮色 (Light) ---------- */
+  --dd-bg: #f8fafc;              /* slate-50 · 页面底 */
+  --dd-surface: #ffffff;         /* 卡片/面板 */
+  --dd-surface-2: #f1f5f9;       /* slate-100 · 次级底 */
+  --dd-border: #e2e8f0;          /* slate-200 · 描边 */
+  --dd-text: #0f172a;            /* slate-900 · 主文字 */
+  --dd-text-soft: #475569;       /* slate-600 · 次要文字 */
+  --dd-text-muted: #94a3b8;      /* slate-400 · 弱化文字 */
+
+  /* ---------- 圆角 / 阴影 / 字体 ---------- */
+  --dd-radius: 10px;             /* 基础圆角 */
+  --dd-radius-sm: 6px;
+  --dd-radius-lg: 16px;
+  --dd-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 4px 12px rgba(15, 23, 42, .06);
+  --dd-shadow-hover: 0 4px 10px rgba(15, 23, 42, .10), 0 10px 24px rgba(15, 23, 42, .08);
+  --dd-focus-ring: rgba(20, 184, 166, .22);
+  --dd-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+             "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --dd-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---------- 暗色 (Dark / Navy) · 由 <html data-theme="dark"> 或 .dark 驱动 ---------- */
+html[data-theme="dark"],
+html.dark {
+  color-scheme: dark;
+
+  --dd-primary: #14b8a6;         /* teal-500 · 暗色更亮以保证对比 */
+  --dd-primary-hover: #2dd4bf;
+  --dd-primary-active: #0d9488;
+  --dd-primary-soft: #0d2b28;
+  --dd-on-primary: #04201d;      /* 暗色主色底上的文字（深青绿，非纯白） */
+
+  --dd-success: #34d399;
+  --dd-success-bg: #0a2a20;
+  --dd-success-line: #14532d;
+  --dd-danger: #f87171;
+  --dd-danger-bg: #2b1618;
+  --dd-warning: #fbbf24;
+  --dd-warning-bg: #2b2110;
+
+  --dd-bg: #0b1220;              /* navy · 页面底 */
+  --dd-surface: #131c2b;         /* 卡片/面板 */
+  --dd-surface-2: #0f1a2e;       /* 次级底 */
+  --dd-border: #1e2d49;          /* 描边 */
+  --dd-text: #e5e7eb;            /* 主文字 */
+  --dd-text-soft: #a8b0bd;       /* 次要文字 */
+  --dd-text-muted: #6b7c99;      /* 弱化文字 */
+
+  --dd-shadow: 0 1px 3px rgba(0, 0, 0, .40), 0 4px 12px rgba(0, 0, 0, .30);
+  --dd-shadow-hover: 0 4px 10px rgba(0, 0, 0, .45), 0 10px 24px rgba(0, 0, 0, .35);
+  --dd-focus-ring: rgba(45, 212, 191, .28);
+}
+
+/* 跟随系统暗色的站点：给 <html> 加 data-dd-auto 即可自动切换 */
+@media (prefers-color-scheme: dark) {
+  html[data-dd-auto] {
+    color-scheme: dark;
+    --dd-primary: #14b8a6;
+    --dd-primary-hover: #2dd4bf;
+    --dd-primary-active: #0d9488;
+    --dd-primary-soft: #0d2b28;
+    --dd-on-primary: #04201d;
+    --dd-bg: #0b1220;
+    --dd-surface: #131c2b;
+    --dd-surface-2: #0f1a2e;
+    --dd-border: #1e2d49;
+    --dd-text: #e5e7eb;
+    --dd-text-soft: #a8b0bd;
+    --dd-text-muted: #6b7c99;
+  }
+}
