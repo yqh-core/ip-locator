@@ -1,1 +1,2 @@
+# AdSense 账户校验文件（请勿删除）
 google.com, pub-7944759654100814, DIRECT, f08c47fec0942fa0
