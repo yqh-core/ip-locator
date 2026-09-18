@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://locip.pages.dev/</loc>
+    <loc>https://ip.digdevbox.com/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/guides</loc>
+    <loc>https://ip.digdevbox.com/guides</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/docs</loc>
+    <loc>https://ip.digdevbox.com/docs</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/faq</loc>
+    <loc>https://ip.digdevbox.com/faq</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/about</loc>
+    <loc>https://ip.digdevbox.com/about</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/contact</loc>
+    <loc>https://ip.digdevbox.com/contact</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/privacy</loc>
+    <loc>https://ip.digdevbox.com/privacy</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://locip.pages.dev/terms</loc>
+    <loc>https://ip.digdevbox.com/terms</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
