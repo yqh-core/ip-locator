@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
+<head><script id="dd-theme-bootstrap">/* inject-dd-shell: 主题防闪烁 */
+(function(){try{var t=localStorage.getItem('dd-theme');var h=document.documentElement;
+if(t==='dark'){h.setAttribute('data-theme','dark');h.removeAttribute('data-dd-auto');}
+else if(t==='light'){h.setAttribute('data-theme','light');h.removeAttribute('data-dd-auto');}
+else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
+}catch(e){}})();</script>
+<style id="dd-theme-style">
+.dd-theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  margin-left:auto;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
+  color:var(--dd-on-primary);border-radius:8px;cursor:pointer;font-size:16px;line-height:1;
+  transition:background .15s,border-color .15s,transform .1s;flex:none;padding:0}
+.dd-theme-toggle:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6)}
+.dd-theme-toggle:active{transform:scale(.94)}
+.dd-theme-toggle:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px}
+@media (max-width:640px){.dd-theme-toggle{width:30px;height:30px;font-size:14px}}
+</style>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>服务条款 - IP 归属地查询 · IP 归属地查询</title>
@@ -36,6 +52,8 @@
                 <a href="https://ip.digdevbox.com/" aria-current="page">IP 查询</a>
                 <a href="https://fangdai.digdevbox.com/">房贷计算器</a>
         </nav>
+        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">🌙</button>
+        
     </div>
 </div>
     <div class="container">
@@ -141,5 +159,32 @@
         </nav>
     </div>
 </footer>
+
+<script id="dd-theme-toggle-script">
+(function(){
+  var KEY='dd-theme';
+  function sysDark(){return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;}
+  function apply(t){var h=document.documentElement;
+    if(t==='dark'){h.setAttribute('data-theme','dark');h.removeAttribute('data-dd-auto');}
+    else if(t==='light'){h.setAttribute('data-theme','light');h.removeAttribute('data-dd-auto');}
+    else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
+    try{localStorage.setItem(KEY,t);}catch(e){}
+    sync();}
+  function effective(){var h=document.documentElement;
+    if(h.getAttribute('data-theme')==='dark')return 'dark';
+    if(h.getAttribute('data-theme')==='light')return 'light';
+    return sysDark()?'dark':'light';}
+  function sync(){var b=document.getElementById('dd-theme-toggle');if(!b)return;
+    var d=effective()==='dark';
+    b.textContent=d?'☀️':'🌙';
+    b.setAttribute('aria-label', d?'切换到浅色模式':'切换到深色模式');
+    b.setAttribute('title', d?'切换到浅色模式':'切换到深色模式');}
+  function toggle(){var c=effective();apply(c==='dark'?'light':'dark');}
+  function init(){var b=document.getElementById('dd-theme-toggle');if(b)b.addEventListener('click',toggle);sync();}
+  if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
+  if(window.matchMedia){matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){
+    try{if(localStorage.getItem(KEY))return;}catch(e){} sync();});}
+})();
+</script>
 </body>
 </html>
