@@ -31,6 +31,7 @@ const ENTRIES = [
   '404.html',
   'robots.txt',
   'sitemap.xml',
+  'ads.txt',
   'css',
   'js',
   'images',
