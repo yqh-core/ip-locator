@@ -919,3 +919,33 @@ html[data-theme="dark"] .back-link a:hover { background: #0f1a2e !important; col
   html[data-dd-auto] .back-link a,
   html[data-dd-auto] .back-link a:hover { background: #0f1a2e !important; color: #e5e7eb !important; }
 }
+
+/* V1.3.1 续：暗色下仍有漏网标题与强调文字（均为亮色模式深青绿 #0f766e）
+ * 命中：header h1（隐私/条款/关于等页标题 3.12:1）、.instructions h3（使用说明 3.12:1）、
+ *       .use-cases strong / 正文 strong（3.18:1） */
+html[data-theme="dark"] header h1,
+html[data-theme="dark"] .instructions h1,
+html[data-theme="dark"] .instructions h2,
+html[data-theme="dark"] .instructions h3,
+html[data-theme="dark"] .content-section h1,
+html[data-theme="dark"] .content-section h2,
+html[data-theme="dark"] .content-section h3,
+html[data-theme="dark"] .content-section h4,
+html[data-theme="dark"] .use-cases h3 { color:#5eead4 !important; }
+html[data-theme="dark"] .use-cases strong,
+html[data-theme="dark"] .content-section strong,
+html[data-theme="dark"] .instructions strong { color:#5eead4 !important; }
+@media (prefers-color-scheme: dark) {
+  html[data-dd-auto] header h1,
+  html[data-dd-auto] .instructions h1,
+  html[data-dd-auto] .instructions h2,
+  html[data-dd-auto] .instructions h3,
+  html[data-dd-auto] .content-section h1,
+  html[data-dd-auto] .content-section h2,
+  html[data-dd-auto] .content-section h3,
+  html[data-dd-auto] .content-section h4,
+  html[data-dd-auto] .use-cases h3 { color:#5eead4 !important; }
+  html[data-dd-auto] .use-cases strong,
+  html[data-dd-auto] .content-section strong,
+  html[data-dd-auto] .instructions strong { color:#5eead4 !important; }
+}
