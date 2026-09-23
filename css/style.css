@@ -879,3 +879,9 @@ html[data-theme="dark"] .spinner{ border-color:#1e2d49 !important; border-top-co
   html[data-dd-auto] .spinner{ border-color:#1e2d49 !important; border-top-color:#14b8a6 !important; }
 }
 
+
+/* ---- V1.3 品牌条防污染（2026-09-23）----
+ * 全局 a 的暗色覆盖会把 .dd-brandbar 内链接染成 teal-on-teal（亮 teal 底 + teal 字，不可读）。
+ * 品牌条文字应始终使用 --dd-on-primary（亮色=白 / 暗色=深青），两条路径都兜住。 */
+html[data-theme="dark"] .dd-brandbar a{ color:var(--dd-on-primary) !important; }
+html[data-dd-auto] .dd-brandbar a{ color:var(--dd-on-primary) !important; }
