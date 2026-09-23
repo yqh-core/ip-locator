@@ -885,3 +885,15 @@ html[data-theme="dark"] .spinner{ border-color:#1e2d49 !important; border-top-co
  * 品牌条文字应始终使用 --dd-on-primary（亮色=白 / 暗色=深青），两条路径都兜住。 */
 html[data-theme="dark"] .dd-brandbar a{ color:var(--dd-on-primary) !important; }
 html[data-dd-auto] .dd-brandbar a{ color:var(--dd-on-primary) !important; }
+
+/* V1.3 第一眼修复：404 页暗色对比度（.notfound p 3.3 → 达标；.btn 误吃通用 a 色 teal-on-teal → 白字；.code 提亮） */
+html[data-theme="dark"] .notfound p { color: #9aa7ba !important; }
+html[data-theme="dark"] .notfound .code { color: #2dd4bf !important; }
+html[data-theme="dark"] .notfound .btn,
+html[data-theme="dark"] .notfound .btn:hover { color: #ffffff !important; }
+@media (prefers-color-scheme: dark) {
+  html[data-dd-auto] .notfound p { color: #9aa7ba !important; }
+  html[data-dd-auto] .notfound .code { color: #2dd4bf !important; }
+  html[data-dd-auto] .notfound .btn,
+  html[data-dd-auto] .notfound .btn:hover { color: #ffffff !important; }
+}
