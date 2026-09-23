@@ -151,3 +151,19 @@
   .dd-brandbar.slim nav { gap: 10px; }
   .dd-brandbar.slim nav a { font-size: 11.5px; }
 }
+
+/* ----------------------------------------------------------------
+ * 移动端可用性（V1.2 修复 D004 / D005，2026-09-23）
+ * 仅小屏/触屏生效：输入控件 >=16px（防 iOS 聚焦放大）；触控目标 >=44px。
+ * ---------------------------------------------------------------- */
+@media (max-width: 768px), (pointer: coarse) {
+	input[type="text"], input[type="number"], input[type="search"],
+	input[type="email"], input[type="password"], select, textarea {
+		font-size: 16px !important;
+	}
+	button, .btn, nav a {
+		min-height: 44px;
+		min-width: 44px;
+		box-sizing: border-box;
+	}
+}
