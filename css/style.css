@@ -897,3 +897,25 @@ html[data-theme="dark"] .notfound .btn:hover { color: #ffffff !important; }
   html[data-dd-auto] .notfound .btn,
   html[data-dd-auto] .notfound .btn:hover { color: #ffffff !important; }
 }
+
+/* ==========================================================================
+ * V1.3.1 第一眼扩面修复（2026-09-24）
+ * 背景：扩面扫描发现 docs/guides/faq/about/contact/privacy/terms 子页在暗色下：
+ *   ① .content-section h2 保持亮色模式的深青绿 #0f766e，压深底仅 3.12:1（22.4px 非粗体需 4.5）
+ *   ② .back-link a 仍为亮色底 #e4e6eb，文字被通用 a 规则改成亮青绿 → 1.49:1 不可读
+ *   首页无此二者，故 D010 修复时未暴露。
+ */
+html[data-theme="dark"] .content-section h2,
+html[data-theme="dark"] .content-section h1,
+html[data-theme="dark"] .info-header h1 { color: #5eead4 !important; }
+html[data-theme="dark"] .back-link { border-top-color: #1e2d49 !important; }
+html[data-theme="dark"] .back-link a,
+html[data-theme="dark"] .back-link a:hover { background: #0f1a2e !important; color: #e5e7eb !important; }
+@media (prefers-color-scheme: dark) {
+  html[data-dd-auto] .content-section h2,
+  html[data-dd-auto] .content-section h1,
+  html[data-dd-auto] .info-header h1 { color: #5eead4 !important; }
+  html[data-dd-auto] .back-link { border-top-color: #1e2d49 !important; }
+  html[data-dd-auto] .back-link a,
+  html[data-dd-auto] .back-link a:hover { background: #0f1a2e !important; color: #e5e7eb !important; }
+}
