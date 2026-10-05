@@ -167,3 +167,11 @@
 		box-sizing: border-box;
 	}
 }
+
+/* P5 信任声明小字（footer 内，弱化展示） */
+.dd-trustline {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #8a8f98;
+}
