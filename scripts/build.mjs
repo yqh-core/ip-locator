@@ -32,6 +32,8 @@ const ENTRIES = [
   'robots.txt',
   'sitemap.xml',
   'ads.txt',
+  '_headers',
+  '9765d1ca8a6604d220ffa976e8ba38ce.txt',
   'css',
   'js',
   'images',
