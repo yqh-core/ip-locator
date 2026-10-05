@@ -1,0 +1,6 @@
+# 安全响应头（CF Pages 消费，不对外提供）
+/*
+	Strict-Transport-Security: max-age=31536000; includeSubDomains
+	X-Content-Type-Options: nosniff
+	Referrer-Policy: strict-origin-when-cross-origin
+	Permissions-Policy: geolocation=(), microphone=(), camera=(self)
