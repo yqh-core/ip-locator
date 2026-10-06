@@ -1,5 +1,6 @@
 /**
- * dd-i18n.js — DigDevBox 站点群共享 i18n 内核（v1.0）
+ * dd-i18n.js — DigDevBox 站点群共享 i18n 内核（v1.1）
+ * @sync-hash: 114462f34885
  * 真源：digdevbox-design-system/dd-i18n.js，由 _ops/sync-design-tokens.mjs 分发到各站。
  *
  * 架构定位（yqh 裁定 2026-10-06，路线 C "Unified Runtime i18n Foundation"）：
@@ -9,7 +10,14 @@
  *     Phase 2/3 做 /en/ 构建期静态页时，直接消费同一份 locales/*.json（扁平 key），
  *     本文件的 detect/apply 即被构建脚本替代，前端无需推翻。
  *   - 词条槽位包含 SEO：seo.title / seo.description 运行时同步 document.title
- *     与 og:title/og:description（Googlebot 以 en-US 渲染 → 索引英文内容，正向）。
+ *     与 og:title/og:description。
+ *
+ * ⚠ SEO 口径（yqh 裁定 2026-10-06，必须原样保留，不得回退成「利于收录」类表述）：
+ *   本文件**只做运行时 DOM 同步**。链路是：服务器返回中文 HTML → JS 执行 → DOM 变英文。
+ *   因此「Googlebot 类 JS 执行环境下最终 DOM 为英文」只能说明客户端呈现，
+ *   **不能等价于搜索引擎把英文版作为可索引 HTML 版本**。
+ *   真正的构建期英文 HTML 属 Phase 2（/en/ 静态目录，服务器直接输出 English HTML），
+ *   本阶段不作为 SEO 收录保证。
  *
  * 数据契约：window.DD_I18N_DATA = { <locale>: { <key>: <string> } }
  *   由 _ops/inject-dd-shell.mjs 从各站 locales/*.json 读取并内联进 <head>
@@ -97,15 +105,29 @@
       }
     }
     // SEO 词条槽位（Phase 2 构建期接管前的运行时实现）
-    if (dict['seo.title']) document.title = dict['seo.title'];
-    var metas = { 'og:title': 'seo.title', 'og:description': 'seo.description' };
+    // ⚠ 按页面 id 生效：只有 <html data-i18n-page="..."> 声明过的页面才被覆盖。
+    //   原因：全站共用一份 locales，无条件覆盖会把内页（about / faq / guides …）各自的
+    //   title / description 抹成首页文案 —— 这是元数据级误伤，必须按页隔离。
+    //   取词顺序：seo.<page>.title →（page === 'home' 时）seo.title → 不覆盖（保留原生）。
+    var page = document.documentElement.getAttribute('data-i18n-page') || '';
+    function seoVal(base) {
+      if (!page) return null;
+      var v = dict['seo.' + page + '.' + base];
+      if (typeof v === 'string') return v;
+      if (page === 'home' && typeof dict['seo.' + base] === 'string') return dict['seo.' + base];
+      return null;
+    }
+    var seoTitle = seoVal('title');
+    var seoDesc = seoVal('description');
+    if (seoTitle) document.title = seoTitle;
+    var metas = { 'og:title': seoTitle, 'og:description': seoDesc };
     for (var prop in metas) {
-      if (!dict[metas[prop]]) continue;
+      if (!metas[prop]) continue;
       var m = document.querySelector('meta[property="' + prop + '"]');
-      if (m) m.setAttribute('content', dict[metas[prop]]);
+      if (m) m.setAttribute('content', metas[prop]);
     }
     var md = document.querySelector('meta[name="description"]');
-    if (md && dict['seo.description']) md.setAttribute('content', dict['seo.description']);
+    if (md && seoDesc) md.setAttribute('content', seoDesc);
     // 文档语言标记
     document.documentElement.setAttribute('lang', langTag(current));
     var ogLocale = document.querySelector('meta[property="og:locale"]');

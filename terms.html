@@ -183,9 +183,14 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     if(h.getAttribute('data-theme')==='dark')return 'dark';
     if(h.getAttribute('data-theme')==='light')return 'light';
     return sysDark()?'dark':'light';}
+  // aria/title 交给 i18n 内核统一管理（按钮已带 data-i18n-attr="aria-label:aria.themeToggle"）。
+  // 原因：本脚本的 init 挂在 DOMContentLoaded 上，执行晚于 defer 的 dd-i18n.js，
+  // 若在这里硬编码中文 aria，会把内核刚写好的英文 aria 覆盖回中文（实测到的假通过点）。
+  // 未启用 i18n 的站点（无 window.DD_I18N）仍走原中文动态文案。
   function sync(){var b=document.getElementById('dd-theme-toggle');if(!b)return;
     var d=effective()==='dark';
     b.textContent=d?'☀️':'🌙';
+    if(window.DD_I18N&&window.DD_I18N.t)return;
     b.setAttribute('aria-label', d?'切换到浅色模式':'切换到深色模式');
     b.setAttribute('title', d?'切换到浅色模式':'切换到深色模式');}
   function toggle(){var c=effective();apply(c==='dark'?'light':'dark');}
