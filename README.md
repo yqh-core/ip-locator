@@ -2,6 +2,8 @@
 
 一个简洁易用的纯前端 IP 地址归属地查询应用。属于 [IP 归属地查询](https://github.com/yqh-core) 的一员。
 
+**在线使用**：<https://ip.digdevbox.com/>
+
 ## 功能特点
 
 - **多数据源自动降级**：依次尝试 ipapi.co → ipwho.is → ipinfo.io，任一可用即返回，界面上会显示本次实际生效的数据源
