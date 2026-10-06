@@ -5,8 +5,7 @@
 if(t==='dark'){h.setAttribute('data-theme','dark');h.removeAttribute('data-dd-auto');}
 else if(t==='light'){h.setAttribute('data-theme','light');h.removeAttribute('data-dd-auto');}
 else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
-}catch(e){}})();</script>
-<style id="dd-theme-style">
+}catch(e){}})();</script><style id="dd-theme-style">
 .dd-theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
   margin-left:auto;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
   color:var(--dd-on-primary);border-radius:8px;cursor:pointer;font-size:16px;line-height:1;
@@ -52,13 +51,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <div class="dd-shell-inner">
         <a class="dd-brand" href="https://digdevbox.com/"><span class="dd-brand-mark">DB</span>DigDevBox</a>
         <nav>
-                <a href="https://digdevbox.com/">开发者工具箱</a>
+                <a href="https://digdevbox.com/">Dev 工具箱</a>
                 <a href="https://play.digdevbox.com/">流影播放器</a>
                 <a href="https://ip.digdevbox.com/" aria-current="page">IP 查询</a>
                 <a href="https://fangdai.digdevbox.com/">房贷计算器</a>
         </nav>
         <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">🌙</button>
-        
     </div>
 </div>
     <div class="container">
@@ -195,6 +193,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <p class="dd-trustline">隐私说明：查询结果来自第三方 IP 数据服务（需将你查询的 IP/域名发送给它）；除此之外本站不在服务器端存储你的输入。</p>
     </div>
 </footer>
+
 
 <script id="dd-theme-toggle-script">
 (function(){

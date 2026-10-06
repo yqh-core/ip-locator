@@ -1,8 +1,13 @@
 /* ==========================================================================
    DigDevBox · dd-shell.css — 统一家族外壳（组件层）
    --------------------------------------------------------------------------
-   @sync-hash: 9aeb3622a076
-   版本 v1.3 | 2026-09-18 | 由 _ops/sync-design-tokens.mjs 分发到各站，勿手改副本
+   @sync-hash: 39a01e224c4c
+   版本 v1.4 | 2026-10-06 | 由 _ops/sync-design-tokens.mjs 分发到各站，勿手改副本
+   v1.4 变更（P1-4 共享导航移动端修复）：
+     - 收编各站副本的 V1.2 触控块与 .dd-trustline（消灭三站分叉）
+     - 修复触控块裸 `nav a` 误伤 .dd-brandbar / .dd-brandfoot 紧凑导航
+       （44px 强制高度曾把品牌条撑爆并换行，推挤首屏——P0 审计 P1-4 病根）
+     - .dd-brandbar nav 改单行：不再换行，溢出转条内横向滑动（高度恒定）
 
    依赖：必须在本文件之前引入 dd-tokens.css（本文件只用 var(--dd-*)）。
    约束：**只使用 .dd-* 类命名空间**，不污染站点既有样式；不设全局 body/html 规则。
@@ -61,9 +66,14 @@
   font-size: 12px; font-weight: 800; letter-spacing: .5px;
 }
 .dd-brandbar nav {
-  margin-left: auto; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+  /* P1-4：单行硬约束。换行会让品牌条高度随内容变化、推挤首屏；
+     放不下时改为条内横向滑动（移动端手势自然，桌面放得下永远不触发）。 */
+  margin-left: auto; display: flex; gap: 20px; flex-wrap: nowrap;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  align-items: center;
 }
-.dd-brandbar nav a { font-size: 14px; }
+.dd-brandbar nav::-webkit-scrollbar { display: none; }
+.dd-brandbar nav a { font-size: 14px; white-space: nowrap; flex: none; }
 .dd-brandbar nav a[aria-current="page"] {
   font-weight: 600; opacity: 1;
   text-decoration: underline; text-underline-offset: 4px;
@@ -153,22 +163,36 @@
 }
 
 /* ----------------------------------------------------------------
- * 移动端可用性（V1.2 修复 D004 / D005，2026-09-23）
+ * 移动端可用性（V1.2 修复 D004 / D005；P1-4 收编 + 修正，2026-10-06）
  * 仅小屏/触屏生效：输入控件 >=16px（防 iOS 聚焦放大）；触控目标 >=44px。
+ * ⚠ P1-4 修正：裸 `nav a` 会同时命中 .dd-brandbar / .dd-brandfoot 的
+ *   紧凑导航链接，44px 强制高度曾把 slim 品牌条撑爆并换行（两行 88px+，
+ *   推挤首屏）。这里对品牌条显式豁免，改用垂直 padding 达到触控高度、
+ *   高度恒定不换行；页脚是多行形态，保留 44px 无副作用。
  * ---------------------------------------------------------------- */
 @media (max-width: 768px), (pointer: coarse) {
 	input[type="text"], input[type="number"], input[type="search"],
-	input[type="email"], input[type="password"], select, textarea {
+	input[type="email"], input[type="url"], input[type="password"],
+	select, textarea {
 		font-size: 16px !important;
 	}
-	button, .btn, nav a {
+	a.ui-btn, button, .btn, nav a {
 		min-height: 44px;
 		min-width: 44px;
 		box-sizing: border-box;
 	}
+	/* 品牌条豁免：恢复内容自适应尺寸，触控高度用 padding 补足（≈44px 行框） */
+	.dd-brandbar nav a {
+		min-height: 0; min-width: 0; padding: 13px 0;
+	}
+	/* 主题按钮自带固定尺寸（34/30px，见 inject-dd-shell 注入的内联样式），
+	   且有 focus-visible 描边兜底可达性，不参与 44px 强制 */
+	.dd-brandbar button.dd-theme-toggle {
+		min-height: 0; min-width: 0;
+	}
 }
 
-/* P5 信任声明小字（footer 内，弱化展示） */
+/* P5 信任声明小字（footer 内，弱化展示）—— 自三站副本收编进真源（v1.4） */
 .dd-trustline {
     margin: 10px 0 0;
     font-size: 12px;
