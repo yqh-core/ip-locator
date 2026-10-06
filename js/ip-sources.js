@@ -141,7 +141,11 @@ export const IP_SOURCES = [
      * json() 抛错，下面的降级逻辑会自动换直连源，不会让用户卡住。
      */
     id: 'locip-server',
-    label: '本站服务端',
+    // P1-5：label 表达「数据来源」而非「请求路径」。该源是本站服务端代理
+    // （functions/api/ip.js），背后转发第三方 IP 数据库——数据实际来自第三方，
+    // 旧 label「本站服务端」会让用户误以为数据由本站提供，与页脚
+    // 「查询结果来自第三方 IP 数据服务」矛盾。请求路径在结果卡静态说明中单独说明。
+    label: '第三方 IP 数据服务',
     build: ip => (ip ? `/api/ip?ip=${encodeURIComponent(ip)}` : '/api/ip'),
     normalize(raw) {
       // 服务端返回的已经是统一的 IPInfo 结构，这里只做校验
