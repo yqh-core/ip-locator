@@ -1,8 +1,11 @@
 /* ==========================================================================
    DigDevBox · dd-shell.css — 统一家族外壳（组件层）
    --------------------------------------------------------------------------
-   @sync-hash: 39a01e224c4c
-   版本 v1.4 | 2026-10-06 | 由 _ops/sync-design-tokens.mjs 分发到各站，勿手改副本
+   @sync-hash: 001de856bd82
+   版本 v1.5 | 2026-10-06 | 由 _ops/sync-design-tokens.mjs 分发到各站，勿手改副本
+   v1.5 变更（i18n Phase 1 语言切换按钮）：
+     - .dd-lang-toggle：复用 .dd-theme-toggle 样式族，margin-left 8px 紧跟 nav，
+       与主题按钮并列于品牌条右侧；初始文案空，由 dd-i18n.js apply() 填充
    v1.4 变更（P1-4 共享导航移动端修复）：
      - 收编各站副本的 V1.2 触控块与 .dd-trustline（消灭三站分叉）
      - 修复触控块裸 `nav a` 误伤 .dd-brandbar / .dd-brandfoot 紧凑导航
@@ -190,6 +193,14 @@
 	.dd-brandbar button.dd-theme-toggle {
 		min-height: 0; min-width: 0;
 	}
+}
+
+/* i18n 语言切换按钮（v1.5）：复用 .dd-theme-toggle 全部样式（类并列），
+   仅改与 nav 的间距——nav 的 margin-left:auto 已把右侧按钮群推到底，
+   语言按钮用固定 8px 间距紧贴，主题按钮随后；两个 auto margin 并存会平分
+   剩余空间导致 nav 悬空，故语言按钮必须显式覆盖为固定值。 */
+.dd-brandbar .dd-lang-toggle {
+  margin-left: 8px;
 }
 
 /* P5 信任声明小字（footer 内，弱化展示）—— 自三站副本收编进真源（v1.4） */

@@ -1,0 +1,21 @@
+{
+  "nav.devtools": "Dev Toolbox",
+  "nav.player": "StreamPlay",
+  "nav.ip": "IP Lookup",
+  "nav.loan": "Loan Calculator",
+  "topnav.home": "Home",
+  "topnav.guides": "Guides",
+  "topnav.docs": "Docs",
+  "topnav.faq": "FAQ",
+  "topnav.about": "About",
+  "h1.title": "🌍 IP Geolocation Lookup",
+  "hero.subtitle": "Look up detailed geolocation info for any IP address",
+  "placeholder.ipInput": "Enter an IP address (e.g. 8.8.8.8)",
+  "btn.query": "Query",
+  "btn.queryMyIp": "📍 My IP",
+  "trust.text": "Privacy: results come from third-party IP geolocation services (the IP/domain you query is sent to them); apart from this we do not store your input on our servers.",
+  "aria.themeToggle": "Toggle dark mode",
+  "aria.langToggle": "Switch language",
+  "seo.title": "IP Geolocation Lookup — Free Online IP Location Tool",
+  "seo.description": "Free online IP geolocation tool. Look up country, region, city, ZIP code, ASN, ISP, coordinates and timezone for any IPv4 address, with automatic multi-source failover."
+}
