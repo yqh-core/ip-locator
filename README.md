@@ -1,8 +1,15 @@
-# IP 归属地查询 · IP 归属地查询
+# IP Locator - Online IP Address Lookup Tool
 
-一个简洁易用的纯前端 IP 地址归属地查询应用。属于 [IP 归属地查询](https://github.com/yqh-core) 的一员。
+A lightweight, privacy-friendly web app to look up the geolocation of any IPv4 address — country, region, city, postal code, ISP, ASN, organization, coordinates and timezone. Queries run client-side against free IP data APIs; no records are stored.
 
-**在线使用**：<https://ip.digdevbox.com/>
+**Part of [DigDevBox](https://digdevbox.com)** — a collection of free online developer tools.
+
+| | |
+| --- | --- |
+| **Website** | <https://ip.digdevbox.com/> |
+| **Source code** | <https://github.com/yqh-core/ip-locator> |
+
+![IP lookup result](.github/assets/ip-lookup.png)
 
 ## 功能特点
 
@@ -51,6 +58,8 @@ npx http-server
 
 ## 功能说明
 
+![Network details](.github/assets/network-details.png)
+
 ### 显示的信息
 
 查询结果包含以下详细信息：
@@ -61,9 +70,8 @@ npx http-server
 - **省份/州**：IP所在的省份或州
 - **城市**：IP所在的城市
 - **邮编**：所在地区的邮政编码
-- **运营商**：Internet服务提供商（ISP）
 - **ASN**：自治系统号（如 AS15169）
-- **运营商**：Internet 服务提供商（ISP）
+- **运营商**：Internet 服务提供商（ISP），ASN 与组织名分开显示
 - **组织**：IP 所属的组织名（不再显示为 AS 号）
 - **经纬度**：地理坐标位置
 - **时区**：所在地的时区信息
@@ -308,8 +316,8 @@ docker run -d -p 80:80 --name ip-location ip-location
 - [ipapi.co](https://ipapi.co) — 主数据源
 - [ipwho.is](https://ipwho.is) — 备用数据源
 - [ipinfo.io](https://ipinfo.io) — 备用数据源
-- [IP 归属地查询 · 开发者工具集](https://coderkit.pages.dev)
-- [IP 归属地查询 · 房贷计算器](https://repaycalc.pages.dev)
+- [DigDevBox — 免费在线开发者工具](https://digdevbox.com)
+- [StreamPlay — 在线 HLS / m3u8 播放器](https://play.digdevbox.com)
 
 ## 联系方式
 
