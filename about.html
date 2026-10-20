@@ -19,14 +19,14 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>关于 - IP 归属地查询 · IP 归属地查询</title>
-    <meta name="description" content="了解IP归属地查询工具，一个免费、快速、准确的IP地址查询服务。">
+    <title>关于 · IP 归属地查询</title>
+    <meta name="description" content="关于 IP 归属地查询工具：它查什么、数据来自哪些服务、定位精度有哪些边界。">
     <link rel="canonical" href="https://ip.digdevbox.com/about">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="关于 - IP 归属地查询 · IP 归属地查询">
-    <meta property="og:description" content="了解 IP 归属地查询工具的定位、核心功能、技术架构与更新日志。">
+    <meta property="og:title" content="关于 · IP 归属地查询">
+    <meta property="og:description" content="关于 IP 归属地查询工具：它查什么、数据来自哪些服务、定位精度有哪些边界。">
     <meta property="og:url" content="https://ip.digdevbox.com/about">
-    <meta property="og:site_name" content="IP 归属地查询 · IP 归属地查询">
+    <meta property="og:site_name" content="IP 归属地查询">
     <meta property="og:locale" content="zh_CN">
     <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
@@ -74,143 +74,44 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </nav>
 
         <header>
-            <h1>ℹ️ 关于我们</h1>
-            <p class="subtitle">简单、快速、准确的IP查询工具</p>
+            <h1>关于本站</h1>
+            <p class="subtitle">一个纯在前端跑的 IP 归属地查询工具</p>
         </header>
 
         <div class="content-section">
             <div class="about-section">
-                <h2>🌍 项目简介</h2>
-                <p>IP归属地查询工具是一个免费的在线服务，旨在帮助用户快速查询任意IP地址的详细归属地信息。无论您是网络管理员、开发者，还是普通用户，都可以通过我们的工具轻松获取IP地址的地理位置、运营商、时区等信息。</p>
+                <h2>它解决什么问题</h2>
+                <p>拿到一个 IP，想知道它大概在哪儿、属于哪家运营商——排查异常访问、看服务器出口、判断日志里某个请求的来源时，这是很常见的一步。这个工具把这件事做成一个输入框：贴进去，回车，看结果。不需要注册，也不存你的查询记录。输入 <code>8.8.8.8</code> 这类公开 IP 试试，或直接点「查询我的 IP」看你自己的公网出口。</p>
             </div>
 
             <div class="about-section">
-                <h2>✨ 核心功能</h2>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon">🔍</div>
-                        <h3>IP地址查询</h3>
-                        <p>支持查询任意IPv4地址的详细归属地信息，包括国家、地区、城市等。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📍</div>
-                        <h3>本机IP查询</h3>
-                        <p>一键查询您当前的公网IP地址及其归属地信息。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🗺️</div>
-                        <h3>地理位置显示</h3>
-                        <p>提供IP地址的经纬度坐标和地图链接，直观展示地理位置。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📡</div>
-                        <h3>运营商信息</h3>
-                        <p>显示IP地址的ISP（互联网服务提供商）和组织信息。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⏰</div>
-                        <h3>时区信息</h3>
-                        <p>查询IP地址所在地的时区信息，方便跨时区沟通。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⚡</div>
-                        <h3>快速响应</h3>
-                        <p>使用高效的API服务，确保查询结果快速返回。</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-section">
-                <h2>🎯 使用场景</h2>
-                <ul class="use-cases">
-                    <li><strong>网络安全：</strong>分析可疑IP地址的来源，识别潜在的网络威胁。</li>
-                    <li><strong>网站分析：</strong>了解网站访客的地理分布，优化内容和服务。</li>
-                    <li><strong>开发测试：</strong>测试地理位置相关功能，验证IP定位准确性。</li>
-                    <li><strong>日常使用：</strong>查看自己的公网IP，了解网络连接信息。</li>
-                    <li><strong>学习研究：</strong>学习IP地址结构和互联网地理分布知识。</li>
-                </ul>
-            </div>
-
-            <div class="about-section">
-                <h2>🛠️ 技术说明</h2>
-                <p>本工具基于以下技术构建：</p>
+                <h2>能查到哪些信息</h2>
                 <ul>
-                    <li><strong>前端技术：</strong>使用HTML5、CSS3和原生JavaScript开发，确保快速加载和流畅体验。</li>
-                    <li><strong>API服务：</strong>依次尝试 ipapi.co、ipwho.is、ipinfo.io 三个免费 IP 库，任一可用即返回结果；归一化层把各家字段统一后再渲染。</li>
-                    <li><strong>响应式设计：</strong>支持桌面、平板和手机等多种设备访问。</li>
-                    <li><strong>隐私保护：</strong>所有查询请求通过HTTPS加密传输，不存储用户查询记录。</li>
+                    <li><strong>地理位置</strong>：国家、省份 / 地区、城市，以及经纬度坐标（坐标带地图链接，可在地图上核对）。</li>
+                    <li><strong>网络归属</strong>：运营商（ISP）、组织名、ASN（自治系统号，例如 AS15169 = Google、AS4837 = 联通 CHINA169 骨干网）。</li>
+                    <li><strong>其他</strong>：时区、邮编。</li>
                 </ul>
             </div>
 
             <div class="about-section">
-                <h2>⚠️ 免责声明</h2>
-                <div class="disclaimer">
-                    <ul>
-                        <li>本工具提供的IP归属地信息仅供参考，实际位置可能存在偏差。</li>
-                        <li>IP地址的地理位置可能因网络架构、代理服务器、VPN等因素而不准确。</li>
-                        <li>我们使用的第三方API服务有查询频率限制，高峰期可能影响查询速度。</li>
-                        <li>本工具不对因使用本服务而产生的任何直接或间接损失承担责任。</li>
-                        <li>请合理使用本工具，不要用于非法目的或侵犯他人隐私。</li>
-                    </ul>
-                </div>
+                <h2>数据从哪来，要多准</h2>
+                <p>本站自己不做 IP 定位——数据依次取自 ipapi.co、ipwho.is、ipinfo.io 三个公开服务，任意一个可用就返回，再把它们的字段统一归一化后展示。这层多源自动降级是为了抗单个服务限流或抖动。</p>
+                <p>要知道的边界：IP 归属地反映的是<strong>分配该地址的运营商 / 机构的大致位置</strong>，不是物理精确地址。走 VPN、代理或 CDN 时，查到的是出口 / 节点位置而非终端真实位置。把它当「大概在这个城市、属于这家运营商」来用是可靠的，指望定位到门牌号则会失望。</p>
             </div>
 
             <div class="about-section">
-                <h2>🔄 更新日志</h2>
-                <div class="changelog">
-                    <div class="changelog-item">
-                        <h4>v1.1.0 (2026年9月)</h4>
-                        <ul>
-                            <li>数据源改为多源自动降级（ipapi.co → ipwho.is → ipinfo.io）</li>
-                            <li>拆分数据源适配层与界面层，新增 ASN 字段</li>
-                            <li>修正组织名显示为 AS 号的问题</li>
-                            <li>统一 IP 归属地查询品牌标识</li>
-                        </ul>
-                    </div>
-                    <div class="changelog-item">
-                        <h4>v1.0.0 (2025年1月)</h4>
-                        <ul>
-                            <li>发布初始版本</li>
-                            <li>实现基础IP查询功能</li>
-                            <li>支持本机IP查询</li>
-                            <li>添加地理位置地图链接</li>
-                            <li>响应式界面设计</li>
-                        </ul>
-                    </div>
-                </div>
+                <h2>隐私</h2>
+                <p>你查询的 IP / 域名会被发送给上述第三方数据服务（这是查询本身绕不开的一步）。除此之外，本站不在服务器端存储你的输入或查询记录，也不自设 Cookie。页面挂载了 Google AdSense 广告，相关的 Cookie 与数据处理在<a href="/privacy">隐私政策</a>里逐条说明。</p>
             </div>
 
             <div class="about-section">
-                <h2>💡 未来规划</h2>
-                <ul>
-                    <li>支持IPv6地址查询</li>
-                    <li>添加批量IP查询功能</li>
-                    <li>集成更详细的地图展示</li>
-                    <li>提供查询历史记录</li>
-                    <li>支持多语言界面</li>
-                    <li>优化移动端体验</li>
-                </ul>
+                <h2>技术栈</h2>
+                <p>纯静态：HTML5 + CSS3 + 原生 JavaScript，无后端、无数据库。托管在 Cloudflare Pages，全站 HTTPS。</p>
             </div>
 
             <div class="about-section">
-                <h2>📞 联系方式</h2>
-                <p>如果您有任何问题、建议或反馈，欢迎通过以下方式联系我们：</p>
-                <ul>
-                    <li>📧 如有技术问题或建议，请通过GitHub Issues反馈</li>
-                    <li>🌟 如果您觉得本工具有用，欢迎分享给更多人</li>
-                    <li>🔒 隐私相关问题请查看我们的 <a href="/privacy">隐私政策</a></li>
-                </ul>
-            </div>
-
-            <div class="about-section">
-                <h2>❤️ 致谢</h2>
-                <p>感谢以下服务和项目：</p>
-                <ul>
-                    <li><a href="https://ipapi.co" target="_blank" rel="noopener">ipapi.co</a>、<a href="https://ipwho.is" target="_blank" rel="noopener">ipwho.is</a>、<a href="https://ipinfo.io" target="_blank" rel="noopener">ipinfo.io</a> - 提供 IP 地理位置数据 API</li>
-                    <li>所有使用和支持本工具的用户</li>
-                    <li>开源社区的无私贡献</li>
-                </ul>
-            </div>
+                <h2>反馈</h2>
+                <p>字段有错、某个数据源挂了、或想加什么能力，请通过<a href="/contact">联系页</a>告诉我们；附上你查的 IP 和实际看到的结果，处理会快很多。
 
             <div class="back-link">
                 <a href="/">← 返回首页</a>
