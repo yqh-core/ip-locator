@@ -22,6 +22,9 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: 校验 locale 配平（G2）
+        run: node scripts/check-locales.mjs
+
       - name: 组装发布目录
         run: node scripts/build.mjs
 
