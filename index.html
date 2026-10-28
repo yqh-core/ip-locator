@@ -114,6 +114,10 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </div>
         </div>
 
+        <!-- CLS 修复：结果区稳定高度容器。预留值=实测各态最大高度（桌面 690px / 移动 1341px，见 style.css），
+             防止 loading→结果 切换时把下方"使用说明"推挤（基线 CLS 0.305 = 0.2219+0.0835，均归因于 .instructions）。 -->
+        <div id="result-zone">
+
         <!-- 加载提示 -->
         <div id="loading" class="loading" style="display: none;">
             <div class="spinner"></div>
@@ -176,6 +180,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
             <p id="sourceNote" class="source-note"></p>
         </div>
+        </div><!-- /#result-zone -->
 
         <div class="instructions">
             <h3>📖 使用说明</h3>

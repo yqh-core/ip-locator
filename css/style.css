@@ -949,3 +949,21 @@ html[data-theme="dark"] .instructions strong { color:var(--dd-primary-hover) !im
   html[data-dd-auto] .content-section strong,
   html[data-dd-auto] .instructions strong { color:var(--dd-primary-hover) !important; }
 }
+
+/* ============================================================
+   CLS 修复（2026-10-28）：结果区稳定高度容器。
+   基线：Lighthouse 移动端 CLS 0.305（=0.2219+0.0835，两次位移均归因
+   .instructions 被 #loading/#ipInfo 高度跳变推挤）。
+   预留值 = 实测各态最大高度：
+   - 桌面 1920×945：结果区 690px（instructions.top 1115 − search.bottom 425）
+   - 移动 390px 视口：结果区 1341px（成功态 ipInfo 1285 + 间距；loading 146 / error 49）
+   目标：CLS < 0.1。若线上结果态高度变化（如地图高度调整），需同步复测本值。
+   ============================================================ */
+#result-zone {
+    min-height: 690px;
+}
+@media (max-width: 768px) {
+    #result-zone {
+        min-height: 1341px;
+    }
+}
