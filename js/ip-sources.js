@@ -114,7 +114,7 @@ export function isValidIPv4(ip) {
  * 请求不报错也不返回，一直挂到浏览器默认超时（几十秒），界面就一直转圈。
  * 设成 6 秒后，挂住的源会被快速跳过，最多 3×6=18 秒必有结论。
  */
-export const SOURCE_TIMEOUT_MS = 6000;
+export const SOURCE_TIMEOUT_MS = 4000;
 
 /**
  * 把调用方信号和超时信号合并成一个。

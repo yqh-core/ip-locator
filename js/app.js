@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showLoading() {
   el.loading.style.display = 'block';
+  const lp = el.loading.querySelector('p');
+  if (lp) lp.textContent = '正在查询IP信息...';
   el.error.style.display = 'none';
   el.ipInfo.style.display = 'none';
 }
@@ -92,7 +94,13 @@ async function runQuery(ip) {
   try {
     const attempted = [];
     const { info, source } = await fetchIPInfo(ip, {
-      onAttempt: (src, ok) => attempted.push({ label: src.label, ok }),
+      onAttempt: (src, ok) => {
+        attempted.push({ label: src.label, ok });
+        if (!ok) {
+          const lp = el.loading.querySelector('p');
+          if (lp) lp.textContent = `正在尝试其他数据源…（已尝试 ${attempted.length} 个）`;
+        }
+      },
     });
 
     if (seq !== requestSeq) return; // 已有更新的查询，本次结果作废
