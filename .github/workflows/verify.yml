@@ -25,6 +25,9 @@ jobs:
       - name: 校验 locale 配平（G2）
         run: node scripts/check-locales.mjs
 
+      - name: 校验 IP V1 商业口径（G3 文案限定语 / 接入类型断言禁令 / network_type 全链路）
+        run: node scripts/check-copy-policy.mjs
+
       - name: 组装发布目录
         run: node scripts/build.mjs
 

@@ -91,8 +91,10 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <p>点击「📍 查询我的 IP」，工具会自动识别你当前的公网出口地址并查询。这一步常用于：</p>
                 <ul class="use-cases">
                     <li><strong>确认代理是否生效：</strong>如果你开了 VPN 但查到的仍是本地城市，说明流量没走代理。</li>
-                    <li><strong>确认运营商出口：</strong>家用宽带查到的城市，通常就是你所在城市的运营商核心节点。</li>
-                    <li><strong>排查 NAT：</strong>若查到的城市与你的实际居住地跨省，多半是运营商做了跨区域地址复用。</li>
+                    <li><strong>看出口归属：</strong>查到的城市通常对应运营商侧的<strong>出口与登记归属</strong>，
+                        不一定是你本人所在的位置；要确认实际位置还得结合自己的网络情况。</li>
+                    <li><strong>排查 NAT：</strong>若查到的城市与你的居住地跨省，可能是运营商做了跨区域地址复用，
+                        这属于登记归属与物理位置不一致的常见情形之一。</li>
                 </ul>
             </div>
 
@@ -126,12 +128,21 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <p>假设你的网站日志里出现大量请求，怀疑是爬虫，可以按这个顺序排查：</p>
                 <ul class="use-cases">
                     <li><strong>取样本：</strong>从日志里挑出请求量最高的 10 个 IP，不要一上来就全量查。</li>
-                    <li><strong>看 ASN：</strong>如果它们的 ASN 都属于同一家云厂商（如阿里云、AWS、DigitalOcean），基本可判定为服务器发起的自动化流量。</li>
-                    <li><strong>看地理集中度：</strong>若集中在少数几个城市且 ASN 一致，更可能是机房而非真实用户分布。</li>
+                    <li><strong>看 ASN：</strong>如果它们的 ASN 都属于同一家云厂商（如阿里云、AWS、DigitalOcean），
+                        说明这些地址的<strong>资源登记归属</strong>集中在同一网络运营方。
+                        这是一个<strong>线索，不是结论</strong>：云厂商地址也可能是真实用户在用，
+                        登记归属也不能告诉你使用者属于住宅、移动还是机房网络。</li>
+                    <li><strong>看地理集中度：</strong>若集中在少数几个城市且 ASN 一致，
+                        更可能反映<strong>网络拓扑或注册归属的集中</strong>；
+                        不要据此把地址判定为机房地址或真实用户分布——这类推断我们没有可靠依据。</li>
                     <li><strong>交叉验证：</strong>结合 User-Agent、请求路径与频率判断，不要仅凭 IP 归属地下结论——误杀真实用户的代价很高。</li>
                 </ul>
                 <div class="api-notice">
-                    <strong>提醒：</strong>IP 定位是概率推断，可作为辅助信号，但不应作为封禁的唯一依据。这是使用这类工具最重要的一条原则。
+                    <strong>提醒：</strong>IP 定位是<strong>概率推断</strong>，<strong>通常只能精确到城市级</strong>，
+                    而且<strong>不代表设备或用户的实际物理位置</strong>，结果<strong>仅供参考</strong>，
+                    可作为辅助信号，但不应作为封禁的唯一依据。这是使用这类工具最重要的一条原则。
+                    国家与组织字段是<strong>资源登记归属信息</strong>，ASN 与「运营商 / 组织」来自第三方库的归属记录，
+                    不等同于实际服务运营商，也不能用来判断接入网络类型。
                 </div>
             </div>
 

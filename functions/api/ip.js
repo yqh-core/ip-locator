@@ -240,19 +240,24 @@ async function lookupUpstreams(ip) {
  */
 function infoFromRequestCf(ip, cf) {
   if (!cf) return null;
-  return normalizeInfo({
-    ip,
-    country: expandCountryName(cf.country),
-    region: toText(cf.region) || toText(cf.regionCode),
-    city: toText(cf.city),
-    postal: toText(cf.postalCode),
-    lat: toNumber(cf.latitude),
-    lon: toNumber(cf.longitude),
-    timezone: toText(cf.timezone),
-    asn: formatAsn(cf.asn),
-    org: toText(cf.asOrganization),
-    isp: toText(cf.asOrganization),
-  });
+  // 同上游路径：保留 ISO 原码，展示值允许被本站补全
+  const expanded = expandCountryName(cf.country);
+  return {
+    ...normalizeInfo({
+      ip,
+      country: expanded,
+      region: toText(cf.region) || toText(cf.regionCode),
+      city: toText(cf.city),
+      postal: toText(cf.postalCode),
+      lat: toNumber(cf.latitude),
+      lon: toNumber(cf.longitude),
+      timezone: toText(cf.timezone),
+      asn: formatAsn(cf.asn),
+      org: toText(cf.asOrganization),
+      isp: toText(cf.asOrganization),
+    }),
+    country_original: toText(cf.country),
+  };
 }
 
 function jsonResponse(body, status = 200) {
@@ -308,9 +313,13 @@ export async function onRequestGet(context) {
   let status = 200;
 
   if (upstreamResult) {
+    // country_original 保留上游原话：expandCountryName 会把 "US" 补成
+    // "United States"，补完就分不出这是上游给的还是本站推出来的。
+    // D1 要求：经本站转换的字段必须能同时看到"上游原值"和"展示值"。
     payload = {
       ...upstreamResult.info,
       country: expandCountryName(upstreamResult.info.country),
+      country_original: toText(upstreamResult.info.country),
       source: upstreamResult.source,
       cached: false,
     };

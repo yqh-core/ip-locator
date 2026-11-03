@@ -159,8 +159,9 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div class="policy-section">
                 <h2>⏳ 数据保留期限</h2>
                 <ul>
-                    <li><strong>查询的 IP 地址：</strong>仅在处理请求的那一刻使用，不写入数据库，不保存查询历史。</li>
-                    <li><strong>查询结果缓存：</strong>为提升响应速度，查询结果会在边缘节点临时缓存。查询指定 IP 的结果最长缓存 24 小时，查询自身 IP 的结果最长缓存 5 分钟，到期自动失效。</li>
+                    <li><strong>查询的 IP 地址：</strong>它在请求处理过程中被用于获取查询结果。本站不把它写入业务数据库，也不建立与账号关联的「查询历史」。但它<strong>不是用完即弃</strong>——它会按下条所述留在边缘缓存里一段时间。</li>
+                    <li><strong>查询结果缓存：</strong>为提升响应速度，本站按<strong>被查询的 IP 生成缓存键（键中包含该 IP 原文）</strong>，并把结果（含这个 IP 与归属字段）写入边缘缓存：查询指定 IP 最长保留 <strong>24 小时</strong>，查询自身 IP 最长 <strong>5 分钟</strong>，到期自动失效。同一节点上对同一 IP 的后续请求会命中同一条目。本站能用 TTL 和缓存键版本号让它整体过期，但<strong>没有单条手动清除入口</strong>。</li>
+                    <li><strong>共享缓存与浏览器缓存：</strong>响应带 <code>Cache-Control: public, max-age=3600</code>。这表示响应允许被浏览器及共享缓存（包括 CDN 缓存）缓存，新鲜期为 1 小时；实际是否被共享缓存存储及命中，取决于缓存策略。</li>
                     <li><strong>访问日志：</strong>由托管方（Cloudflare Pages）按其自身策略保留，本站不额外导出或长期留存。</li>
                 </ul>
             </div>

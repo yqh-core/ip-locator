@@ -11,7 +11,11 @@
  * 统一产出结构 IPInfo:
  * {
  *   ip, country, region, city, postal,
- *   lat, lon, timezone, asn, org, isp
+ *   lat, lon, timezone, asn, org, isp,
+ *   // 溯源（D1 修复新增，不得丢弃）
+ *   source,          // 实际应答方 id：服务端回报 or 直连源自身
+ *   cached,          // 是否命中服务端边缘缓存；null = 该路径不上报
+ *   countryOriginal  // 上游原话的国家值（country 可能是本站补全后的展示值）
  * }
  */
 
@@ -72,8 +76,24 @@ const EMPTY_INFO = {
   isp: null,
 };
 
+/**
+ * 溯源字段（D1 修复，2026-11-03）。
+ *
+ * 为什么单独列一组而不是塞进 EMPTY_INFO：EMPTY_INFO 是"归属地数据"，
+ * 这组是"这条数据从哪来、是不是缓存"。上一版把两者混在一个白名单循环里，
+ * 服务端诚实返回的 source / cached 到客户端就被静默丢弃，于是界面上
+ * "本次实际生效的数据源"这句话永远为假。分开列，丢弃就只能显式发生。
+ *
+ * · source          实际应答方的标识。必须来自真实响应，不得由客户端按
+ *                   优先级推断（代理路径取服务端返回的值；直连路径取
+ *                   该源自己的 id —— 因为它本身就是应答者）。
+ * · cached          是否命中服务端边缘缓存。null = 该路径不上报，界面不臆造。
+ * · countryOriginal 上游原话的国家值；country 是展示值（可能经本站补全）。
+ */
+const PROVENANCE_KEYS = ['source', 'cached', 'countryOriginal'];
+
 /** 用归一化结果补齐缺失字段，保证调用方拿到的对象结构恒定 */
-function normalizeInfo(partial) {
+function normalizeInfo(partial, provenance = {}) {
   const info = { ...EMPTY_INFO };
   for (const key of Object.keys(EMPTY_INFO)) {
     const value = partial[key];
@@ -81,7 +101,49 @@ function normalizeInfo(partial) {
       info[key] = value;
     }
   }
+  // 溯源字段独立补齐：值为 null 表示"确实不知道"，与"没这个字段"不同，
+  // 所以这里不能用上面那个"空值跳过"的循环。
+  for (const key of PROVENANCE_KEYS) {
+    info[key] = provenance[key] ?? null;
+  }
   return info;
+}
+
+/**
+ * 把 2 字母国家码补成完整国家名，同时保留上游原话。
+ *
+ * 与 functions/api/ip.js 的 expandCountryName 同一口径，这样"代理应答"和
+ * "浏览器直连应答"两条路径显示的国家形态一致（上一版直连会显示 "US"，
+ * 代理显示 "United States"，同一字段随路径变样）。
+ * 拿不到就原样返回，宁可显示码也不要出错；原值一律留在 countryOriginal。
+ */
+let regionNames = null;
+function expandCountry(country) {
+  const s = toText(country);
+  if (!s) return { country: null, countryOriginal: s };
+  if (!/^[A-Za-z]{2}$/.test(s)) return { country: s, countryOriginal: s };
+  try {
+    if (!regionNames) regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+    return { country: regionNames.of(s.toUpperCase()) || s, countryOriginal: s };
+  } catch {
+    return { country: s, countryOriginal: s };
+  }
+}
+
+/**
+ * 上游/服务端应答方 id → 界面显示名。
+ * 覆盖服务端可能回报的 id（含 cloudflare-edge 零依赖兜底）。
+ */
+const ENTITY_LABELS = {
+  'ipwho.is': 'ipwho.is',
+  'ipapi.co': 'ipapi.co',
+  'ipinfo.io': 'ipinfo.io',
+  'cloudflare-edge': 'Cloudflare 边缘节点自带信息',
+  'locip-server': '本站服务端代理',
+}
+
+export function entityLabel(id) {
+  return ENTITY_LABELS[id] || id || null;
 }
 
 /** 判断是否为内网 / 回环 / 链路本地地址 */
@@ -146,11 +208,34 @@ export const IP_SOURCES = [
     // 旧 label「本站服务端」会让用户误以为数据由本站提供，与页脚
     // 「查询结果来自第三方 IP 数据服务」矛盾。请求路径在结果卡静态说明中单独说明。
     label: '第三方 IP 数据服务',
+    /**
+     * 降级提示里用的是"这一条请求路径"失败了，不是"这一家数据库"失败了。
+     * P1-5 把 label 改成表达数据来源之后，在降级列表里反而说不清：
+     * 用户会以为"第三方数据库不可用"，实际是本站代理这一跳没通。
+     * 所以给降级文案单配一个路径名。
+     */
+    pathLabel: '本站服务端代理',
+    /**
+     * 'reported' = 应答方是谁，只有服务端自己知道，必须读它回报的 source。
+     * 直连源用默认的 'self'（它本身就是应答者，说自己是它是事实，不是推断）。
+     * 这一条是 D1 的核心判据：代理路径下**绝不**把 'locip-server' 当数据来源，
+     * 也不在服务端没回 source 时拿优先级去猜。
+     */
+    entityFrom: 'reported',
     build: ip => (ip ? `/api/ip?ip=${encodeURIComponent(ip)}` : '/api/ip'),
     normalize(raw) {
-      // 服务端返回的已经是统一的 IPInfo 结构，这里只做校验
+      // 服务端返回的已经是统一的 IPInfo 结构 + 溯源字段
       if (!raw || raw.error || !raw.ip) return null;
-      return normalizeInfo(raw);
+      // ⚠ 这一路真正的应答方是 raw.source（服务端并发竞态里胜出的那一家），
+      // 不是本条目的 id 'locip-server'。'locip-server' 只是请求路径。
+      // 界面必须显示 raw.source —— 这是 D1 的核心，不得用客户端预设优先级推断。
+      const shown = expandCountry(raw.country);
+      const info = normalizeInfo({ ...raw, country: shown.country }, {
+        source: toText(raw.source),
+        cached: typeof raw.cached === 'boolean' ? raw.cached : null,
+        countryOriginal: toText(raw.country_original) || shown.countryOriginal,
+      });
+      return info;
     },
   },
   {
@@ -161,9 +246,12 @@ export const IP_SOURCES = [
     normalize(raw) {
       if (!raw || raw.error) return null;
       const { asn, org } = splitAsnAndOrg(raw.org ?? raw.asn);
+      // 这一路是浏览器直连，应答方就是这个 id 本身；不经过服务端缓存，
+      // 所以 cached 一律 null（不上报），不能写 false 冒充"查过上游"。
+      const shown = expandCountry(toText(raw.country_name) || toText(raw.country));
       return normalizeInfo({
         ip: toText(raw.ip),
-        country: toText(raw.country_name) || toText(raw.country),
+        country: shown.country,
         region: toText(raw.region),
         city: toText(raw.city),
         postal: toText(raw.postal),
@@ -173,6 +261,12 @@ export const IP_SOURCES = [
         asn: formatAsn(toText(raw.asn) ?? asn),
         org,
         isp: org,
+      }, {
+        source: 'ipapi.co',
+        cached: null,
+        // ipapi.co 同时给 country_code 与 country_name，原值取它的 code，
+        // 这样"上游原话"和"本站展示"的差别在任何一条路径上都留得住。
+        countryOriginal: toText(raw.country_code) || toText(raw.country) || shown.countryOriginal,
       });
     },
   },
@@ -184,9 +278,10 @@ export const IP_SOURCES = [
       if (!raw || raw.success === false) return null;
       const conn = raw.connection || {};
       const tz = typeof raw.timezone === 'string' ? raw.timezone : raw.timezone?.id;
+      const shown = expandCountry(toText(raw.country));
       return normalizeInfo({
         ip: toText(raw.ip),
-        country: toText(raw.country),
+        country: shown.country,
         region: toText(raw.region),
         city: toText(raw.city),
         postal: toText(raw.postal),
@@ -196,6 +291,10 @@ export const IP_SOURCES = [
         asn: formatAsn(conn.asn),
         org: toText(conn.org) || toText(conn.isp),
         isp: toText(conn.isp) || toText(conn.org),
+      }, {
+        source: 'ipwho.is',
+        cached: null,
+        countryOriginal: shown.countryOriginal,
       });
     },
   },
@@ -207,9 +306,10 @@ export const IP_SOURCES = [
       if (!raw || raw.bogon) return null;
       const [lat, lon] = String(raw.loc || '').split(',');
       const { asn, org } = splitAsnAndOrg(raw.org);
+      const shown = expandCountry(toText(raw.country));
       return normalizeInfo({
         ip: toText(raw.ip),
-        country: toText(raw.country),
+        country: shown.country,
         region: toText(raw.region),
         city: toText(raw.city),
         postal: toText(raw.postal),
@@ -219,6 +319,10 @@ export const IP_SOURCES = [
         asn: formatAsn(asn),
         org,
         isp: org,
+      }, {
+        source: 'ipinfo.io',
+        cached: null,
+        countryOriginal: shown.countryOriginal,
       });
     },
   },
@@ -229,7 +333,10 @@ export const IP_SOURCES = [
  *
  * @param {string} ip  目标 IP，空串表示查本机
  * @param {{ signal?: AbortSignal, onAttempt?: (source, ok, detail) => void }} options
- * @returns {Promise<{ info: object, source: object }>}
+ * @returns {Promise<{ info: object, source: object, entity: string|null }>}
+ *   · source  本次**由哪一条请求链路**拿到答案（可能是本站代理，也可能是某家直连）
+ *   · entity  答案**实际出自哪家数据库**：代理路径取服务端回报的 raw.source，
+ *             直连路径就是该源自己。界面只显示这个，不显示猜测出来的优先级。
  * @throws 全部数据源都失败时抛 Error，message 里带上每个源的原因
  */
 export async function fetchIPInfo(ip, options = {}) {
@@ -249,11 +356,18 @@ export async function fetchIPInfo(ip, options = {}) {
       if (!info || !info.ip) throw new Error('响应缺少 IP 字段');
 
       onAttempt?.(source, true, '');
-      return { info, source };
+      // entity 的取值规则由每个源自己声明，避免"用客户端优先级猜应答方"：
+      //   entityFrom: 'reported' → 只认响应里回报的 source；没有就是 null（不猜）
+      //   其余（直连源）默认 'self' → 它本身就是应答者，报自己的 id 是事实
+      const entity = source.entityFrom === 'reported'
+        ? (info.source ?? null)
+        : (info.source ?? source.id)
+      return { info, source, entity };
     } catch (error) {
       if (error?.name === 'AbortError') throw error;
       const detail = error?.message || String(error);
-      reasons.push(`${source.label}: ${detail}`);
+      // 汇总错误同样按"请求路径"记账，理由同 pathLabel 注释
+      reasons.push(`${source.pathLabel || source.label}: ${detail}`);
       onAttempt?.(source, false, detail);
     }
   }

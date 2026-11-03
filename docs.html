@@ -119,7 +119,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <li>AS4134 — 中国电信 CHINANET 骨干网</li>
                     <li>AS9808 — 中国移动</li>
                 </ul>
-                <p>ASN 的实用价值在于：<strong>它反映的是「谁在运营这个网络」，而不是「设备在哪里」</strong>。因此在排查异常流量时，ASN 比城市字段更可靠。</p>
+                <p>ASN 的实用价值在于：<strong>它反映的是「谁在运营这个网络（自治系统）」，而不是「设备在哪里」</strong>。在排查异常流量时，它通常比城市字段更适合用来识别流量所属的<strong>网络归属线索</strong>；但这不代表设备的实际位置，也不能据此判断用户当前使用的接入运营商。</p>
             </div>
 
             <div class="about-section">
@@ -139,7 +139,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <div class="feature-item">
                         <div class="feature-icon">📍</div>
                         <h3>设备端数据</h3>
-                        <p>借助曾授权过定位的设备的 GPS/Wi-Fi 数据，反推该 IP 使用者的活动区域。精度最高，但依赖大量样本，且涉及隐私争议。</p>
+                        <p>借助曾授权过定位的设备的 GPS/Wi-Fi 数据，反推该 IP 使用者的活动区域。这类方法通常能给出比 IP 归属库更细的范围，但依赖大量样本，且涉及隐私争议——本站不使用这类数据，本站结果只来自第三方 IP 归属库的估算。</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">🔎</div>
@@ -154,7 +154,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <h2>6. 精度边界与正确心态</h2>
                 <div class="disclaimer">
                     <ul>
-                        <li><strong>国家级</strong>：准确率最高，通常可信。</li>
+                        <li><strong>国家级</strong>：在各精度层级里相对更可靠，但它反映的是注册归属，不等于设备的实际位置。</li>
                         <li><strong>省级/州级</strong>：较可靠，可作为业务参考。</li>
                         <li><strong>城市级</strong>：大致可信，但存在明显误差，遇到 VPN、移动网络、跨区域 NAT 时会出错。</li>
                         <li><strong>街道级及以下</strong>：任何 IP 库都无法可靠提供，声称能做的一律不可信。</li>

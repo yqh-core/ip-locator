@@ -5,7 +5,7 @@
  *   - 本文件不认识任何一家 API 的字段名，也不拼 URL
  *   - 数据源增删、顺序调整都在 ip-sources.js 里完成，这里零改动
  */
-import { fetchIPInfo, isPrivateIP, isValidIPv4 } from './ip-sources.js';
+import { fetchIPInfo, isPrivateIP, isValidIPv4, entityLabel } from './ip-sources.js';
 
 /** 页面元素缓存，DOMContentLoaded 时统一填充 */
 const el = {};
@@ -93,9 +93,11 @@ async function runQuery(ip) {
   showLoading();
   try {
     const attempted = [];
-    const { info, source } = await fetchIPInfo(ip, {
+    const { info, source, entity } = await fetchIPInfo(ip, {
       onAttempt: (src, ok) => {
-        attempted.push({ label: src.label, ok });
+        // 降级列表记的是"哪一条请求路径"失败了：代理那一跳失败要说路径，
+        // 不是把失败归到某家第三方数据库头上（label 是数据源语义，pathLabel 是路径语义）
+        attempted.push({ label: src.pathLabel || src.label, ok });
         if (!ok) {
           const lp = el.loading.querySelector('p');
           if (lp) lp.textContent = `正在尝试其他数据源…（已尝试 ${attempted.length} 个）`;
@@ -109,7 +111,7 @@ async function runQuery(ip) {
     if (!ip) el.ipInput.value = info.ip;
 
     render(info);
-    renderSourceNote(source, attempted);
+    renderSourceNote(source, entity, info, attempted);
   } catch (error) {
     if (seq !== requestSeq && error?.name === 'AbortError') return;
     console.error('查询IP信息失败:', error);
@@ -127,7 +129,12 @@ function render(info) {
   for (const field of FIELDS) {
     const node = el[field.id];
     if (!node) continue;
-    const raw = info[field.key ?? field.id];
+    let raw = info[field.key ?? field.id];
+    // 国家是"可能经本站转换"的字段：展示值与原值不同时，把上游原值一并显示出来，
+    // 这样用户能看到 United States 是本站把 US 补全的，而不是上游就这么写的。
+    if (field.id === 'country' && raw && info.countryOriginal && info.countryOriginal !== raw) {
+      raw = `${raw}（上游原值 ${info.countryOriginal}）`;
+    }
     node.textContent = raw === null || raw === undefined || raw === '' ? PLACEHOLDER : raw;
   }
 
@@ -155,12 +162,38 @@ function renderMap(info) {
   `;
 }
 
-/** 说明本次由哪个数据源应答；发生过降级时一并提示 */
-function renderSourceNote(source, attempted) {
+/**
+ * 说明本次结果**实际出自哪家数据库**。
+ *
+ * D1 修复前的错误做法：显示 `source.label`。当答案来自本站服务端代理时，
+ * label 恒为「第三方 IP 数据服务」——用户永远看不到真正应答的那一家，
+ * 而服务端明明已经在响应里回了 source 字段。
+ *
+ * 现在的规则（三条都不许推断）：
+ *   · entity 有值 → 显示它。代理路径下它来自服务端回报；
+ *     直连降级路径下它就是那条直连源本身，绝不会继续挂代理的名。
+ *   · entity 为 null（服务端没回 source）→ 显示「来源未上报」，不猜。
+ *   · cached 明确 true/false 才显示缓存态；null 表示该路径不上报，保持沉默。
+ */
+function renderSourceNote(source, entity, info, attempted) {
   if (!el.sourceNote) return;
+
   const failed = attempted.filter(a => !a.ok);
   const degrade = failed.length
     ? `（${failed.map(a => a.label).join('、')} 不可用，已自动降级）`
     : '';
-  el.sourceNote.textContent = `数据来源：${source.label}${degrade}`;
+
+  const via = entity ? entityLabel(entity) : null;
+  const sourceText = via || '来源未上报';
+
+  // 经代理时补一句路径说明，避免用户把 ipinfo.io 误当成本站自己的数据
+  const pathNote = entity && source.id === 'locip-server' && entity !== 'locip-server'
+    ? '（经本站服务端代理转发）'
+    : '';
+
+  let cacheNote = '';
+  if (info && info.cached === true) cacheNote = ' · 命中本站缓存';
+  else if (info && info.cached === false) cacheNote = ' · 本次已回源';
+
+  el.sourceNote.textContent = `数据来源：${sourceText}${pathNote}${cacheNote}${degrade}`;
 }
