@@ -42,6 +42,10 @@ const REQUIRED = {
   'about.html': ['在注册归属数据里对应哪家组织或网络', '不一定代表用户当前实际使用的网络运营商', '也不代表设备的物理位置'],
   // 本轮：privacy 的数据处理描述必须与**实测缓存行为**一致（键含被查询 IP、有 TTL、无单条清除入口）
   'privacy.html': ['键中包含该 IP 原文', '到期自动失效', '没有单条手动清除入口'],
+  // 合规收尾轮（2026-11-04）：第 8 页 contact 纳入。它是支持/纠错入口、不做定位断言，
+  // 所以不发明它没有的义务——只钉住两处**既存**的既有限定：数据源第三方归属 + 响应承诺上限式免责。
+  // （判据过宽逼产品删合规免责、加无关套话，是本脚本注释里点名的反模式，此处刻意不走。）
+  'contact.html': ['由第三方维护', '不保证对所有请求作出响应'],
 }
 console.log('\n[A] 授权页面限定语（裁定"必须遵守的产品口径"逐条落地）')
 // 必须在**去标签后的正文**上比，而不是在原始 HTML 上比：
@@ -141,9 +145,10 @@ function clauseViolations(input) {
 }
 
 console.log('\n[B] 禁止"据登记信息推断接入类型 / 把 ASN 当实际运营商 / 绝对化精度"')
-// 判红范围 = 已获授权的页面。第 12 轮三页 → 第 13 轮加 docs/faq → 本轮再加 about/privacy，
-// 现在全站 7 个业务页都在判红范围内；若将来出现未授权页命中，仍走 WARN 登记而不是偷偷改文案。
-const ENFORCED = ['index.html', 'terms.html', 'guides.html', 'docs.html', 'faq.html', 'about.html', 'privacy.html']
+// 判红范围 = 已获授权的页面。第 12 轮三页 → 第 13 轮加 docs/faq → 加 about/privacy →
+// 2026-11-04 合规收尾轮加 contact（yqh 选定路线），现全站 8 个业务页都在判红范围内；
+// 若将来出现未授权页命中，仍走 WARN 登记而不是偷偷改文案。
+const ENFORCED = ['index.html', 'terms.html', 'guides.html', 'docs.html', 'faq.html', 'about.html', 'privacy.html', 'contact.html']
 const ADVISORY_PAGES = []
 for (const file of ENFORCED) {
   const v = clauseViolations(read(file))
@@ -158,7 +163,7 @@ for (const file of ADVISORY_PAGES) {
   if (v.length) console.log('       （注：硬禁令若命中，说明该页文本与本轮口径冲突，需下一轮裁定后再改）')
 }
 if (ADVISORY_PAGES.length === 0) {
-  console.log('  —— 已无"未授权只登记"的页面：全站 7 个业务页都在判红范围内（本行是为了让"0 页"不被读成"没扫"）')
+  console.log('  —— 已无"未授权只登记"的页面：全站 8 个业务页都在判红范围内（本行是为了让"0 页"不被读成"没扫"）')
 }
 
 /* ---------------- 判据 B 的双向对照 ---------------- */
