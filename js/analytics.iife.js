@@ -17,7 +17,7 @@ var DDAnalytics = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // ../../../2026-11-11/mwbjb8p7qqjljl2d/ddb-measurement-prototype/analytics.ts
+  // D:/work/dev-tools-main/src/lib/analytics.ts
   var analytics_exports = {};
   __export(analytics_exports, {
     FUNNEL_EVENTS: () => FUNNEL_EVENTS,
@@ -43,7 +43,7 @@ var DDAnalytics = (() => {
       this.sid = opts?.sid ?? _FunnelTracker.randomSid();
     }
     static randomSid() {
-      return "s_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      return `s_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`;
     }
     /** 校验事件隐私合规：禁止 PII 字段。返回是否合规。 */
     static isPrivacySafe(payload) {
@@ -51,12 +51,20 @@ var DDAnalytics = (() => {
     }
     /** 记录一个漏斗事件。返回 'tracked' | 'dedup' | 'not_collected' | 'invalid'。 */
     track(event, extra) {
-      if (!FUNNEL_EVENTS.includes(event)) return "invalid";
-      if (this.notCollected.has(event)) return "not_collected";
-      if (extra && !_FunnelTracker.isPrivacySafe(extra)) return "invalid";
+      if (!FUNNEL_EVENTS.includes(event)) {
+        return "invalid";
+      }
+      if (this.notCollected.has(event)) {
+        return "not_collected";
+      }
+      if (extra && !_FunnelTracker.isPrivacySafe(extra)) {
+        return "invalid";
+      }
       const dedupKey = `${this.tool}:${event}`;
       if (event !== "visit" && event !== "return_visit") {
-        if (this.seen.has(dedupKey)) return "dedup";
+        if (this.seen.has(dedupKey)) {
+          return "dedup";
+        }
         this.seen.add(dedupKey);
       }
       this.queue.push({ tool: this.tool, event, ts: Date.now(), sid: this.sid, seq: this.seq++ });
@@ -66,7 +74,9 @@ var DDAnalytics = (() => {
     flush() {
       const out = this.queue.slice();
       this.queue = [];
-      if (out.length) this.transport.send(out);
+      if (out.length) {
+        this.transport.send(out);
+      }
       return out;
     }
     pending() {
@@ -77,7 +87,7 @@ var DDAnalytics = (() => {
     return {
       send(events) {
         try {
-          const blob = new Blob([JSON.stringify(events)], { type: "application/json" });
+          const blob = new Blob([JSON.stringify(events)], { type: "text/plain;charset=UTF-8" });
           if (typeof navigator !== "undefined" && navigator.sendBeacon) {
             navigator.sendBeacon(endpoint, blob);
           }
@@ -88,9 +98,12 @@ var DDAnalytics = (() => {
   }
   function memoryTransport() {
     const events = [];
-    return { events, send(e) {
-      events.push(...e);
-    } };
+    return {
+      events,
+      send(e) {
+        events.push(...e);
+      }
+    };
   }
   return __toCommonJS(analytics_exports);
 })();
