@@ -7,6 +7,15 @@
  */
 import { fetchIPInfo, isPrivateIP, isValidIPv4, entityLabel } from './ip-sources.js';
 
+// 测量闭环（隔离验证；analytics.iife.js 经经典 script 先加载暴露 window.DDAnalytics）。
+// ip 无下载动作 → download 标 NOT_COLLECTED，不估算。测量失败不阻塞产品。
+const tracker = new window.DDAnalytics.FunnelTracker(
+  'ip',
+  window.DDAnalytics.beaconTransport('https://metrics.digdevbox.com/collect'),
+  { notCollected: ['download'] },
+);
+window.addEventListener('pagehide', () => { tracker.flush(); });
+
 /** 页面元素缓存，DOMContentLoaded 时统一填充 */
 const el = {};
 
@@ -37,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 首次进入自动查询本机公网 IP
+  tracker.track('visit');
   queryMyIP();
 });
 
@@ -90,6 +100,7 @@ let requestSeq = 0;
 
 async function runQuery(ip) {
   const seq = ++requestSeq;
+  tracker.track('tool_start');
   showLoading();
   try {
     const attempted = [];
@@ -111,6 +122,7 @@ async function runQuery(ip) {
     if (!ip) el.ipInput.value = info.ip;
 
     render(info);
+    tracker.track('tool_success');
     renderSourceNote(source, entity, info, attempted);
   } catch (error) {
     if (seq !== requestSeq && error?.name === 'AbortError') return;
