@@ -65,7 +65,9 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
       "原始 JSON 视图与一键复制",
       "客户端信息检测（本机读取，不上传）",
       "查询历史（仅存本机浏览器）",
-      "字段级一键复制与嵌入式地图"
+      "字段级一键复制与嵌入式地图",
+      "CIDR / 子网计算器（IPv4 / IPv6，纯本机计算）",
+      "DNS / rDNS 查询（Cloudflare DoH，A/AAAA/CNAME/MX/TXT/NS/PTR）"
     ],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
   }
@@ -230,6 +232,55 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <p id="historyEmpty" class="tool-sub">查询过的 IP 会记在这里（仅存本机浏览器），点击即可重查。</p>
         </div>
 
+        <!-- 第四轮：CIDR / 子网计算器（对标 ipinfo 工具簇，纯本机计算，不发任何请求） -->
+        <div class="ip-info net-card">
+            <div class="tool-head">
+                <h3>🧮 CIDR / 子网计算器</h3>
+            </div>
+            <p class="tool-sub">输入 CIDR（如 192.168.1.0/24）或单个 IP，计算网络地址、掩码、广播、可用主机范围与地址分类。支持 IPv4 / IPv6，纯本机计算。</p>
+            <div class="net-row">
+                <input type="text" id="cidr-input" placeholder="192.168.1.0/24 或 2001:db8::/32" autocomplete="off" spellcheck="false">
+                <button id="cidr-calc" class="btn-secondary" type="button">计算</button>
+            </div>
+            <div class="net-examples">
+                <button type="button" class="btn-secondary net-example" data-cidr="192.168.1.0/24">192.168.1.0/24</button>
+                <button type="button" class="btn-secondary net-example" data-cidr="10.0.0.0/8">10.0.0.0/8</button>
+                <button type="button" class="btn-secondary net-example" data-cidr="2001:db8::/32">2001:db8::/32</button>
+            </div>
+            <p class="net-status" id="cidr-status" role="status" aria-live="polite"></p>
+            <div id="cidr-result" class="net-result"></div>
+        </div>
+
+        <!-- 第四轮：DNS / rDNS 查询（Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器） -->
+        <div class="ip-info net-card">
+            <div class="tool-head">
+                <h3>🔎 DNS / rDNS 查询</h3>
+            </div>
+            <p class="tool-sub">查域名的 A/AAAA/CNAME/MX/TXT/NS 等记录；输入 IP 自动反查 rDNS（PTR）。数据来自 Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器。</p>
+            <div class="net-row">
+                <input type="text" id="dns-input" placeholder="example.com 或 8.8.8.8（自动 rDNS）" autocomplete="off" spellcheck="false">
+                <select id="dns-type" aria-label="记录类型">
+                    <option value="A" selected>A</option>
+                    <option value="AAAA">AAAA</option>
+                    <option value="CNAME">CNAME</option>
+                    <option value="MX">MX</option>
+                    <option value="TXT">TXT</option>
+                    <option value="NS">NS</option>
+                    <option value="SOA">SOA</option>
+                    <option value="CAA">CAA</option>
+                    <option value="PTR">PTR</option>
+                </select>
+                <button id="dns-query" class="btn-secondary" type="button">查询</button>
+            </div>
+            <div class="net-examples">
+                <button type="button" class="btn-secondary net-example" data-dns="example.com" data-dns-type="A">example.com A</button>
+                <button type="button" class="btn-secondary net-example" data-dns="digdevbox.com" data-dns-type="MX">digdevbox.com MX</button>
+                <button type="button" class="btn-secondary net-example" data-dns="8.8.8.8">8.8.8.8 rDNS</button>
+            </div>
+            <p class="net-status" id="dns-status" role="status" aria-live="polite"></p>
+            <div id="dns-result" class="net-result"></div>
+        </div>
+
         <div class="instructions">
             <h3>📖 使用说明</h3>
             <ul>
@@ -306,6 +357,14 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <summary>可以查看原始 JSON、客户端信息或查询历史吗？</summary>
                 <p>可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。</p>
             </details>
+            <details>
+                <summary>CIDR / 子网计算器能算什么？</summary>
+                <p>输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。</p>
+            </details>
+            <details>
+                <summary>DNS / rDNS 查询的数据从哪里来？</summary>
+                <p>来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。</p>
+            </details>
             <p>
                 更多用法见<a href="/guides">使用教程</a>，字段含义见<a href="/docs">IP 知识文档</a>，
                 其余疑问见<a href="/faq">常见问题</a>。
@@ -335,6 +394,16 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
               "@type": "Question",
               "name": "可以查看原始 JSON、客户端信息或查询历史吗？",
               "acceptedAnswer": { "@type": "Answer", "text": "可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。" }
+            },
+            {
+              "@type": "Question",
+              "name": "CIDR / 子网计算器能算什么？",
+              "acceptedAnswer": { "@type": "Answer", "text": "输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。" }
+            },
+            {
+              "@type": "Question",
+              "name": "DNS / rDNS 查询的数据从哪里来？",
+              "acceptedAnswer": { "@type": "Answer", "text": "来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。" }
             }
           ]
         }
@@ -348,6 +417,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <script src="js/analytics.iife.js"></script>
     <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/net-tools-ui.js"></script>
 
 
 <footer class="dd-brandfoot compact">

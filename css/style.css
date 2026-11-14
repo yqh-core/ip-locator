@@ -1170,3 +1170,59 @@ html[data-theme="dark"] .instructions strong { color:var(--dd-primary-hover) !im
         min-height: 1341px;
     }
 }
+
+/* ==========================================================================
+ * 第四轮深度改造（2026-11-15）：CIDR/子网计算器 + DNS/rDNS 查询
+ * 对标 ipinfo 工具簇。全部走 dd 令牌；表格横滑容器防移动端溢出。
+ * ========================================================================== */
+.net-card { margin-top: 20px; }
+.net-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.net-row input {
+    flex: 1; min-width: 180px; padding: 9px 12px;
+    border: 1px solid var(--dd-border); border-radius: 8px;
+    background: var(--dd-surface); color: var(--dd-text); font-size: 14px; outline: none;
+}
+.net-row input:focus { border-color: var(--dd-primary); }
+.net-row select {
+    padding: 9px 10px; border: 1px solid var(--dd-border); border-radius: 8px;
+    background: var(--dd-surface); color: var(--dd-text); font-size: 14px; outline: none;
+}
+.net-row button {
+    padding: 9px 18px; border: 1px solid var(--dd-border); border-radius: 8px;
+    background: var(--dd-primary); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.net-row button:hover { filter: brightness(1.08); }
+.net-examples { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.net-example {
+    padding: 5px 12px; border: 1px dashed var(--dd-border); border-radius: 999px;
+    background: var(--dd-surface); color: var(--dd-text-soft); font-size: 12.5px; cursor: pointer;
+}
+.net-example:hover { border-color: var(--dd-primary); color: var(--dd-primary); }
+.net-status { font-size: 13px; margin: 8px 0; min-height: 18px; color: var(--dd-text-soft); }
+.net-status.is-info { color: var(--dd-primary); }
+.net-status.is-warn { color: var(--dd-warning, #b45309); }
+.net-status.is-error { color: var(--dd-danger, #dc2626); }
+.net-result { display: flex; flex-direction: column; gap: 10px; }
+.net-head { font-size: 14px; margin: 4px 0; color: var(--dd-text); word-break: break-all; }
+.net-head strong { color: var(--dd-primary); }
+.net-grid {
+    display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: 6px 16px; margin: 0; font-size: 13.5px;
+}
+.net-grid dt { color: var(--dd-text-soft); font-weight: 500; white-space: nowrap; }
+.net-grid dd { margin: 0; color: var(--dd-text); font-variant-numeric: tabular-nums; word-break: break-all; }
+.net-note { font-size: 12.5px; color: var(--dd-text-soft); margin: 4px 0; line-height: 1.6; }
+.net-tablewrap { overflow-x: auto; border: 1px solid var(--dd-border); border-radius: 8px; max-width: 100%; }
+.net-table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.net-table th, .net-table td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--dd-border); white-space: nowrap; }
+.net-table th { font-size: 11.5px; font-weight: 650; color: var(--dd-text-soft); background: var(--dd-surface-2); }
+.net-table tbody tr:last-child td { border-bottom: none; }
+.net-table td:last-child { white-space: normal; word-break: break-all; min-width: 160px; }
+.net-result .btn-secondary {
+    align-self: flex-start; padding: 6px 14px; border: 1px solid var(--dd-border);
+    border-radius: 8px; background: var(--dd-surface-2); color: var(--dd-text); font-size: 13px; cursor: pointer;
+}
+@media (max-width: 640px) {
+    .net-grid { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .net-grid dt { margin-top: 6px; }
+}
