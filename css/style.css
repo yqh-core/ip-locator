@@ -856,6 +856,102 @@ footer a:hover {
     border-bottom: none;
 }
 
+/* ==== 第二轮：原始 JSON / 客户端信息 / 查询历史（对标 ipinfo / whatismyip） ==== */
+.extra-tools { animation: fadeIn 0.3s; }
+.tool-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.tool-head h3 { margin: 0; font-size: 1.05rem; }
+.tool-head .btn-secondary {
+    padding: 6px 14px;
+    border: 1px solid var(--dd-border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.tool-sub { margin: 0 0 12px; font-size: 13px; color: var(--dd-text-soft); }
+.json-view {
+    margin: 0;
+    padding: 14px 16px;
+    background: var(--dd-surface-2);
+    border: 1px solid var(--dd-border);
+    border-radius: 8px;
+    font-family: var(--dd-font-mono, Consolas, Monaco, monospace);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--dd-text);
+    overflow-x: auto;
+    max-height: 320px;
+    white-space: pre;
+}
+.client-info { display: flex; flex-direction: column; gap: 2px; }
+.client-row {
+    display: flex;
+    gap: 12px;
+    padding: 8px 10px;
+    background: var(--dd-bg);
+    border-radius: 6px;
+    font-size: 13px;
+}
+.client-key { flex: none; width: 96px; color: var(--dd-text-soft); }
+.client-val { flex: 1; min-width: 0; color: var(--dd-text); word-break: break-word; }
+.hist-count {
+    display: inline-block;
+    min-width: 20px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    background: var(--dd-primary);
+    color: var(--dd-on-primary, #fff);
+    border-radius: 999px;
+    font-size: 12px;
+    text-align: center;
+}
+.history-list { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--dd-border);
+}
+.history-item:last-child { border-bottom: none; }
+.history-link {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--dd-primary);
+    font-size: 13.5px;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 2px 0;
+}
+.history-link:hover { text-decoration: underline; }
+.history-del {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--dd-border);
+    border-radius: 5px;
+    background: var(--dd-surface);
+    color: var(--dd-text-soft);
+    cursor: pointer;
+    font-size: 11px;
+}
+.history-del:hover { color: var(--dd-danger); border-color: var(--dd-danger); }
+@media (max-width: 640px) {
+    .client-key { width: 80px; }
+    .tool-head { flex-wrap: wrap; }
+}
+
 /* ==== dd-dark-override：覆盖硬编码色（由 dd-shell 切换器驱动） ==== */
 html[data-theme="dark"]{ color-scheme:dark; }
 html[data-theme="dark"] body{ background:var(--dd-bg) !important; color:var(--dd-text) !important; }

@@ -34,6 +34,26 @@ const FIELDS = [
 
 const PLACEHOLDER = '-';
 
+/** 最近一次成功结果的归一化对象，供「原始 JSON」视图与复制使用。 */
+let lastInfo = null;
+
+/**
+ * 2 字母 ISO 国家码 → 国旗 emoji（区域指示符）。非 2 字母码返回空串，
+ * 宁可无旗也不出错。countryOriginal 保留的就是上游原话（多为码）。
+ */
+function flagEmoji(code) {
+  const s = String(code || '').trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(s)) return '';
+  return String.fromCodePoint(...[...s].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
+/** 转义 HTML 特殊字符：客户端 userAgent 等自报值注入 innerHTML 前必须过这道。 */
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
 /** i18n 文案：优先 dd-i18n 内核，未注入时回退中文（与主题脚本同口径）。 */
 function t(key, fallback) {
   if (window.DD_I18N && typeof window.DD_I18N.t === 'function') {
@@ -84,7 +104,7 @@ async function copyText(text, btn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn'];
+  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn', 'extraTools', 'jsonView', 'jsonCopyBtn', 'clientInfo', 'clientToggle', 'historyList', 'historyCount', 'historyEmpty', 'historyClear'];
   for (const id of ids) el[id] = document.getElementById(id);
   for (const f of FIELDS) el[f.id] = document.getElementById(f.id);
 
@@ -97,6 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.key === 'Enter') queryIP();
   });
 
+  // 第二轮：原始 JSON 复制 / 客户端信息展开 / 查询历史
+  el.jsonCopyBtn?.addEventListener('click', () => {
+    if (lastInfo) copyText(JSON.stringify(lastInfo, null, 2), el.jsonCopyBtn);
+  });
+  el.clientToggle?.addEventListener('click', () => {
+    const open = el.clientInfo.hidden;
+    el.clientInfo.hidden = !open;
+    el.clientToggle.textContent = open ? '收起' : '展开';
+    el.clientToggle.setAttribute('aria-expanded', String(open));
+  });
+  el.historyClear?.addEventListener('click', () => {
+    writeHistory([]);
+    renderHistory();
+  });
+  renderClientInfo();
+  renderHistory();
+
   // 首次进入自动查询本机公网 IP
   tracker.track('visit');
   queryMyIP();
@@ -108,6 +145,7 @@ function showLoading() {
   if (lp) lp.textContent = '正在查询IP信息...';
   el.error.style.display = 'none';
   el.ipInfo.style.display = 'none';
+  if (el.extraTools) el.extraTools.hidden = true;
 }
 
 function hideLoading() {
@@ -118,6 +156,7 @@ function showError(message) {
   el.error.textContent = `❌ ${message}`;
   el.error.style.display = 'block';
   el.ipInfo.style.display = 'none';
+  if (el.extraTools) el.extraTools.hidden = true;
 }
 
 /** 输入校验：格式不对直接挡下，不发无谓的请求 */
@@ -213,6 +252,10 @@ function render(info) {
     if (field.id === 'country' && raw && info.countryOriginal && info.countryOriginal !== raw) {
       raw = `${raw}（上游原值 ${info.countryOriginal}）`;
     }
+    if (field.id === 'country' && raw) {
+      const flag = flagEmoji(info.countryOriginal);
+      if (flag) raw = `${flag} ${raw}`;
+    }
     node.textContent = raw === null || raw === undefined || raw === '' ? PLACEHOLDER : raw;
     addFieldCopy(node);
   }
@@ -226,6 +269,95 @@ function render(info) {
 
   el.error.style.display = 'none';
   el.ipInfo.style.display = 'block';
+
+  // 第二轮：原始 JSON 视图 + 查询历史（均本地，不外发）
+  lastInfo = info;
+  renderJsonView(info);
+  recordHistory(info.ip);
+}
+
+/** 把归一化结果以格式化 JSON 展示（开发者友好，对标 ipinfo 的 raw 输出）。 */
+function renderJsonView(info) {
+  if (!el.jsonView) return;
+  el.jsonView.textContent = JSON.stringify(info, null, 2);
+  if (el.extraTools) el.extraTools.hidden = false;
+}
+
+/** 客户端信息：纯本机读取 navigator/screen/Intl/connection，不发出任何请求。 */
+function renderClientInfo() {
+  if (!el.clientInfo) return;
+  const nav = navigator;
+  const conn = nav.connection || nav.mozConnection || nav.webkitConnection;
+  let tz = '—';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch { /* ignore */ }
+  const rows = [
+    ['用户代理', nav.userAgent || '—'],
+    ['平台', nav.platform || '—'],
+    ['语言', nav.language || '—'],
+    ['屏幕分辨率', `${screen.width}×${screen.height}`],
+    ['颜色深度', `${screen.colorDepth} bit`],
+    ['在线状态', nav.onLine ? '在线' : '离线'],
+    ['网络类型', conn ? `${conn.effectiveType || '—'}${conn.downlink ? ` · 约 ${conn.downlink} Mbps` : ''}` : '浏览器不支持检测'],
+    ['时区', tz],
+    ['Cookie 启用', nav.cookieEnabled ? '是' : '否'],
+    ['Do Not Track', nav.doNotTrack === '1' ? '开启' : '关闭 / 未设置'],
+  ];
+  el.clientInfo.innerHTML = rows.map(([k, v]) => (
+    `<div class="client-row"><span class="client-key">${escapeHtml(k)}</span><span class="client-val">${escapeHtml(v)}</span></div>`
+  )).join('');
+}
+
+/* ---- 查询历史：仅存本机 localStorage，去重、上限 10、点击重查、单条删除、清空 ---- */
+const HISTORY_KEY = 'ipquery:history';
+const HISTORY_MAX = 10;
+
+function readHistory() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    return Array.isArray(arr) ? arr.filter(x => typeof x === 'string') : [];
+  } catch { return []; }
+}
+
+function writeHistory(arr) {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(arr)); } catch { /* 隐私模式可能禁写 */ }
+}
+
+function recordHistory(ip) {
+  if (!ip) return;
+  const arr = readHistory().filter(x => x !== ip);
+  arr.unshift(ip);
+  writeHistory(arr.slice(0, HISTORY_MAX));
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!el.historyList) return;
+  const arr = readHistory();
+  el.historyList.innerHTML = '';
+  if (el.historyCount) el.historyCount.textContent = String(arr.length);
+  if (el.historyEmpty) el.historyEmpty.style.display = arr.length ? 'none' : 'block';
+  for (const ip of arr) {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+    const link = document.createElement('button');
+    link.type = 'button';
+    link.className = 'history-link';
+    link.title = ip;
+    link.textContent = ip;
+    link.addEventListener('click', () => { el.ipInput.value = ip; queryIP(); });
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'history-del';
+    del.setAttribute('aria-label', '删除这条记录');
+    del.textContent = '✕';
+    del.addEventListener('click', () => {
+      writeHistory(readHistory().filter(x => x !== ip));
+      renderHistory();
+    });
+    li.appendChild(link);
+    li.appendChild(del);
+    el.historyList.appendChild(li);
+  }
 }
 
 function renderMap(info) {

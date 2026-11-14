@@ -58,6 +58,15 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     "operatingSystem": "Any",
     "browserRequirements": "Requires JavaScript",
     "inLanguage": "zh-CN",
+    "featureList": [
+      "IPv4 归属地查询（国家/省份/城市/邮编/ASN/运营商/经纬度/时区）",
+      "多数据源自动降级与服务端代理缓存",
+      "国旗标识与上游原值溯源",
+      "原始 JSON 视图与一键复制",
+      "客户端信息检测（本机读取，不上传）",
+      "查询历史（仅存本机浏览器）",
+      "字段级一键复制与嵌入式地图"
+    ],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
   }
   </script>
@@ -190,6 +199,36 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </div>
         </div><!-- /#result-zone -->
 
+        <!-- 第二轮：原始 JSON 视图（对标 ipinfo 的开发者友好输出，随结果出现） -->
+        <div id="extraTools" class="ip-info extra-tools" hidden>
+            <div class="tool-head">
+                <h3>🧾 原始 JSON</h3>
+                <button id="jsonCopyBtn" class="btn-secondary" type="button"><span class="copy-txt">复制 JSON</span></button>
+            </div>
+            <p class="tool-sub">本次结果的归一化字段（含数据来源与缓存态），可直接复制用于调试。</p>
+            <pre id="jsonView" class="json-view"></pre>
+        </div>
+
+        <!-- 第二轮：客户端信息（对标 whatismyip，纯本机读取，不发出任何请求） -->
+        <div class="ip-info client-card">
+            <div class="tool-head">
+                <h3>💻 你的客户端信息</h3>
+                <button id="clientToggle" class="btn-secondary" type="button" aria-expanded="false">展开</button>
+            </div>
+            <p class="tool-sub">浏览器与设备自报的信息，仅在本机读取展示，不上传。</p>
+            <div id="clientInfo" class="client-info" hidden></div>
+        </div>
+
+        <!-- 第二轮：查询历史（仅存本机 localStorage，点击重查） -->
+        <div class="ip-info history-card">
+            <div class="tool-head">
+                <h3>🕘 查询历史 <span id="historyCount" class="hist-count">0</span></h3>
+                <button id="historyClear" class="btn-secondary" type="button">清空</button>
+            </div>
+            <ul id="historyList" class="history-list" aria-label="查询历史"></ul>
+            <p id="historyEmpty" class="tool-sub">查询过的 IP 会记在这里（仅存本机浏览器），点击即可重查。</p>
+        </div>
+
         <div class="instructions">
             <h3>📖 使用说明</h3>
             <ul>
@@ -261,6 +300,10 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <summary>为什么不同网站的 IP 归属结果不一样？</summary>
                 <p>各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。</p>
             </details>
+            <details>
+                <summary>可以查看原始 JSON、客户端信息或查询历史吗？</summary>
+                <p>可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。</p>
+            </details>
             <p>
                 更多用法见<a href="/guides">使用教程</a>，字段含义见<a href="/docs">IP 知识文档</a>，
                 其余疑问见<a href="/faq">常见问题</a>。
@@ -285,6 +328,11 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
               "@type": "Question",
               "name": "为什么不同网站的 IP 归属结果不一样？",
               "acceptedAnswer": { "@type": "Answer", "text": "各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。" }
+            },
+            {
+              "@type": "Question",
+              "name": "可以查看原始 JSON、客户端信息或查询历史吗？",
+              "acceptedAnswer": { "@type": "Answer", "text": "可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。" }
             }
           ]
         }
