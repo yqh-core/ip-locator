@@ -146,8 +146,8 @@ export function entityLabel(id) {
   return ENTITY_LABELS[id] || id || null;
 }
 
-/** 判断是否为内网 / 回环 / 链路本地地址 */
-export function isPrivateIP(ip) {
+/** 判断 IPv4 是否为内网 / 回环 / 链路本地地址 */
+function isPrivateIPv4(ip) {
   const parts = String(ip || '').split('.').map(Number);
   if (parts.length !== 4 || parts.some(Number.isNaN)) return false;
 
@@ -159,6 +159,25 @@ export function isPrivateIP(ip) {
   return false;
 }
 
+/**
+ * 判断是否为内网 / 回环 / 链路本地地址（IPv4 与 IPv6）。
+ * IPv6：::1 回环、:: 未指定、fe80::/10 链路本地、fc00::/7 唯一本地；
+ * ::ffff:a.b.c.d 这类 IPv4-mapped 地址按其 IPv4 部分判定。
+ */
+export function isPrivateIP(ip) {
+  const s = String(ip || '').trim();
+  if (s.includes(':')) {
+    const low = s.toLowerCase();
+    if (low === '::1' || low === '::') return true;
+    if (/^fe[89ab]/.test(low)) return true;   // fe80::/10
+    if (/^f[cd]/.test(low)) return true;      // fc00::/7
+    const mapped = low.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/);
+    if (mapped) return isPrivateIPv4(mapped[1]);
+    return false;
+  }
+  return isPrivateIPv4(s);
+}
+
 /** 校验点分十进制 IPv4 格式（只做格式校验，不判断可达性） */
 export function isValidIPv4(ip) {
   const s = String(ip || '').trim();
@@ -167,6 +186,53 @@ export function isValidIPv4(ip) {
     const n = Number(p);
     return Number.isInteger(n) && n >= 0 && n <= 255;
   });
+}
+
+/**
+ * 校验 IPv6 格式（含 :: 压缩与 IPv4-mapped 尾段，不判断可达性）。
+ * 规则：至多一个 ::；纯十六进制段每段 1–4 位；无 :: 时恰好 8 段，
+ * 有 :: 时两侧段数之和 ≤ 7（:: 至少代表一段）；尾段可为点分 IPv4。
+ * 带 zone index（%eth0）的地址对公网归属查询无意义，按非法处理。
+ */
+export function isValidIPv6(ip) {
+  let s = String(ip || '').trim();
+  if (!s.includes(':') || s.length > 45) return false;
+
+  // 尾段是点分 IPv4（如 ::ffff:192.168.0.1）：校验后替换成两个十六进制段
+  const lastColon = s.lastIndexOf(':');
+  const tail = s.slice(lastColon + 1);
+  if (tail.includes('.')) {
+    if (!isValidIPv4(tail)) return false;
+    s = s.slice(0, lastColon + 1) + '0:0';
+  }
+
+  const dcCount = (s.match(/::/g) || []).length;
+  if (dcCount > 1) return false;
+
+  let groups;
+  if (dcCount === 1) {
+    const [left, right] = s.split('::');
+    const lg = left ? left.split(':') : [];
+    const rg = right ? right.split(':') : [];
+    if (lg.length + rg.length > 7) return false;
+    groups = [...lg, ...rg];
+  } else {
+    groups = s.split(':');
+    if (groups.length !== 8) return false;
+  }
+  return groups.every(g => /^[0-9a-fA-F]{1,4}$/.test(g));
+}
+
+/** IPv4 或 IPv6 任一合法即可 */
+export function isValidIP(ip) {
+  return isValidIPv4(ip) || isValidIPv6(ip);
+}
+
+/** 返回 IP 版本（4 / 6），非法返回 null */
+export function ipVersion(ip) {
+  if (isValidIPv4(ip)) return 4;
+  if (isValidIPv6(ip)) return 6;
+  return null;
 }
 
 /**
@@ -294,7 +360,9 @@ export const IP_SOURCES = [
       }, {
         source: 'ipwho.is',
         cached: null,
-        countryOriginal: shown.countryOriginal,
+        // ipwho.is 的 country 是全名（"United States"）、country_code 才是码（"US"）。
+        // 取码做原值，国旗 emoji 才能在任何数据源下都生效（与 ipapi.co 同口径）。
+        countryOriginal: toText(raw.country_code) || shown.countryOriginal,
       });
     },
   },

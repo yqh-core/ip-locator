@@ -82,7 +82,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <h2>1. IP 地址是什么</h2>
                 <p>IP 地址（Internet Protocol Address）是分配给联网设备的数字标识，用于在网络中定位并寻址。目前主流有两套体系：IPv4 与 IPv6。</p>
                 <p><strong>IPv4</strong> 是 32 位地址，通常写成四段点分十进制，例如 <code>8.8.8.8</code>。每段取值范围是 0–255，因此理论上共有约 43 亿个地址。由于互联网设备远超这个数量，IPv4 地址早已分配告罄，这也是 NAT 与 IPv6 普及的背景。</p>
-                <p><strong>IPv6</strong> 是 128 位地址，写成八组十六进制，例如 <code>2001:4860:4860::8888</code>。地址空间极其庞大，但第三方 IP 库对 IPv6 的归属数据覆盖仍不完善，这也是本工具暂只支持 IPv4 的原因。</p>
+                <p><strong>IPv6</strong> 是 128 位地址，写成八组十六进制，例如 <code>2001:4860:4860::8888</code>。地址空间极其庞大。本工具已支持 IPv6 查询，但第三方 IP 库对 IPv6 的归属数据覆盖仍不完善，部分地址段可能仅能精确到国家级，结果仅供参考。</p>
             </div>
 
             <div class="about-section">

@@ -111,7 +111,9 @@ const UPSTREAMS = [
       const tz = typeof raw.timezone === 'string' ? raw.timezone : raw.timezone?.id;
       return normalizeInfo({
         ip: toText(raw.ip),
-        country: toText(raw.country),
+        // 取 country_code（"US"）而非全名：expandCountryName 会补成展示名，
+        // country_original 保留码，客户端国旗 emoji 才能在 ipwho.is 路径下生效。
+        country: toText(raw.country_code) || toText(raw.country),
         region: toText(raw.region),
         city: toText(raw.city),
         postal: toText(raw.postal),
@@ -132,7 +134,9 @@ const UPSTREAMS = [
       const { asn, org } = splitAsnAndOrg(raw.org ?? raw.asn);
       return normalizeInfo({
         ip: toText(raw.ip),
-        country: toText(raw.country_name) || toText(raw.country),
+        // ipapi.co 的 country 是码（"US"）、country_name 是全名。优先取码，
+        // 让 country_original 保留码以驱动国旗，展示名由 expandCountryName 补全。
+        country: toText(raw.country) || toText(raw.country_name),
         region: toText(raw.region),
         city: toText(raw.city),
         postal: toText(raw.postal),

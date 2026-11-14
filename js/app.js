@@ -5,7 +5,7 @@
  *   - 本文件不认识任何一家 API 的字段名，也不拼 URL
  *   - 数据源增删、顺序调整都在 ip-sources.js 里完成，这里零改动
  */
-import { fetchIPInfo, isPrivateIP, isValidIPv4, entityLabel } from './ip-sources.js';
+import { fetchIPInfo, isPrivateIP, isValidIPv4, isValidIPv6, ipVersion, entityLabel } from './ip-sources.js';
 
 // 测量闭环（隔离验证；analytics.iife.js 经经典 script 先加载暴露 window.DDAnalytics）。
 // ip 无下载动作 → download 标 NOT_COLLECTED，不估算。测量失败不阻塞产品。
@@ -104,12 +104,13 @@ async function copyText(text, btn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn', 'extraTools', 'jsonView', 'jsonCopyBtn', 'clientInfo', 'clientToggle', 'historyList', 'historyCount', 'historyEmpty', 'historyClear'];
+  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipv6DemoBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn', 'extraTools', 'jsonView', 'jsonCopyBtn', 'clientInfo', 'clientToggle', 'historyList', 'historyCount', 'historyEmpty', 'historyClear'];
   for (const id of ids) el[id] = document.getElementById(id);
   for (const f of FIELDS) el[f.id] = document.getElementById(f.id);
 
   el.searchBtn.addEventListener('click', () => queryIP());
   el.myIpBtn?.addEventListener('click', () => queryMyIP());
+  el.ipv6DemoBtn?.addEventListener('click', () => { el.ipInput.value = '2001:4860:4860::8888'; queryIP(); });
   el.copyIpBtn?.addEventListener('click', () => {
     copyText(el.ipAddress.textContent, el.copyIpBtn);
   });
@@ -166,8 +167,8 @@ function readInput() {
     showError('请输入IP地址');
     return null;
   }
-  if (!isValidIPv4(ip)) {
-    showError('请输入有效的 IPv4 地址（如：8.8.8.8）');
+  if (!isValidIPv4(ip) && !isValidIPv6(ip)) {
+    showError('请输入有效的 IPv4 或 IPv6 地址（如 8.8.8.8 或 2001:4860:4860::8888）');
     return null;
   }
   return ip;
@@ -241,7 +242,8 @@ function addFieldCopy(node) {
 /** 把归一化后的 IPInfo 渲染进结果区 */
 function render(info) {
   el.ipAddress.textContent = info.ip ?? PLACEHOLDER;
-  el.ipType.textContent = isPrivateIP(info.ip) ? '内网IP' : '公网IP';
+  const ver = ipVersion(info.ip);
+  el.ipType.textContent = `${isPrivateIP(info.ip) ? '内网' : '公网'}${ver ? ' IPv' + ver : ' IP'}`;
 
   for (const field of FIELDS) {
     const node = el[field.id];
