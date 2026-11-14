@@ -18,5 +18,12 @@
   "aria.themeToggle": "Toggle dark mode",
   "aria.langToggle": "Switch language",
   "seo.title": "IP Geolocation Lookup — Free Online IP Location Tool",
-  "seo.description": "Free online IP geolocation tool. Look up country, region, city, ZIP code, ASN, ISP, coordinates and timezone for any IPv4 address, with automatic multi-source failover."
+  "seo.description": "Free online IP geolocation tool. Look up country, region, city, ZIP code, ASN, ISP, coordinates and timezone for any IPv4 address, with automatic multi-source failover.",
+  "btn.copy": "Copy",
+  "aria.copyIp": "Copy IP address",
+  "aria.copyField": "Copy this value",
+  "feedback.copied": "Copied",
+  "feedback.copyFailed": "Copy failed — select and copy manually",
+  "map.show": "Show map here",
+  "map.embedTitle": "Approximate location map"
 }

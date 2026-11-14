@@ -130,7 +130,13 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         <!-- IP信息显示 -->
         <div id="ipInfo" class="ip-info" style="display: none;">
             <div class="info-header">
-                <h2 id="ipAddress"></h2>
+                <div class="ip-head-left">
+                    <h2 id="ipAddress"></h2>
+                    <button id="copyIpBtn" class="copy-btn" type="button" data-i18n-attr="aria-label:aria.copyIp,title:aria.copyIp" aria-label="复制 IP 地址">
+                        <span class="copy-ico" aria-hidden="true">📋</span>
+                        <span class="copy-txt" data-i18n="btn.copy">复制</span>
+                    </button>
+                </div>
                 <span id="ipType" class="ip-type"></span>
             </div>
             <div class="info-grid">
@@ -175,6 +181,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <!-- 地图容器 -->
             <div class="map-container">
                 <h3>🗺️ 地理位置</h3>
+                <div id="mapEmbed" class="map-embed" hidden></div>
+                <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>在页面内显示地图</button>
                 <div id="mapLink" class="map-link"></div>
             </div>
 

@@ -34,13 +34,65 @@ const FIELDS = [
 
 const PLACEHOLDER = '-';
 
+/** i18n 文案：优先 dd-i18n 内核，未注入时回退中文（与主题脚本同口径）。 */
+function t(key, fallback) {
+  if (window.DD_I18N && typeof window.DD_I18N.t === 'function') {
+    const v = window.DD_I18N.t(key);
+    if (v && v !== key) return v;
+  }
+  return fallback;
+}
+
+/**
+ * 复制到剪贴板（ipinfo/whatismyip 招牌便利）。clipboard API 不可用时退回
+ * select+execCommand；两条都失败就如实提示，不谎报"已复制"。
+ * btn 用于就地反馈：有 .copy-txt 则短暂替换文案，1.6s 后还原。
+ */
+async function copyText(text, btn) {
+  const value = (text ?? '').trim();
+  if (!value || value === PLACEHOLDER) return;
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+      ok = true;
+    } else {
+      throw new Error('clipboard unavailable');
+    }
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = value;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { ok = document.execCommand('copy'); } catch { ok = false; }
+    document.body.removeChild(ta);
+  }
+  if (!btn) return;
+  const txt = btn.querySelector('.copy-txt');
+  const msg = ok ? t('feedback.copied', '已复制') : t('feedback.copyFailed', '复制失败，请手动选择复制');
+  btn.classList.add(ok ? 'copied' : 'copy-failed');
+  if (txt) {
+    const prev = txt.textContent;
+    txt.textContent = msg;
+    setTimeout(() => { txt.textContent = prev; btn.classList.remove('copied', 'copy-failed'); }, 1600);
+  } else {
+    btn.setAttribute('title', msg);
+    setTimeout(() => { btn.classList.remove('copied', 'copy-failed'); }, 1600);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote'];
+  const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn'];
   for (const id of ids) el[id] = document.getElementById(id);
   for (const f of FIELDS) el[f.id] = document.getElementById(f.id);
 
   el.searchBtn.addEventListener('click', () => queryIP());
   el.myIpBtn?.addEventListener('click', () => queryMyIP());
+  el.copyIpBtn?.addEventListener('click', () => {
+    copyText(el.ipAddress.textContent, el.copyIpBtn);
+  });
   el.ipInput.addEventListener('keypress', event => {
     if (event.key === 'Enter') queryIP();
   });
@@ -133,6 +185,20 @@ async function runQuery(ip) {
   }
 }
 
+/** 给字段值挂一个复制按钮（幂等：重渲染不重复添加）。 */
+function addFieldCopy(node) {
+  const item = node.closest('.info-item');
+  if (!item || item.querySelector('.field-copy')) return;
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'field-copy';
+  btn.setAttribute('aria-label', t('aria.copyField', '复制该字段'));
+  btn.setAttribute('title', t('aria.copyField', '复制该字段'));
+  btn.innerHTML = '<span class="copy-ico" aria-hidden="true">📋</span>';
+  btn.addEventListener('click', () => copyText(node.textContent, btn));
+  item.appendChild(btn);
+}
+
 /** 把归一化后的 IPInfo 渲染进结果区 */
 function render(info) {
   el.ipAddress.textContent = info.ip ?? PLACEHOLDER;
@@ -148,11 +214,13 @@ function render(info) {
       raw = `${raw}（上游原值 ${info.countryOriginal}）`;
     }
     node.textContent = raw === null || raw === undefined || raw === '' ? PLACEHOLDER : raw;
+    addFieldCopy(node);
   }
 
   // 经纬度是由 lat / lon 合成的，单独处理
   const hasCoord = Number.isFinite(info.lat) && Number.isFinite(info.lon);
   el.location.textContent = hasCoord ? `${info.lat}, ${info.lon}` : PLACEHOLDER;
+  addFieldCopy(el.location);
 
   renderMap(hasCoord ? info : null);
 
@@ -161,11 +229,24 @@ function render(info) {
 }
 
 function renderMap(info) {
+  // 新查询先收起上一张嵌入地图（坐标变了，旧图作废）
+  el.mapEmbed.hidden = true;
+  el.mapEmbed.innerHTML = '';
   if (!info) {
+    el.mapShowBtn.hidden = true;
     el.mapLink.innerHTML = '<p>暂无地理位置信息</p>';
     return;
   }
   const { lat, lon } = info;
+  el.mapShowBtn.hidden = false;
+  el.mapShowBtn.onclick = () => {
+    // 点击才加载第三方瓦片（隐私：不自动向 OSM 发请求）；坐标是 IP 估算位置。
+    const d = 0.02;
+    const bbox = `${lon - d},${lat - d},${lon + d},${lat + d}`;
+    el.mapEmbed.innerHTML = `<iframe title="${t('map.embedTitle', '大致地理位置地图')}" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${lat},${lon}"></iframe>`;
+    el.mapEmbed.hidden = false;
+    el.mapShowBtn.hidden = true;
+  };
   el.mapLink.innerHTML = `
     <p>📌 在地图上查看：</p>
     <a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=12/${lat}/${lon}" target="_blank" rel="noopener">OpenStreetMap</a>
