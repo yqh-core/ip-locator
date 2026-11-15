@@ -18,12 +18,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP 归属地查询</title>
-    <meta name="description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，多数据源自动降级。">
-    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IPv6查询,IP定位,IP地理位置,ASN查询,DigDevBox">
+    <title>IP 归属地查询 - 免费 IPv4/IPv6 定位｜CIDR 子网计算｜DNS/rDNS 查询</title>
+    <meta name="description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，内置 CIDR/子网计算器与 DNS/rDNS 查询，多数据源自动降级、字段级来源溯源。">
+    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IPv6查询,IP定位,IP地理位置,ASN查询,DigDevBox,子网掩码计算,CIDR计算器,DNS查询,rDNS反查">
     <link rel="canonical" href="https://ip.digdevbox.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="IP 归属地查询 - 在线查询 IP 的国家、城市、ASN 与运营商">
+    <meta property="og:title" content="IP 归属地查询 - 免费 IPv4/IPv6 定位｜CIDR 子网计算｜DNS/rDNS 查询">
     <meta property="og:description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，多数据源自动降级。">
     <meta property="og:url" content="https://ip.digdevbox.com/">
     <meta property="og:site_name" content="IP 归属地查询">
@@ -101,7 +101,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
         <header>
             <h1 data-i18n="h1.title">🌍 IP归属地查询</h1>
-            <p class="subtitle" data-i18n="hero.subtitle">查询IP地址的详细归属地信息</p>
+            <p class="subtitle" data-i18n="hero.subtitle">查 IP 归属地与运营商，一键看本机公网 IP；内置 CIDR 子网计算与 DNS/rDNS 查询</p>
         </header>
 
         <!-- 搜索区域 -->
@@ -123,6 +123,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <span data-i18n="btn.queryMyIp">📍 查询我的IP</span>
                 </button>
                 <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="用 Google 公共 DNS 的 IPv6 地址试一下">🌐 IPv6 示例</button>
+                <a class="btn-secondary quick-anchor" href="#cidr">🧮 子网计算器</a>
+                <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS 查询</a>
             </div>
         </div>
 
@@ -233,7 +235,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </div>
 
         <!-- 第四轮：CIDR / 子网计算器（对标 ipinfo 工具簇，纯本机计算，不发任何请求） -->
-        <div class="ip-info net-card">
+        <div class="ip-info net-card" id="cidr">
             <div class="tool-head">
                 <h3>🧮 CIDR / 子网计算器</h3>
             </div>
@@ -252,7 +254,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </div>
 
         <!-- 第四轮：DNS / rDNS 查询（Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器） -->
-        <div class="ip-info net-card">
+        <div class="ip-info net-card" id="dns">
             <div class="tool-head">
                 <h3>🔎 DNS / rDNS 查询</h3>
             </div>
@@ -315,6 +317,13 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             locales 注入链，列为后续待办，避免手改内联词条被注入器覆盖。
         -->
         <style>
+            /* IP-2 首屏锚点：锚点链接复用 .btn-secondary 配色，形态对齐既有 button 基础样式；
+               四项快捷操作允许换行，避免窄屏溢出。深色态由 style.css 的 .btn-secondary !important 覆盖接管。 */
+            .quick-actions{gap:10px;flex-wrap:wrap}
+            .quick-actions .quick-anchor{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:14px;font-weight:600;border-radius:6px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:all .2s}
+            .quick-actions .quick-anchor:hover{color:var(--dd-primary)}
+            /* 对齐 style.css 移动端 button{width:100%} 的既有形态，四个快捷控件同规格堆叠 */
+            @media (max-width:768px){.quick-actions .quick-anchor{width:100%;justify-content:center}}
             .seo-guide{max-width:820px;margin:36px auto 0;padding:0 8px;font-family:var(--dd-font,system-ui,-apple-system,sans-serif)}
             .seo-guide h2{font-size:1.3rem;margin:30px 0 10px;line-height:1.4}
             .seo-guide h3{font-size:1.08rem;margin:22px 0 8px;line-height:1.4}
@@ -340,6 +349,13 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 命中缓存。定位精度以城市级为主：IP 归属数据库反映的是运营商注册地与骨干网接入点，
                 不一定等于设备的物理位置；不同数据源之间也可能存在差异，结果仅供参考。
             </p>
+            <h2>常见场景</h2>
+            <ul class="use-cases">
+                <li><strong>查本机出口 IP：</strong>点击「<a href="#myIpBtn">查询我的IP</a>」，一键查看当前网络出口 IP 的归属地与运营商登记信息。</li>
+                <li><strong>排查异地登录：</strong>账号出现陌生登录地时，把日志里的 IP 填入「<a href="#ipInput">查询框</a>」核对归属与 ASN。归属是登记信息与城市级估算，只作排查线索，不作唯一判定依据。</li>
+                <li><strong>确认服务器归属：</strong>把服务器公网 IP 填入「<a href="#ipInput">查询框</a>」，核对 ASN 与组织字段是否与预期一致。</li>
+                <li><strong>划分子网：</strong>用「<a href="#cidr">CIDR / 子网计算器</a>」算网络地址、掩码、广播与可用主机范围；域名解析与 IP 反查见「<a href="#dns">DNS / rDNS 查询</a>」。</li>
+            </ul>
             <h2>常见问题</h2>
             <details>
                 <summary>支持查询哪类 IP 地址？</summary>

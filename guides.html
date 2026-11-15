@@ -147,6 +147,29 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </div>
 
             <div class="about-section">
+                <h2>实战：用 CIDR 计算器划分子网</h2>
+                <p>首页内置「<a href="/#cidr">CIDR / 子网计算器</a>」：输入 CIDR（如 <code>192.168.1.0/24</code>）或单个 IP，即可在本机算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类。支持 IPv4 / IPv6，计算完全在本机浏览器完成，不发出任何请求。</p>
+                <p>以 <code>192.168.1.0/24</code> 为例：地址总数 <strong>256</strong>，可用主机 <strong>254</strong>（去掉网络地址 192.168.1.0 与广播地址 192.168.1.255），子网掩码 255.255.255.0，可用范围 192.168.1.1 – 192.168.1.254。</p>
+                <p>要把这个网段拆成两个等大的子网，各取一半地址空间，即两个 /25：</p>
+                <ul class="use-cases">
+                    <li><strong>192.168.1.0/25：</strong>掩码 255.255.255.128，广播 192.168.1.127，可用 192.168.1.1 – 192.168.1.126，共 128 个地址、126 台可用主机。</li>
+                    <li><strong>192.168.1.128/25：</strong>掩码 255.255.255.128，广播 192.168.1.255，可用 192.168.1.129 – 192.168.1.254，同样 128 个地址、126 台可用主机。</li>
+                </ul>
+                <p>两个 /25 的结果都可以直接输回计算器核对。点对点链路可用 /30（4 个地址、2 台可用主机）；/31 按 RFC 3021 两个地址均可用。IPv6 没有广播地址，同样支持前缀计算（如 <code>2001:db8::/32</code>）。更多地址结构概念见<a href="/docs">IP 知识文档</a>。</p>
+            </div>
+
+            <div class="about-section">
+                <h2>实战：DNS/rDNS 查解析与反查</h2>
+                <p>首页内置「<a href="/#dns">DNS / rDNS 查询</a>」：数据来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。</p>
+                <ul class="use-cases">
+                    <li><strong>查域名解析：</strong>输入域名（如 <code>example.com</code>），选择记录类型（A/AAAA/CNAME/MX/TXT/NS/SOA/CAA），点击「查询」即可看到应答记录。</li>
+                    <li><strong>IP 反查（rDNS）：</strong>直接输入 IP（如 <code>8.8.8.8</code>），工具自动构造 in-addr.arpa / ip6.arpa 反查 PTR 记录；也可以手动选择 PTR 类型。</li>
+                    <li><strong>看状态码：</strong>应答会标出 DNS 状态码；域名不存在时如实返回 NXDOMAIN（域名不存在），不会编造解析结果。</li>
+                </ul>
+                <p>常见用法：核对域名是否解析到预期服务器（A/AAAA）、检查邮件交换记录（MX）、确认 IP 的反向解析名称（PTR）。注意解析结果与 IP 归属地是两回事：前者是域名到地址的映射，后者是地址的登记归属估算，可结合<a href="/">IP 归属地查询</a>一起看。</p>
+            </div>
+
+            <div class="about-section">
                 <h2>下一步</h2>
                 <ul>
                     <li><a href="/docs">IP 知识文档</a> — 理解 IPv4 地址结构、CIDR、ASN 与定位原理</li>
