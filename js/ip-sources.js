@@ -264,7 +264,7 @@ export const IP_SOURCES = [
     /**
      * 本站服务端代理（functions/api/ip.js）。
      *
-     * 排在第一位是有意的：它不限流、带 24 小时边缘缓存，命中缓存时比直连更快。
+     * 排在第一位是有意的：它把自查路径完全走 Cloudflare 边缘数据（不打第三方），指定 IP 查询带短周期边缘缓存，命中时比直连更快。
      * 万一 Pages Functions 没生效（本地打开、或路由未部署），这里会拿到 404 / HTML，
      * json() 抛错，下面的降级逻辑会自动换直连源，不会让用户卡住。
      */
@@ -304,38 +304,10 @@ export const IP_SOURCES = [
       return info;
     },
   },
-  {
-    id: 'ipapi.co',
-    label: 'ipapi.co',
-    /** ip 为空时查询本机公网 IP */
-    build: ip => (ip ? `https://ipapi.co/${encodeURIComponent(ip)}/json/` : 'https://ipapi.co/json/'),
-    normalize(raw) {
-      if (!raw || raw.error) return null;
-      const { asn, org } = splitAsnAndOrg(raw.org ?? raw.asn);
-      // 这一路是浏览器直连，应答方就是这个 id 本身；不经过服务端缓存，
-      // 所以 cached 一律 null（不上报），不能写 false 冒充"查过上游"。
-      const shown = expandCountry(toText(raw.country_name) || toText(raw.country));
-      return normalizeInfo({
-        ip: toText(raw.ip),
-        country: shown.country,
-        region: toText(raw.region),
-        city: toText(raw.city),
-        postal: toText(raw.postal),
-        lat: toNumber(raw.latitude),
-        lon: toNumber(raw.longitude),
-        timezone: toText(raw.timezone),
-        asn: formatAsn(toText(raw.asn) ?? asn),
-        org,
-        isp: org,
-      }, {
-        source: 'ipapi.co',
-        cached: null,
-        // ipapi.co 同时给 country_code 与 country_name，原值取它的 code，
-        // 这样"上游原话"和"本站展示"的差别在任何一条路径上都留得住。
-        countryOriginal: toText(raw.country_code) || toText(raw.country) || shown.countryOriginal,
-      });
-    },
-  },
+  // 客户端 ipapi.co 直连源于 2026-11-17 移除：
+  // 官方 Pricing 明确免费计划仅供测试/开发、不适用于生产部署（VERIFIED，核验日 2026-11-17），
+  // 本站为商业部署（AdSense）→ 浏览器直连该免费端点属于未经许可的生产使用，禁止。
+  // 未取得针对公开 IP 展示产品的书面授权前不得恢复；ENTITY_LABELS 中的显示项仅作缓存过渡。
   {
     id: 'ipwho.is',
     label: 'ipwho.is',

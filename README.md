@@ -13,7 +13,7 @@ A lightweight, privacy-friendly web app to look up the geolocation of any IPv4 a
 
 ## 功能特点
 
-- **多数据源自动降级**：依次尝试 ipapi.co → ipwho.is → ipinfo.io，任一可用即返回，界面上会显示本次实际生效的数据源
+- **零第三方依赖的自查路径**：查询自己 IP 走 Cloudflare 边缘注入数据；查任意 IP 并发竞速 ipinfo.io / ipwho.is（多源任一可用即返回，界面显示实际数据源）
 - **快速查询**：输入 IP 地址即可查询详细归属地信息
 - **自动定位**：页面加载时自动查询并显示当前 IP 地址信息
 - **详细信息**：显示国家、省份、城市、邮编、ASN、运营商、组织、经纬度、时区
@@ -114,17 +114,22 @@ ip_location/
 └── README.md
 ```
 
-## 数据源说明
+## 数据源说明（2026-11-17 合规改造后）
 
-依次尝试以下三个免费 IP 库，任一成功即返回，界面底部会显示本次实际生效的数据源：
+- **查询自己的 IP（默认路径）**：使用 Cloudflare 边缘节点随请求注入的地理信息
+  （`request.cf`），**不产生任何第三方 API 调用**，界面来源显示 `Cloudflare 边缘节点自带信息`。
+- **查询任意指定 IP**：Cloudflare 不提供他人 IP 的归属数据，这条路径仍并发请求第三方 IP 库，
+  任一先成功即返回（并发竞速，非串行），界面显示本次实际应答方：
 
-| 顺序 | 数据源 | 说明 |
-| --- | --- | --- |
-| 1 | [ipapi.co](https://ipapi.co) | 字段最全，匿名额度约 1000 次/天 |
-| 2 | [ipwho.is](https://ipwho.is) | 免密钥，有月度额度，超限返回 429 |
-| 3 | [ipinfo.io](https://ipinfo.io) | 匿名额度较大，响应里会带 `missingauth` 提示 |
+| 数据源 | 许可状态（核验日 2026-11-17） |
+| --- | --- |
+| [ipinfo.io](https://ipinfo.io) | 官方定价页：免费 Lite 可商用，**要求署名**（VERIFIED） |
+| [ipwho.is](https://ipwho.is) | 商用/展示条款**未能一手核验**（站点不可达）——待核验项，不得宣称合规 |
 
-单个数据源超时上限 6 秒，超时即换下一个，因此最坏情况下 18 秒内必有结论。
+- **ipapi.co 已整体移除**：其官方定价明确免费计划仅供测试/开发、不适用于生产部署（VERIFIED），
+  本站为商业部署（AdSense），未经许可不得使用；取得针对公开 IP 展示产品的书面授权之前不得恢复。
+
+单个上游超时上限 6 秒；自检查询零上游调用。任意 IP 查询最坏 6 秒内必有结论。
 
 ### 为什么要有超时
 
@@ -313,9 +318,10 @@ docker run -d -p 80:80 --name ip-location ip-location
 
 ## 相关链接
 
-- [ipapi.co](https://ipapi.co) — 主数据源
-- [ipwho.is](https://ipwho.is) — 备用数据源
-- [ipinfo.io](https://ipinfo.io) — 备用数据源
+- [ipinfo.io](https://ipinfo.io) — 任意 IP 查询数据源（免费 Lite 可商用，须署名）
+- [ipwho.is](https://ipwho.is) — 任意 IP 查询数据源（商用条款一手核验中）
+- Cloudflare Workers `request.cf` — 自查 IP 路径的地理信息来源（无第三方调用）
+- ~~ipapi.co~~ — 2026-11-17 因免费计划不适用于生产部署而整体移除
 - [DigDevBox — 免费在线开发者工具](https://digdevbox.com)
 - [StreamPlay — 在线 HLS / m3u8 播放器](https://play.digdevbox.com)
 

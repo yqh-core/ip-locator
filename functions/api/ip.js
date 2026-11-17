@@ -11,14 +11,16 @@
  *
  * 放到服务端之后：
  *   - 限流池变成 Cloudflare 边缘节点的 IP（共享且量大），不再针对单个用户；
- *   - 查询结果进 Cache API（IP 归属几乎不变，缓存 24 小时是安全的），
- *      绝大多数请求根本不会打到第三方，速度快且几乎不会再触发限流；
- *   - 多源降级在服务端完成，浏览器只发一次请求。
+ *   - 指定 IP 查询结果进 Cache API（1 小时短周期技术缓存，见下方注释的许可理由），
+ *      绝大多数重复请求不会打到第三方，速度快且几乎不会再触发限流；
+ *   - 多源竞速在服务端完成，浏览器只发一次请求。
  *
- * 查询自身 IP 时还有一条零依赖路径：Cloudflare 在 request.cf 里直接带了
+ * 查询自身 IP 时优先走零依赖路径：Cloudflare 在 request.cf 里直接带了
  * 地理信息（国家 / 城市 / 经纬度 / 时区 / ASN），不需要任何外部请求。
- * 但它给的是 ISO 国家码（"US"）而不是国家名（"United States"），
- * 为了和第三方源的结果保持一致的展示形态，只在第三方全挂时才用它兜底。
+ * 2026-11-17 合规改造：它已从"第三方全挂时兜底"升级为**自检查询的主源**——
+ * 该路径不引入任何第三方数据集，不受"免费端点仅限测试/开发"类许可条款约束。
+ * 它给的是 ISO 国家码（"US"）而不是国家名，本站用 expandCountryName 补全，
+ * 并在 country_original 保留原码（来源可追溯要求）。
  *
  * 路由：/api/ip           → 查询访问者自己的公网 IP
  *      /api/ip?ip=8.8.8.8 → 查询指定 IP
@@ -31,7 +33,8 @@
 const UPSTREAM_TIMEOUT_MS = 4000;
 
 /** 查询结果缓存时长（秒）。IP 归属稳定，缓存一天足够安全 */
-const CACHE_TTL_SECONDS = 86400;
+const CACHE_TTL_SECONDS = 3600;   // 指定 IP 查询：短周期技术缓存（见下方注释的许可理由）
+const SELF_CACHE_TTL_SECONDS = 300; // 自检查询：更短，访问者可能换网络
 
 /** 浏览器可以自己缓存多久 */
 const BROWSER_CACHE_SECONDS = 3600;
@@ -95,11 +98,11 @@ function normalizeInfo(partial) {
 }
 
 /**
- * 上游数据源清单，顺序即降级顺序。
+ * 上游数据源清单。注意实际行为是**并发竞速**（lookupUpstreams 同时发起，先成功者胜），不是串行降级。
  *
- * 排第一的是 ipwho.is：免费且不限流，实测最稳。
- * ipapi.co 虽然对浏览器限流狠，但服务端 IP 属于不同的限流池，保留作二档。
- * ipinfo.io 作三档。
+ * 2026-11-17 合规改造后仅保留 ipwho.is、ipinfo.io 两家（ipapi.co 已移除，见下）。
+ * 注意：自检查询（查访问者自己 IP）在 onRequestGet 里直接走 cloudflare-edge，
+ * 不经过这里的任何第三方上游；本清单只服务"查任意指定 IP"这一路径。
  */
 const UPSTREAMS = [
   {
@@ -126,29 +129,9 @@ const UPSTREAMS = [
       });
     },
   },
-  {
-    id: 'ipapi.co',
-    build: ip => `https://ipapi.co/${encodeURIComponent(ip)}/json/`,
-    normalize(raw) {
-      if (!raw || raw.error) return null;
-      const { asn, org } = splitAsnAndOrg(raw.org ?? raw.asn);
-      return normalizeInfo({
-        ip: toText(raw.ip),
-        // ipapi.co 的 country 是码（"US"）、country_name 是全名。优先取码，
-        // 让 country_original 保留码以驱动国旗，展示名由 expandCountryName 补全。
-        country: toText(raw.country) || toText(raw.country_name),
-        region: toText(raw.region),
-        city: toText(raw.city),
-        postal: toText(raw.postal),
-        lat: toNumber(raw.latitude),
-        lon: toNumber(raw.longitude),
-        timezone: toText(raw.timezone),
-        asn: formatAsn(toText(raw.asn) ?? asn),
-        org,
-        isp: org,
-      });
-    },
-  },
+  // ipapi.co 已于 2026-11-17 整体移除：官方 Pricing 明确免费计划仅供测试/开发、
+  // 不适用于生产部署（VERIFIED，核验日 2026-11-17），本站为商用（AdSense）→ 禁止依赖。
+  // 在取得针对"公开 IP 展示产品"的书面授权之前不得加回。见 js/ip-sources.js 同步说明。
   {
     id: 'ipinfo.io',
     build: ip => `https://ipinfo.io/${encodeURIComponent(ip)}/json`,
@@ -312,38 +295,49 @@ export async function onRequestGet(context) {
     // 缓存读失败不影响主流程
   }
 
-  const upstreamResult = await lookupUpstreams(targetIP);
-  let payload;
-  let status = 200;
+  // 自检查询主源=Cloudflare 原生 geo 数据（2026-11-17 合规改造）：
+  // 不引入任何第三方数据集 → 不受"免费端点仅限测试/开发"一类条款约束，
+  // 也满足"数据来源可追溯"（source=cloudflare-edge，由本站运行平台注入的请求元数据）。
+  // cf 字段缺失（极少数 colo）时才落到第三方上游链兜底。
+  let payload = null;
+  if (isSelfQuery) {
+    const edge = infoFromRequestCf(targetIP, request.cf);
+    if (edge && edge.ip && (edge.country || edge.city)) {
+      payload = { ...edge, source: 'cloudflare-edge', cached: false };
+    }
+  }
 
-  if (upstreamResult) {
-    // country_original 保留上游原话：expandCountryName 会把 "US" 补成
-    // "United States"，补完就分不出这是上游给的还是本站推出来的。
-    // D1 要求：经本站转换的字段必须能同时看到"上游原值"和"展示值"。
-    payload = {
-      ...upstreamResult.info,
-      country: expandCountryName(upstreamResult.info.country),
-      country_original: toText(upstreamResult.info.country),
-      source: upstreamResult.source,
-      cached: false,
-    };
-  } else {
-    // 上游全挂：查自身 IP 时还能用 Cloudflare 自带的地理信息兜底
-    const fallback = isSelfQuery ? infoFromRequestCf(targetIP, request.cf) : null;
-    if (fallback && fallback.ip) {
-      payload = { ...fallback, source: 'cloudflare-edge', cached: false };
-    } else {
+  if (!payload) {
+    const upstreamResult = await lookupUpstreams(targetIP);
+    if (upstreamResult) {
+      // country_original 保留上游原话：expandCountryName 会把 "US" 补成
+      // "United States"，补完就分不出这是上游给的还是本站推出来的。
+      // D1 要求：经本站转换的字段必须能同时看到"上游原值"和"展示值"。
+      payload = {
+        ...upstreamResult.info,
+        country: expandCountryName(upstreamResult.info.country),
+        country_original: toText(upstreamResult.info.country),
+        source: upstreamResult.source,
+        cached: false,
+      };
+    } else if (!isSelfQuery) {
       return jsonResponse(
         { error: 'upstream_unavailable', message: '上游数据源暂时不可用，请稍后重试' },
         502,
       );
+    } else {
+      // 自检且上游全挂：仍返回 cf 里至少拿得到的 ip 字段，来源如实标注
+      const edge = infoFromRequestCf(targetIP, request.cf);
+      payload = { ...(edge || normalizeInfo({ ip: targetIP })), source: 'cloudflare-edge', cached: false };
     }
   }
 
-  // 写缓存。自身 IP 查询只缓存较短时间（访问者可能换网络），
-  // 指定 IP 查询缓存满 24 小时。
+  // 写缓存。自身 IP 查询只缓存较短时间（访问者可能换网络）；
+  // 指定 IP 查询 2026-11-17 起由 24h 降为 1h：第三方免费端点的许可普遍限制数据留存
+  // （ipapi.co ToS ≤24h、ipinfo 免费禁止再分发/留存），把缓存定性为**短周期技术缓存**
+  // 而不是数据拷贝，降低许可面风险。
   try {
-    const ttl = isSelfQuery ? 300 : CACHE_TTL_SECONDS;
+    const ttl = isSelfQuery ? SELF_CACHE_TTL_SECONDS : CACHE_TTL_SECONDS;
     await cache.put(
       cacheKey,
       new Response(JSON.stringify(payload), {
@@ -354,5 +348,5 @@ export async function onRequestGet(context) {
     // 写缓存失败不影响本次响应
   }
 
-  return jsonResponse(payload, status);
+  return jsonResponse(payload);
 }
