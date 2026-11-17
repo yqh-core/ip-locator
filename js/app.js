@@ -423,4 +423,18 @@ function renderSourceNote(source, entity, info, attempted) {
   else if (info && info.cached === false) cacheNote = ' · 本次已回源';
 
   el.sourceNote.textContent = `数据来源：${sourceText}${pathNote}${cacheNote}${degrade}`;
+
+  // 许可署名（CC BY-SA / 数据源条款要求"可点击链接"，纯文本不满足）：
+  // 仅对白名单应答方挂链接；href 取本地常量映射，绝不用服务端回报的字符串拼链接
+  // （防把 raw.source 注入成任意 URL）；cloudflare-edge 是本站运行平台元数据，无第三方署名义务。
+  const ATTRIBUTION_HREFS = { 'ipinfo.io': 'https://ipinfo.io', 'ipwho.is': 'https://ipwho.is' };
+  const href = entity && ATTRIBUTION_HREFS[entity];
+  if (href) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = '（数据许可与署名要求）';
+    el.sourceNote.appendChild(a);
+  }
 }
