@@ -18,13 +18,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP 归属地查询 - 免费 IPv4/IPv6 定位｜CIDR 子网计算｜DNS/rDNS 查询</title>
-    <meta name="description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，内置 CIDR/子网计算器与 DNS/rDNS 查询，多数据源自动降级、字段级来源溯源。">
-    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IPv6查询,IP定位,IP地理位置,ASN查询,DigDevBox,子网掩码计算,CIDR计算器,DNS查询,rDNS反查">
+    <title>查你的 IP 和大致位置</title>
+    <meta name="description" content="打开就能看到自己的出口 IP、登记位置、ASN 和时区。也可以查别的 IPv4 / IPv6，算子网、查 DNS，一次核对最多 20 个地址。位置是城市级估算，不是你人站着的地方。">
     <link rel="canonical" href="https://ip.digdevbox.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="IP 归属地查询 - 免费 IPv4/IPv6 定位｜CIDR 子网计算｜DNS/rDNS 查询">
-    <meta property="og:description" content="免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区，多数据源自动降级。">
+    <meta property="og:title" content="查你的 IP 和大致位置">
+    <meta property="og:description" content="看自己的出口地址、登记位置和 ASN。也能查别人的 IP、算子网、查 DNS。">
     <meta property="og:url" content="https://ip.digdevbox.com/">
     <meta property="og:site_name" content="IP 归属地查询">
     <meta property="og:locale" content="zh_CN">
@@ -32,13 +31,14 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <meta name="theme-color" content="#0f766e">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dd-tokens.css">
     <link rel="stylesheet" href="css/dd-shell.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/lookup.css">
     <meta property="og:image" content="https://ip.digdevbox.com/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="IP 归属地查询 - 免费在线 IP 查询工具">
+    <meta property="og:image:alt" content="IP 归属地查询的结果卡片">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://ip.digdevbox.com/images/og-image.jpg">
 
@@ -53,22 +53,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     "@type": "WebApplication",
     "name": "IP 归属地查询",
     "url": "https://ip.digdevbox.com/",
-    "description": "免费的在线 IP 归属地查询工具。支持查询任意 IPv4 / IPv6 地址的国家、省份、城市、邮编、ASN、运营商、经纬度与时区。",
+    "description": "查看自己的出口 IP 与登记位置，也可查询任意 IPv4 / IPv6 的国家、城市、ASN、时区。含子网计算、DNS 查询和每次最多 20 个地址的批量核对。",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any",
     "browserRequirements": "Requires JavaScript",
     "inLanguage": "zh-CN",
-    "featureList": [
-      "IPv4 / IPv6 归属地查询（国家/省份/城市/邮编/ASN/运营商/经纬度/时区）",
-      "多数据源自动降级与服务端代理缓存",
-      "国旗标识与上游原值溯源",
-      "原始 JSON 视图与一键复制",
-      "客户端信息检测（本机读取，不上传）",
-      "查询历史（仅存本机浏览器）",
-      "字段级一键复制与嵌入式地图",
-      "CIDR / 子网计算器（IPv4 / IPv6，纯本机计算）",
-      "DNS / rDNS 查询（Cloudflare DoH，A/AAAA/CNAME/MX/TXT/NS/PTR）"
-    ],
+    "isAccessibleForFree": true,
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
   }
   </script>
@@ -84,12 +74,11 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">房贷计算器</a>
                 <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">图片压缩</a>
         </nav>
-
         <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
     </div>
 </div>
-    <div class="container">
-        <nav class="top-nav">
+    <div class="container lookup">
+        <nav class="top-nav" aria-label="站内">
             <ul>
                 <li><a href="/" class="active" data-i18n="topnav.home">首页</a></li>
                 <li><a href="/guides" data-i18n="topnav.guides">使用教程</a></li>
@@ -99,297 +88,254 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </ul>
         </nav>
 
-        <header>
-            <h1 data-i18n="h1.title">🌍 IP归属地查询</h1>
-            <p class="subtitle" data-i18n="hero.subtitle">查 IP 归属地与运营商，一键看本机公网 IP；内置 CIDR 子网计算与 DNS/rDNS 查询</p>
+        <header class="page-intro">
+            <h1 data-i18n="h1.title">查你的 IP 和大致位置</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">下面这张卡片是你这次上网的出口地址。城市和运营商来自登记库，通常只能到城市，不是你人站着的地方。</p>
         </header>
 
-        <!-- 搜索区域 -->
-        <div class="search-section">
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="ipInput"
-                    placeholder="请输入IP地址（如：8.8.8.8）" data-i18n-attr="placeholder:placeholder.ipInput"
-                    autocomplete="off"
-                >
-                <button id="searchBtn" type="button">
-                    <span class="btn-text" data-i18n="btn.query">查询</span>
-                    <span class="btn-icon">🔍</span>
-                </button>
-            </div>
-            <div class="quick-actions">
-                <button id="myIpBtn" class="btn-secondary" type="button">
-                    <span data-i18n="btn.queryMyIp">📍 查询我的IP</span>
-                </button>
-                <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="用 Google 公共 DNS 的 IPv6 地址试一下">🌐 IPv6 示例</button>
-                <a class="btn-secondary quick-anchor" href="#cidr">🧮 子网计算器</a>
-                <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS 查询</a>
-            </div>
-        </div>
-
-        <!-- CLS 修复：结果区稳定高度容器。预留值=实测各态最大高度（桌面 690px / 移动 1341px，见 style.css），
-             防止 loading→结果 切换时把下方"使用说明"推挤（基线 CLS 0.305 = 0.2219+0.0835，均归因于 .instructions）。 -->
         <div id="result-zone">
-
-        <!-- 加载提示 -->
-        <div id="loading" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>正在查询IP信息...</p>
-        </div>
-
-        <!-- 错误提示 -->
-        <div id="error" class="error" style="display: none;"></div>
-
-        <!-- IP信息显示 -->
-        <div id="ipInfo" class="ip-info" style="display: none;">
-            <div class="info-header">
-                <div class="ip-head-left">
-                    <h2 id="ipAddress"></h2>
-                    <button id="copyIpBtn" class="copy-btn" type="button" data-i18n-attr="aria-label:aria.copyIp,title:aria.copyIp" aria-label="复制 IP 地址">
-                        <span class="copy-ico" aria-hidden="true">📋</span>
-                        <span class="copy-txt" data-i18n="btn.copy">复制</span>
+        <section id="ipInfo" class="stage" aria-labelledby="ipAddress">
+            <div class="stage-top">
+                <div>
+                    <span class="eyebrow">这次看到的地址</span>
+                    <h2 id="ipAddress" class="ip-hero">正在读取你的出口地址</h2>
+                    <span id="ipType" class="pill">请稍候</span>
+                </div>
+                <div class="ip-actions">
+                    <button id="copyIpBtn" class="btn-secondary" type="button" data-i18n-attr="aria-label:aria.copyIp" aria-label="复制 IP 地址">
+                        <span class="copy-txt" data-i18n="btn.copy">复制 IP</span>
                     </button>
                 </div>
-                <span id="ipType" class="ip-type"></span>
             </div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">🌏 国家/地区</span>
-                    <span class="info-value" id="country"></span>
+
+            <form class="lookup-bar" role="search" onsubmit="return false">
+                <label class="sr-only" for="ipInput">要查询的 IP</label>
+                <input id="ipInput" type="text" inputmode="text" spellcheck="false" autocomplete="off" placeholder="换一个地址，例如 8.8.8.8" data-i18n-attr="placeholder:placeholder.ipInput">
+                <button id="searchBtn" type="button"><span class="btn-text" data-i18n="btn.query">查询</span></button>
+            </form>
+            <div class="quick-row">
+                <button id="myIpBtn" type="button" data-i18n="btn.queryMyIp">看我的出口地址</button>
+                <button id="ipv6DemoBtn" type="button">用 IPv6 示例试一下</button>
+                <a href="#batch">批量核对</a>
+                <a href="#cidr">子网计算</a>
+                <a href="#dns">DNS 查询</a>
+            </div>
+
+            <div id="loading" class="loading" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p>正在读取你的出口地址</p>
+            </div>
+            <div id="error" class="error" role="alert" hidden></div>
+
+            <div class="stage-grid">
+                <div>
+                    <div class="field-group">
+                        <h3>位置</h3>
+                        <div class="fields">
+                            <div class="info-item"><span class="info-label">国家/地区</span><span class="info-value" id="country">—</span><span class="info-meta" id="countryMeta"></span></div>
+                            <div class="info-item"><span class="info-label">省份/州</span><span class="info-value" id="region">—</span></div>
+                            <div class="info-item"><span class="info-label">城市</span><span class="info-value" id="city">—</span></div>
+                            <div class="info-item"><span class="info-label">邮编</span><span class="info-value" id="zip">—</span></div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <h3>网络</h3>
+                        <div class="fields">
+                            <div class="info-item"><span class="info-label">ASN</span><span class="info-value" id="asn">—</span></div>
+                            <div class="info-item"><span class="info-label">运营商（登记）</span><span class="info-value" id="isp">—</span></div>
+                            <div class="info-item"><span class="info-label">组织（登记）</span><span class="info-value" id="org">—</span></div>
+                            <div class="info-item"><span class="info-label">地址类别</span><span class="info-value" id="addrKind">—</span></div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <h3>时间与坐标</h3>
+                        <div class="fields">
+                            <div class="info-item">
+                                <span class="info-label">时区</span>
+                                <span class="info-value" id="timezone">—</span>
+                                <span id="zoneClock" class="zone-clock"></span>
+                            </div>
+                            <div class="info-item"><span class="info-label">经纬度</span><span class="info-value" id="location">—</span></div>
+                        </div>
+                    </div>
+                    <div class="ptr-row">
+                        <button id="ptrBtn" class="btn-secondary" type="button" disabled>查反向域名</button>
+                        <p id="ptrText">查完地址后，可以再向 Cloudflare DNS 要一条 PTR。没有记录就直说没有。</p>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">📍 省份/州</span>
-                    <span class="info-value" id="region"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">🏙️ 城市</span>
-                    <span class="info-value" id="city"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">📮 邮编</span>
-                    <span class="info-value" id="zip"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">🔢 ASN</span>
-                    <span class="info-value" id="asn"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">🌐 运营商</span>
-                    <span class="info-value" id="isp"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">🏢 组织</span>
-                    <span class="info-value" id="org"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">📡 经纬度</span>
-                    <span class="info-value" id="location"></span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">⏰ 时区</span>
-                    <span class="info-value" id="timezone"></span>
+                <div class="map-panel">
+                    <h3 class="sr-only">地图</h3>
+                    <div id="localMap"></div>
+                    <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>加载街道图</button>
+                    <div id="mapEmbed" class="map-embed" hidden></div>
+                    <div id="mapLink" class="map-links"></div>
                 </div>
             </div>
 
-            <!-- 地图容器 -->
-            <div class="map-container">
-                <h3>🗺️ 地理位置</h3>
-                <div id="mapEmbed" class="map-embed" hidden></div>
-                <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>在页面内显示地图</button>
-                <div id="mapLink" class="map-link"></div>
+            <div class="tool-actions">
+                <button id="copySummaryBtn" class="btn-secondary" type="button" disabled><span class="copy-txt">复制摘要</span></button>
+                <button id="exportTxtBtn" class="btn-secondary" type="button" disabled>导出文本</button>
+                <button id="exportJsonBtn" class="btn-secondary" type="button" disabled>导出 JSON</button>
             </div>
-
-            <p id="sourceNote" class="source-note"></p>
+            <p id="sourceNote" class="source-note">来源会在结果出来后写在这里。查你自己的地址时，优先用 Cloudflare 边缘附带的信息，不另找第三方库。</p>
+        </section>
         </div>
-        </div><!-- /#result-zone -->
 
-        <!-- 第二轮：原始 JSON 视图（对标 ipinfo 的开发者友好输出，随结果出现） -->
-        <div id="extraTools" class="ip-info extra-tools" hidden>
-            <div class="tool-head">
-                <h3>🧾 原始 JSON</h3>
-                <button id="jsonCopyBtn" class="btn-secondary" type="button"><span class="copy-txt">复制 JSON</span></button>
+        <section class="panel" aria-labelledby="proxy-title">
+            <h2 id="proxy-title">代理和 VPN</h2>
+            <p><span class="status-chip">不判断</span></p>
+            <p>这里不会打勾，也不会打叉。本站没有接入已核验可商用的威胁情报，所以不告诉你「这是代理」或「这是 VPN」。本工具不判断、也不输出使用者属于住宅网络、移动网络还是数据中心。</p>
+            <p>你能当作线索的，是上面的登记组织和地址类别。如果你开了代理，卡片上的地址是出口，不是你人在的城市。</p>
+        </section>
+
+        <section class="panel" id="batch">
+            <h2>一次核对多个地址</h2>
+            <p class="lede">把日志里的地址贴进来，每行一个，逗号也可以。一次最多 20 个：再多就会把上游额度打满，对别人也不公平。查询在你的浏览器里逐个发出，本站不保存这份列表。</p>
+            <textarea id="batch-input" spellcheck="false" placeholder="8.8.8.8&#10;1.1.1.1&#10;2001:4860:4860::8888"></textarea>
+            <div class="batch-actions">
+                <button id="batch-run" class="btn-secondary" type="button">开始批量查</button>
+                <button id="batch-copy" class="btn-secondary" type="button" disabled>复制 CSV</button>
+                <button id="batch-csv" class="btn-secondary" type="button" disabled>下载 CSV</button>
             </div>
-            <p class="tool-sub">本次结果的归一化字段（含数据来源与缓存态），可直接复制用于调试。</p>
-            <pre id="jsonView" class="json-view"></pre>
+            <p id="batch-status" class="source-note" role="status"></p>
+            <div id="batch-result"></div>
+        </section>
+
+        <div class="two-col">
+            <div class="ip-info net-card" id="cidr">
+                <div class="tool-head">
+                    <h3>子网计算</h3>
+                </div>
+                <p class="tool-sub">输入 CIDR 或单个 IP，算出网络地址、掩码、可用范围。IPv4 和 IPv6 都在你的浏览器里算完，不发出请求。</p>
+                <div class="net-row">
+                    <label class="sr-only" for="cidr-input">CIDR</label>
+                    <input type="text" id="cidr-input" placeholder="192.168.1.0/24 或 2001:db8::/32" autocomplete="off" spellcheck="false">
+                    <button id="cidr-calc" class="btn-secondary" type="button">计算</button>
+                </div>
+                <div class="net-examples">
+                    <button type="button" class="btn-secondary net-example" data-cidr="192.168.1.0/24">192.168.1.0/24</button>
+                    <button type="button" class="btn-secondary net-example" data-cidr="10.0.0.0/8">10.0.0.0/8</button>
+                    <button type="button" class="btn-secondary net-example" data-cidr="2001:db8::/32">2001:db8::/32</button>
+                </div>
+                <p class="net-status" id="cidr-status" role="status" aria-live="polite"></p>
+                <div id="cidr-result" class="net-result"></div>
+            </div>
+
+            <div class="ip-info net-card" id="dns">
+                <div class="tool-head">
+                    <h3>DNS 和反向解析</h3>
+                </div>
+                <p class="tool-sub">查 A、AAAA、MX 这些记录。输入 IP 会自动做 rDNS。数据来自 Cloudflare 1.1.1.1，浏览器直连，不经过本站。</p>
+                <div class="net-row">
+                    <label class="sr-only" for="dns-input">域名或 IP</label>
+                    <input type="text" id="dns-input" placeholder="example.com 或 8.8.8.8" autocomplete="off" spellcheck="false">
+                    <select id="dns-type" aria-label="记录类型">
+                        <option value="A" selected>A</option>
+                        <option value="AAAA">AAAA</option>
+                        <option value="CNAME">CNAME</option>
+                        <option value="MX">MX</option>
+                        <option value="TXT">TXT</option>
+                        <option value="NS">NS</option>
+                        <option value="SOA">SOA</option>
+                        <option value="CAA">CAA</option>
+                        <option value="PTR">PTR</option>
+                    </select>
+                    <button id="dns-query" class="btn-secondary" type="button">查询</button>
+                </div>
+                <div class="net-examples">
+                    <button type="button" class="btn-secondary net-example" data-dns="example.com" data-dns-type="A">example.com 的 A</button>
+                    <button type="button" class="btn-secondary net-example" data-dns="digdevbox.com" data-dns-type="MX">digdevbox.com 的 MX</button>
+                    <button type="button" class="btn-secondary net-example" data-dns="8.8.8.8">8.8.8.8 的反向解析</button>
+                </div>
+                <p class="net-status" id="dns-status" role="status" aria-live="polite"></p>
+                <div id="dns-result" class="net-result"></div>
+            </div>
         </div>
 
-        <!-- 第二轮：客户端信息（对标 whatismyip，纯本机读取，不发出任何请求） -->
-        <div class="ip-info client-card">
+        <div class="two-col" style="margin-top:14px">
+            <div id="extraTools" class="ip-info extra-tools" hidden>
+                <div class="tool-head">
+                    <h3>这次结果的 JSON</h3>
+                    <button id="jsonCopyBtn" class="btn-secondary" type="button"><span class="copy-txt">复制 JSON</span></button>
+                </div>
+                <p class="tool-sub">字段已经归一化，并带上来源。适合贴进工单，不适合当成精确位置。</p>
+                <pre id="jsonView" class="json-view"></pre>
+            </div>
+
+            <div class="ip-info history-card">
+                <div class="tool-head">
+                    <h3>最近查过 <span id="historyCount" class="hist-count">0</span></h3>
+                    <button id="historyClear" class="btn-secondary" type="button">清空</button>
+                </div>
+                <ul id="historyList" class="history-list" aria-label="查询历史"></ul>
+                <p id="historyEmpty" class="tool-sub">查过的地址记在这台浏览器里，点一下可以再查。换设备或清站点数据就会消失。</p>
+            </div>
+        </div>
+
+        <section class="ip-info client-card" style="margin-top:14px">
             <div class="tool-head">
-                <h3>💻 你的客户端信息</h3>
+                <h3>这台设备自己报告的信息</h3>
                 <button id="clientToggle" class="btn-secondary" type="button" aria-expanded="false">展开</button>
             </div>
-            <p class="tool-sub">浏览器与设备自报的信息，仅在本机读取展示，不上传。</p>
+            <p id="clientSummary" class="tool-sub"></p>
             <div id="clientInfo" class="client-info" hidden></div>
-        </div>
+        </section>
 
-        <!-- 第二轮：查询历史（仅存本机 localStorage，点击重查） -->
-        <div class="ip-info history-card">
-            <div class="tool-head">
-                <h3>🕘 查询历史 <span id="historyCount" class="hist-count">0</span></h3>
-                <button id="historyClear" class="btn-secondary" type="button">清空</button>
-            </div>
-            <ul id="historyList" class="history-list" aria-label="查询历史"></ul>
-            <p id="historyEmpty" class="tool-sub">查询过的 IP 会记在这里（仅存本机浏览器），点击即可重查。</p>
-        </div>
-
-        <!-- 第四轮：CIDR / 子网计算器（对标 ipinfo 工具簇，纯本机计算，不发任何请求） -->
-        <div class="ip-info net-card" id="cidr">
-            <div class="tool-head">
-                <h3>🧮 CIDR / 子网计算器</h3>
-            </div>
-            <p class="tool-sub">输入 CIDR（如 192.168.1.0/24）或单个 IP，计算网络地址、掩码、广播、可用主机范围与地址分类。支持 IPv4 / IPv6，纯本机计算。</p>
-            <div class="net-row">
-                <input type="text" id="cidr-input" placeholder="192.168.1.0/24 或 2001:db8::/32" autocomplete="off" spellcheck="false">
-                <button id="cidr-calc" class="btn-secondary" type="button">计算</button>
-            </div>
-            <div class="net-examples">
-                <button type="button" class="btn-secondary net-example" data-cidr="192.168.1.0/24">192.168.1.0/24</button>
-                <button type="button" class="btn-secondary net-example" data-cidr="10.0.0.0/8">10.0.0.0/8</button>
-                <button type="button" class="btn-secondary net-example" data-cidr="2001:db8::/32">2001:db8::/32</button>
-            </div>
-            <p class="net-status" id="cidr-status" role="status" aria-live="polite"></p>
-            <div id="cidr-result" class="net-result"></div>
-        </div>
-
-        <!-- 第四轮：DNS / rDNS 查询（Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器） -->
-        <div class="ip-info net-card" id="dns">
-            <div class="tool-head">
-                <h3>🔎 DNS / rDNS 查询</h3>
-            </div>
-            <p class="tool-sub">查域名的 A/AAAA/CNAME/MX/TXT/NS 等记录；输入 IP 自动反查 rDNS（PTR）。数据来自 Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器。</p>
-            <div class="net-row">
-                <input type="text" id="dns-input" placeholder="example.com 或 8.8.8.8（自动 rDNS）" autocomplete="off" spellcheck="false">
-                <select id="dns-type" aria-label="记录类型">
-                    <option value="A" selected>A</option>
-                    <option value="AAAA">AAAA</option>
-                    <option value="CNAME">CNAME</option>
-                    <option value="MX">MX</option>
-                    <option value="TXT">TXT</option>
-                    <option value="NS">NS</option>
-                    <option value="SOA">SOA</option>
-                    <option value="CAA">CAA</option>
-                    <option value="PTR">PTR</option>
-                </select>
-                <button id="dns-query" class="btn-secondary" type="button">查询</button>
-            </div>
-            <div class="net-examples">
-                <button type="button" class="btn-secondary net-example" data-dns="example.com" data-dns-type="A">example.com A</button>
-                <button type="button" class="btn-secondary net-example" data-dns="digdevbox.com" data-dns-type="MX">digdevbox.com MX</button>
-                <button type="button" class="btn-secondary net-example" data-dns="8.8.8.8">8.8.8.8 rDNS</button>
-            </div>
-            <p class="net-status" id="dns-status" role="status" aria-live="polite"></p>
-            <div id="dns-result" class="net-result"></div>
-        </div>
+        <section class="panel" id="api">
+            <h2>给脚本用的接口</h2>
+            <p>同一个查询也可以用 HTTP 拿 JSON。一次只查一个地址，没有批量接口。请不要高并发，上游有频率限制。</p>
+            <pre class="api-sample">curl "https://ip.digdevbox.com/api/ip"
+curl "https://ip.digdevbox.com/api/ip?ip=8.8.8.8"</pre>
+            <p>查自己时，<code>source</code> 一般是 <code>cloudflare-edge</code>。查别人时，目前只走已确认可商用并需署名的 ipinfo.io。字段、缓存时间和不提供的能力写在<a href="/docs#api">文档的接口一节</a>。</p>
+        </section>
 
         <div class="instructions">
-            <h3>📖 使用说明</h3>
+            <h3>使用前先知道这三件事</h3>
             <ul>
-                <li>在输入框中输入要查询的IP地址（支持 IPv4 / IPv6 格式）</li>
-                <li>点击"查询"按钮获取该IP的归属地信息</li>
-                <li>点击"查询我的IP"按钮可以快速查询您当前的IP地址信息</li>
-                <li>查询结果包括：国家、地区、城市、运营商、经纬度、时区等详细信息</li>
-                <li>支持查看IP地理位置的地图链接</li>
+                <li>输入公网 IPv4 或 IPv6，回车就能查。私有地址（例如 192.168.x.x）没有全球唯一归属。</li>
+                <li>点「看我的出口地址」，看的是这次连接出去的地址，不是局域网里那台电脑的内网地址。</li>
+                <li>结果里的国家、城市、组织和 ASN 用来对照日志就够了，不要拿它当门牌号。</li>
             </ul>
             <div class="api-notice">
-                <strong>提示：</strong>本工具同时向多个免费 IP 库发起查询，先给出可用结果的应答；
-                查询结果是 <strong>IP 地理信息估算</strong>（本质是概率推断），<strong>通常只能精确到城市级</strong>，
+                <strong>请这样读结果：</strong>查询结果是 <strong>IP 地理信息估算</strong>（本质是概率推断），<strong>通常只能精确到城市级</strong>，
                 <strong>不代表设备或用户的实际物理位置</strong>，仅供参考。
-                国家、省份/州、城市与组织等字段属于<strong>资源登记归属信息</strong>；
-                ASN 与「运营商 / 组织」来自第三方库的归属记录，<strong>不等同于该地址的实际服务运营商</strong>，
-                也<strong>不能用来判断使用者是住宅、移动网络还是机房</strong>。
-                查询请求默认经本站服务器转发完成（用于缓存与限流保护，本站不存储你的查询内容），
-                结果下方会标出本次实际应答的数据库。
+                国家、省份/州、城市与组织等字段属于<strong>资源登记归属</strong>信息。
+                ASN 与「运营商 / 组织」来自登记记录，不等同于该地址的实际服务运营商，
+                也不能用来判断使用者是住宅、移动网络还是机房。
+                指定地址的查询经本站边缘转发，用来做不超过 1 小时的技术缓存和减少重复请求。本站不把查询内容写成业务记录。
+                结果下方会标出这次实际应答的数据库。
             </div>
-
-            <h3>🔗 同站工具</h3>
-            <ul class="sibling-links">
-                <li><a href="https://digdevbox.com" target="_blank" rel="noopener">开发者工具集</a> — 常用在线开发工具</li>
-                <li><a href="https://fangdai.digdevbox.com" target="_blank" rel="noopener">房贷计算器</a> — 月供与利息测算</li>
-            </ul>
         </div>
 
-        <!--
-            SEO 静态正文（2026-10-24）：此前首页可见正文约 596 字符，工具界面全靠 JS 渲染。
-            本节为纯静态 HTML，不依赖 JS；内容以页面既有表述为据（查询字段、多库降级、
-            城市级精度、服务器转发缓存限流），不编造。未加 data-i18n：英文词条化需走
-            locales 注入链，列为后续待办，避免手改内联词条被注入器覆盖。
-        -->
-        <style>
-            /* IP-2 首屏锚点：锚点链接复用 .btn-secondary 配色，形态对齐既有 button 基础样式；
-               四项快捷操作允许换行，避免窄屏溢出。深色态由 style.css 的 .btn-secondary !important 覆盖接管。 */
-            .quick-actions{gap:10px;flex-wrap:wrap}
-            .quick-actions .quick-anchor{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:14px;font-weight:600;border-radius:6px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:all .2s}
-            .quick-actions .quick-anchor:hover{color:var(--dd-primary)}
-            /* 对齐 style.css 移动端 button{width:100%} 的既有形态，四个快捷控件同规格堆叠 */
-            @media (max-width:768px){.quick-actions .quick-anchor{width:100%;justify-content:center}}
-            .seo-guide{max-width:820px;margin:36px auto 0;padding:0 8px;font-family:var(--dd-font,system-ui,-apple-system,sans-serif)}
-            .seo-guide h2{font-size:1.3rem;margin:30px 0 10px;line-height:1.4}
-            .seo-guide h3{font-size:1.08rem;margin:22px 0 8px;line-height:1.4}
-            .seo-guide p{line-height:1.85;margin:8px 0;color:var(--dd-text-soft,inherit)}
-            .seo-guide details{border:1px solid var(--dd-border,#e5e7eb);border-radius:var(--dd-radius,8px);background:var(--dd-surface,transparent);padding:10px 16px;margin:10px 0}
-            .seo-guide summary{cursor:pointer;font-weight:600}
-            .seo-guide a{color:var(--dd-primary,#0f766e)}
-            @media (max-width:640px){.seo-guide h2{font-size:1.15rem}}
-        </style>
         <section class="seo-guide">
-            <h2>这个工具能查到什么</h2>
-            <p>
-                输入任意 IPv4 或 IPv6 地址，即可查询它的归属地信息：国家/地区、省份/州、城市、邮编、
-                ASN（自治系统号）、运营商（ISP）、所属组织、经纬度、时区，以及地理位置地图链接。
-                也可以点击「查询我的IP」直接查看你当前网络出口 IP 的归属信息。IPv6 的归属覆盖度因数据源
-                与地址段而异，部分地址可能仅能精确到国家级。
-            </p>
-            <h2>数据来源与精度说明</h2>
-            <p>
-                本工具分两条路径提供归属数据：查询您自己的 IP 时，使用的是 Cloudflare 边缘节点
-                随请求附带的地理信息，不调用任何第三方数据库；查询您手动输入的 IP 时，会同时向
-                <a href="https://ipwho.is" target="_blank" rel="noopener">ipwho.is</a>、
-                <a href="https://ipinfo.io" target="_blank" rel="noopener">IPinfo</a>
-                等公开 IP 库发起查询，先给出可用结果的应答。查询请求经本站服务器转发（用于缓存与
-                限流保护，本站不在服务器端存储你的查询内容，缓存为不超过 1 小时的短周期技术缓存）。
-                结果下方会标出本次实际应答的数据源、是否命中缓存，并附应答方的数据许可/署名链接
-                （IPinfo 免费层按 CC BY-SA 要求署名）。定位精度以城市级为主、因数据源而异：IP 归属
-                数据库反映的是运营商注册地与骨干网接入点，不一定等于设备的物理位置；不同数据源之间
-                也可能存在差异，结果仅供参考。
-            </p>
-            <h2>常见场景</h2>
+            <h2>这个页面能帮你做什么</h2>
+            <p>打开就看到自己的出口 IP。想核对服务器、日志或邮件头里的地址，把 IPv4 或 IPv6 贴进输入框。旁边可以算子网、查 DNS，也能一次核对一小批地址并导出。</p>
+            <h2>数据从哪来</h2>
+            <p>查你自己的地址时，用 Cloudflare 边缘节点随请求附带的地理信息，不再调用第三方库。查你输入的其他地址时，请求会转到 <a href="https://ipinfo.io" target="_blank" rel="noopener">IPinfo</a>。IPinfo 免费层可以商用，但要求署名，所以结果下方有链接。ipwho.is 的商用条款没能核到一手说明，2026-11-18 起不再调用。ipapi.co 的免费计划不用于生产，仍然不调用。</p>
+            <h2>什么时候用它</h2>
             <ul class="use-cases">
-                <li><strong>查本机出口 IP：</strong>点击「<a href="#myIpBtn">查询我的IP</a>」，一键查看当前网络出口 IP 的归属地与运营商登记信息。</li>
-                <li><strong>排查异地登录：</strong>账号出现陌生登录地时，把日志里的 IP 填入「<a href="#ipInput">查询框</a>」核对归属与 ASN。归属是登记信息与城市级估算，只作排查线索，不作唯一判定依据。</li>
-                <li><strong>确认服务器归属：</strong>把服务器公网 IP 填入「<a href="#ipInput">查询框</a>」，核对 ASN 与组织字段是否与预期一致。</li>
-                <li><strong>划分子网：</strong>用「<a href="#cidr">CIDR / 子网计算器</a>」算网络地址、掩码、广播与可用主机范围；域名解析与 IP 反查见「<a href="#dns">DNS / rDNS 查询</a>」。</li>
+                <li><strong>看自己的出口：</strong>开了代理却不确定有没有生效时，先看卡片上的地址和城市。</li>
+                <li><strong>对一下日志：</strong>把陌生 IP 贴进来，看登记组织和 ASN。这是线索，不是结论。</li>
+                <li><strong>划一段网：</strong>用<a href="#cidr">子网计算</a>看掩码和可用地址。域名和反向解析用<a href="#dns">DNS 查询</a>。</li>
             </ul>
             <h2>常见问题</h2>
             <details>
-                <summary>支持查询哪类 IP 地址？</summary>
-                <p>支持 IPv4 与 IPv6 格式的公网地址查询（如 8.8.8.8 或 2001:4860:4860::8888）。IPv6 的归属覆盖度因数据源与地址段而异，部分地址可能仅能精确到国家级。</p>
+                <summary>支持哪些地址？</summary>
+                <p>公网 IPv4 和 IPv6 都可以，例如 8.8.8.8 或 2001:4860:4860::8888。IPv6 的登记覆盖参差，有的只能到国家。私有地址没有全球唯一归属。</p>
             </details>
             <details>
-                <summary>我的查询会被记录吗？</summary>
-                <p>查询请求经本站服务器转发（用于缓存与限流保护），本站不在服务器端存储你的查询内容。结果数据来自第三方 IP 数据服务。</p>
+                <summary>查询会被记下来吗？</summary>
+                <p>本站不把查询做成账号历史。指定地址的结果会在边缘缓存里留最多 1 小时，缓存键里含有这个 IP，到期自动失效，没有单条删除按钮。细节在<a href="/privacy">隐私政策</a>。</p>
             </details>
             <details>
-                <summary>为什么不同网站的 IP 归属结果不一样？</summary>
-                <p>各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。</p>
+                <summary>为什么和别的网站不一样？</summary>
+                <p>各家用的登记库不同，更新时间也不同。本站会在结果下写出这次是谁应答的，你可以用这个名字去对照。</p>
             </details>
             <details>
-                <summary>可以查看原始 JSON、客户端信息或查询历史吗？</summary>
-                <p>可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。</p>
+                <summary>能导出、能批量吗？</summary>
+                <p>单条结果可以复制摘要、导出文本或 JSON。批量一次最多 20 个，可以复制或下载 CSV。列表只在这台浏览器里处理。</p>
             </details>
-            <details>
-                <summary>CIDR / 子网计算器能算什么？</summary>
-                <p>输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。</p>
-            </details>
-            <details>
-                <summary>DNS / rDNS 查询的数据从哪里来？</summary>
-                <p>来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。</p>
-            </details>
-            <p>
-                更多用法见<a href="/guides">使用教程</a>，字段含义见<a href="/docs">IP 知识文档</a>，
-                其余疑问见<a href="/faq">常见问题</a>。
-            </p>
+            <p>用法见<a href="/guides">使用教程</a>，字段和接口见<a href="/docs">文档</a>，其余问题见<a href="/faq">常见问题</a>。</p>
         </section>
         <script type="application/ld+json">
         {
@@ -398,33 +344,23 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "支持查询哪类 IP 地址？",
-              "acceptedAnswer": { "@type": "Answer", "text": "支持 IPv4 与 IPv6 格式的公网地址查询（如 8.8.8.8 或 2001:4860:4860::8888）。IPv6 的归属覆盖度因数据源与地址段而异，部分地址可能仅能精确到国家级。" }
+              "name": "支持哪些地址？",
+              "acceptedAnswer": { "@type": "Answer", "text": "公网 IPv4 和 IPv6 都可以。IPv6 的登记覆盖参差，有的只能到国家。私有地址没有全球唯一归属。" }
             },
             {
               "@type": "Question",
-              "name": "我的查询会被记录吗？",
-              "acceptedAnswer": { "@type": "Answer", "text": "查询请求经本站服务器转发（用于缓存与限流保护），本站不在服务器端存储你的查询内容。结果数据来自第三方 IP 数据服务。" }
+              "name": "查询会被记下来吗？",
+              "acceptedAnswer": { "@type": "Answer", "text": "本站不把查询做成账号历史。指定地址的结果会在边缘缓存里留最多 1 小时，到期自动失效。" }
             },
             {
               "@type": "Question",
-              "name": "为什么不同网站的 IP 归属结果不一样？",
-              "acceptedAnswer": { "@type": "Answer", "text": "各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。" }
+              "name": "为什么和别的网站不一样？",
+              "acceptedAnswer": { "@type": "Answer", "text": "各家用的登记库不同。本站会在结果下写出这次是谁应答的。" }
             },
             {
               "@type": "Question",
-              "name": "可以查看原始 JSON、客户端信息或查询历史吗？",
-              "acceptedAnswer": { "@type": "Answer", "text": "可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。" }
-            },
-            {
-              "@type": "Question",
-              "name": "CIDR / 子网计算器能算什么？",
-              "acceptedAnswer": { "@type": "Answer", "text": "输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。" }
-            },
-            {
-              "@type": "Question",
-              "name": "DNS / rDNS 查询的数据从哪里来？",
-              "acceptedAnswer": { "@type": "Answer", "text": "来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。" }
+              "name": "能导出、能批量吗？",
+              "acceptedAnswer": { "@type": "Answer", "text": "单条结果可以复制或导出。批量一次最多 20 个，可以下载 CSV。列表只在浏览器里处理。" }
             }
           ]
         }
@@ -439,7 +375,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <script src="js/analytics.iife.js"></script>
     <script type="module" src="js/app.js"></script>
     <script type="module" src="js/net-tools-ui.js"></script>
-
+    <script type="module" src="js/batch-ui.js"></script>
 
 <footer class="dd-brandfoot compact">
     <div class="dd-shell-inner">
@@ -466,10 +402,6 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     if(h.getAttribute('data-theme')==='dark')return 'dark';
     if(h.getAttribute('data-theme')==='light')return 'light';
     return sysDark()?'dark':'light';}
-  // aria/title 交给 i18n 内核统一管理（按钮已带 data-i18n-attr="aria-label:aria.themeToggle"）。
-  // 原因：本脚本的 init 挂在 DOMContentLoaded 上，执行晚于 defer 的 dd-i18n.js，
-  // 若在这里硬编码中文 aria，会把内核刚写好的英文 aria 覆盖回中文（实测到的假通过点）。
-  // 未启用 i18n 的站点（无 window.DD_I18N）仍走原中文动态文案。
   function sync(){var b=document.getElementById('dd-theme-toggle');if(!b)return;
     var d=effective()==='dark';
     b.textContent=d?'☀️':'🌙';

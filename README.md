@@ -13,7 +13,7 @@ A lightweight, privacy-friendly web app to look up the geolocation of any IPv4 a
 
 ## 功能特点
 
-- **零第三方依赖的自查路径**：查询自己 IP 走 Cloudflare 边缘注入数据；查任意 IP 并发竞速 ipinfo.io / ipwho.is（多源任一可用即返回，界面显示实际数据源）
+- **零第三方依赖的自查路径**：查询自己 IP 走 Cloudflare 边缘注入数据；查任意 IP 只请求已确认可商用并需署名的 ipinfo.io（界面显示实际数据源）
 - **快速查询**：输入 IP 地址即可查询详细归属地信息
 - **自动定位**：页面加载时自动查询并显示当前 IP 地址信息
 - **详细信息**：显示国家、省份、城市、邮编、ASN、运营商、组织、经纬度、时区
@@ -124,7 +124,7 @@ ip_location/
 | 数据源 | 许可状态（核验日 2026-11-17） |
 | --- | --- |
 | [ipinfo.io](https://ipinfo.io) | 官方定价页：免费 Lite 可商用，**要求署名**（VERIFIED） |
-| [ipwho.is](https://ipwho.is) | 商用/展示条款**未能一手核验**（站点不可达）——待核验项，不得宣称合规 |
+| ipwho.is | 2026-11-18 起停用。商用条款仍未一手核验，复盘包禁止把未确认许可的端点用于本站 |
 
 - **ipapi.co 已整体移除**：其官方定价明确免费计划仅供测试/开发、不适用于生产部署（VERIFIED），
   本站为商业部署（AdSense），未经许可不得使用；取得针对公开 IP 展示产品的书面授权之前不得恢复。
@@ -319,7 +319,7 @@ docker run -d -p 80:80 --name ip-location ip-location
 ## 相关链接
 
 - [ipinfo.io](https://ipinfo.io) — 任意 IP 查询数据源（免费 Lite 可商用，须署名）
-- [ipwho.is](https://ipwho.is) — 任意 IP 查询数据源（商用条款一手核验中）
+- ipwho.is — 2026-11-18 起不再调用，等站长拿到可商用的书面条款再决定是否恢复
 - Cloudflare Workers `request.cf` — 自查 IP 路径的地理信息来源（无第三方调用）
 - ~~ipapi.co~~ — 2026-11-17 因免费计划不适用于生产部署而整体移除
 - [DigDevBox — 免费在线开发者工具](https://digdevbox.com)

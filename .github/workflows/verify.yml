@@ -28,6 +28,12 @@ jobs:
       - name: 校验 IP V1 商业口径（G3 文案限定语 / 接入类型断言禁令 / network_type 全链路）
         run: node scripts/check-copy-policy.mjs
 
+      - name: 校验数据源许可（自检零第三方 / 不调用 ipapi.co）
+        run: node scripts/check-compliance.mjs
+
+      - name: 单元测试
+        run: node --test tests/*.test.mjs
+
       - name: 组装发布目录
         run: node scripts/build.mjs
 

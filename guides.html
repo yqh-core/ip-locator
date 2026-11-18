@@ -73,22 +73,22 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </nav>
 
         <header>
-            <h1>📖 使用教程</h1>
-            <p class="subtitle">从「查一个 IP」到「用数据排查问题」</p>
+            <h1>使用教程</h1>
+            <p class="subtitle">从查一个地址，到拿它对照日志</p>
         </header>
 
         <div class="content-section">
             <div class="about-section">
                 <h2>第 1 步：查询一个指定 IP</h2>
-                <p>打开<a href="/">首页</a>，在输入框中填入 IPv4 地址，例如 <code>8.8.8.8</code>，点击「查询」。页面会返回十个字段：国家/地区、省份/州、城市、邮编、ASN、运营商、组织、经纬度、时区，以及一个可直接打开的地图链接。</p>
+                <p>打开<a href="/">首页</a>，输入 IPv4 或 IPv6，例如 <code>8.8.8.8</code>，回车。卡片上会有国家、省份、城市、邮编、ASN、运营商、组织、经纬度和时区，旁边是一张不加载第三方瓦片的坐标示意。</p>
                 <div class="api-notice">
-                    <strong>注意：</strong>只支持公网 IPv4。像 <code>192.168.1.1</code> 这类内网地址没有全球唯一归属，工具会直接报错——这是正确行为，不是故障。
+                    <strong>注意：</strong>只查公网地址。像 <code>192.168.1.1</code> 这种内网地址没有全球唯一归属，工具会告诉你它是私有地址。这是正常的，不是故障。
                 </div>
             </div>
 
             <div class="about-section">
                 <h2>第 2 步：查询自己的公网 IP</h2>
-                <p>点击「📍 查询我的 IP」，工具会自动识别你当前的公网出口地址并查询。这一步常用于：</p>
+                <p>首页打开就会读你的出口地址，也可以再点「看我的出口地址」。这一步常用于：</p>
                 <ul class="use-cases">
                     <li><strong>确认代理是否生效：</strong>如果你开了 VPN 但查到的仍是本地城市，说明流量没走代理。</li>
                     <li><strong>看出口归属：</strong>查到的城市通常对应运营商侧的<strong>出口与登记归属</strong>，
@@ -102,9 +102,9 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <h2>第 3 步：读懂结果里的关键字段</h2>
                 <p>十个字段里，有三个最容易被忽略、却最有信息量：</p>
                 <ul>
-                    <li><strong>ASN：</strong>告诉你这个 IP 属于哪个网络运营实体。例如 AS15169 是 Google，AS13335 是 Cloudflare。如果访客 IP 的 ASN 是某云厂商，那它很可能是爬虫或机器人，而不是真实用户。</li>
-                    <li><strong>组织（Org）：</strong>常能直接看出公司或机构名。结合 ASN 一起看，比单看城市可靠得多。</li>
-                    <li><strong>时区：</strong>做跨时区业务时，可用它判断用户的作息区间，比用国家推断更准（例如美国跨多个时区）。</li>
+                    <li><strong>ASN：</strong>这是地址段在注册库里的网络编号。AS15169 登记为 Google，AS13335 登记为 Cloudflare。它适合用来识别流量所属的网络归属线索，不能据此说访客是爬虫还是真人。</li>
+                    <li><strong>组织：</strong>登记名称，常常能看到公司或机构。和 ASN 一起看，比单看城市有用。它仍然不是「这个人现在用的那家宽带」。</li>
+                    <li><strong>时区：</strong>登记库给出的时区。卡片上会换算当地此刻的时间，方便对日志。美国跨多个时区，不要用国家名代替它。</li>
                 </ul>
                 <p>想系统理解这些概念，请看<a href="/docs">IP 知识文档</a>。</p>
             </div>
@@ -120,7 +120,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <div class="disclaimer">
                     <p><code>curl "https://ip.digdevbox.com/api/ip?ip=8.8.8.8"</code></p>
                 </div>
-                <p>结果会被边缘节点缓存（指定 IP 缓存 24 小时，自身 IP 缓存 5 分钟），因此重复查询同一地址响应极快。请勿高并发调用，上游数据源有频率限制。</p>
+                <p>指定地址的结果在边缘缓存最多 1 小时，自己的地址大约 5 分钟。重复查同一个地址会快一些。请不要高并发，上游有频率限制。一次核对多个地址，用首页的批量框，上限 20 个。</p>
             </div>
 
             <div class="about-section">

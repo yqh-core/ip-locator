@@ -1,0 +1,615 @@
+/* 首页查询台。只服务 index，内页继续用 style.css。 */
+
+.lookup {
+  max-width: 1080px;
+}
+
+.lookup .top-nav ul {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lookup .top-nav a {
+  white-space: nowrap;
+}
+
+.lookup header.page-intro {
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  padding: 8px 4px 18px;
+  margin: 0;
+}
+
+.lookup header.page-intro h1 {
+  font-size: clamp(1.7rem, 2.4vw, 2.15rem);
+  letter-spacing: -0.03em;
+  color: var(--dd-text);
+  margin: 0 0 8px;
+}
+
+.lookup header.page-intro .subtitle {
+  max-width: 62ch;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--dd-text-soft);
+}
+
+.stage {
+  background: var(--dd-surface);
+  border: 1px solid var(--dd-border);
+  border-radius: 18px;
+  box-shadow: var(--dd-shadow);
+  padding: 22px 22px 18px;
+  margin-bottom: 16px;
+}
+
+.stage-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--dd-text-muted);
+  margin-bottom: 4px;
+}
+
+.ip-hero {
+  font-family: var(--dd-font-mono);
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--dd-text);
+  word-break: break-all;
+}
+
+.ip-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--dd-primary-soft);
+  color: var(--dd-primary);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.stage.is-loading .ip-hero {
+  color: var(--dd-text-muted);
+}
+
+.lookup-bar {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.lookup-bar input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--dd-border);
+  background: var(--dd-surface-2);
+  color: var(--dd-text);
+  font-size: 1rem;
+  font-family: var(--dd-font-mono);
+}
+
+.lookup-bar input:focus {
+  outline: 2px solid var(--dd-focus-ring);
+  border-color: var(--dd-primary);
+  background: var(--dd-surface);
+}
+
+.lookup-bar button,
+.ip-actions button,
+.tool-actions button,
+.batch-actions button {
+  height: 46px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.lookup-bar #searchBtn {
+  background: var(--dd-primary);
+  color: var(--dd-on-primary);
+}
+
+.quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+#copyIpBtn,
+.quick-row a,
+.quick-row button {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--dd-border);
+  background: var(--dd-surface);
+  color: var(--dd-text-soft);
+  text-decoration: none;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.quick-row a:hover,
+.quick-row button:hover {
+  color: var(--dd-primary);
+  border-color: var(--dd-primary);
+}
+
+.stage-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.8fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.field-group + .field-group {
+  margin-top: 14px;
+}
+
+.field-group h3 {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--dd-text-muted);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fields .info-item {
+  background: var(--dd-surface-2);
+  border-radius: 12px;
+  padding: 10px 12px 8px;
+  min-width: 0;
+}
+
+.fields .info-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--dd-text-muted);
+  margin-bottom: 3px;
+}
+
+.fields .info-value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dd-text);
+  word-break: break-word;
+  padding-right: 52px;
+}
+
+.fields .info-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--dd-text-muted);
+}
+
+.fields .info-item {
+  position: relative;
+}
+
+.zone-clock {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--dd-text-soft);
+}
+
+.map-panel {
+  background: var(--dd-surface-2);
+  border-radius: 14px;
+  padding: 12px;
+  min-height: 220px;
+}
+
+.local-map {
+  width: 100%;
+  height: 168px;
+  display: block;
+  background: #e7f2f1;
+  border-radius: 10px;
+}
+
+html[data-theme="dark"] .local-map {
+  background: #0e2430;
+}
+
+.local-map .grat {
+  stroke: rgba(15, 118, 110, 0.28);
+  stroke-width: 1;
+}
+
+.local-map .pin {
+  fill: #0f766e;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+html[data-theme="dark"] .local-map .pin {
+  fill: #2dd4bf;
+  stroke: #04201d;
+}
+
+.map-caption,
+.map-empty {
+  margin: 8px 2px 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--dd-text-soft);
+}
+
+.map-embed {
+  margin-top: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 180px;
+}
+
+.map-embed iframe {
+  width: 100%;
+  height: 200px;
+  border: 0;
+}
+
+.map-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 8px;
+  font-size: 0.86rem;
+}
+
+.map-links a {
+  color: var(--dd-primary);
+}
+
+.tool-actions,
+.batch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tool-actions .btn-secondary,
+.batch-actions .btn-secondary,
+.ptr-row .btn-secondary {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--dd-border);
+  background: var(--dd-surface);
+  color: var(--dd-text);
+  cursor: pointer;
+}
+
+.ptr-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.ptr-row p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--dd-text-soft);
+  word-break: break-all;
+}
+
+.source-note {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--dd-text-soft);
+}
+
+.lookup .error {
+  text-align: left;
+  border-radius: 12px;
+}
+
+.lookup .loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  box-shadow: none;
+  padding: 0 0 12px;
+  margin: 0;
+}
+
+.lookup .loading[hidden] {
+  display: none !important;
+}
+
+.lookup .spinner {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
+}
+
+.field-copy {
+  width: auto;
+  min-width: 36px;
+  height: 24px;
+  padding: 0 6px;
+  font-size: 11px;
+}
+
+.panel {
+  background: var(--dd-surface);
+  border: 1px solid var(--dd-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 0 0 14px;
+}
+
+.panel h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: var(--dd-text);
+}
+
+.panel .lede,
+.panel p {
+  margin: 0;
+  color: var(--dd-text-soft);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.panel .lede + p,
+.panel p + p {
+  margin-top: 8px;
+}
+
+.status-chip {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--dd-warning-bg);
+  color: var(--dd-warning);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.panel textarea,
+.batch-box textarea {
+  width: 100%;
+  min-height: 112px;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--dd-border);
+  background: var(--dd-surface-2);
+  color: var(--dd-text);
+  font-family: var(--dd-font-mono);
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.batch-table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.batch-table th,
+.batch-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--dd-border);
+  white-space: nowrap;
+}
+
+.batch-table th {
+  color: var(--dd-text-muted);
+  font-weight: 650;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.two-col .panel,
+.two-col .ip-info {
+  margin: 0;
+}
+
+.lookup .ip-info {
+  background: var(--dd-surface);
+  border: 1px solid var(--dd-border);
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+.json-view {
+  max-height: 240px;
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--dd-surface-2);
+  color: var(--dd-text);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.api-sample {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--dd-surface-2);
+  overflow-x: auto;
+  font-family: var(--dd-font-mono);
+  font-size: 0.84rem;
+  color: var(--dd-text);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.field-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: auto;
+  height: 24px;
+  padding: 0 6px;
+  font-size: 11px;
+  line-height: 22px;
+  border-radius: 8px;
+  border: 1px solid var(--dd-border) !important;
+  background: var(--dd-surface) !important;
+  color: var(--dd-text-soft) !important;
+  cursor: pointer;
+}
+
+.fields .info-value {
+  padding-right: 46px;
+}
+
+.two-col:has(#extraTools[hidden]) {
+  grid-template-columns: 1fr;
+}
+
+#batch-run {
+  background: var(--dd-primary);
+  color: var(--dd-on-primary);
+  border: 0;
+}
+
+html[data-theme="dark"] .lookup .loading {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] #batch-run {
+  background: var(--dd-primary) !important;
+  color: var(--dd-on-primary) !important;
+}
+
+html[data-theme="dark"] .history-link {
+  background: transparent !important;
+  color: var(--dd-primary-hover) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  height: auto !important;
+  padding: 2px 0 !important;
+  justify-content: flex-start !important;
+}
+
+html[data-theme="dark"] .history-del {
+  width: auto !important;
+  height: auto !important;
+  padding: 0 6px !important;
+  background: transparent !important;
+  color: var(--dd-text-soft) !important;
+  border: 1px solid var(--dd-border) !important;
+}
+
+html[data-theme="dark"] .field-copy,
+html[data-theme="dark"] .quick-row button,
+html[data-theme="dark"] .quick-row a,
+html[data-theme="dark"] .tool-actions .btn-secondary,
+html[data-theme="dark"] .batch-actions .btn-secondary,
+html[data-theme="dark"] .ptr-row .btn-secondary {
+  background: var(--dd-surface-2) !important;
+  color: var(--dd-text) !important;
+  border-color: var(--dd-border) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-dd-auto] .local-map {
+    background: #0e2430;
+  }
+  html[data-dd-auto] .local-map .pin {
+    fill: #2dd4bf;
+    stroke: #04201d;
+  }
+}
+
+.lookup :focus-visible {
+  outline: 2px solid var(--dd-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 800px) {
+  .stage-grid,
+  .two-col,
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .stage-top,
+  .lookup-bar {
+    flex-direction: column;
+  }
+  .lookup-bar button,
+  .ip-actions {
+    width: 100%;
+  }
+  .ip-actions button,
+  .lookup-bar #searchBtn {
+    width: 100%;
+  }
+  .stage {
+    padding: 16px;
+  }
+}

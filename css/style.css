@@ -4,6 +4,8 @@
     box-sizing: border-box;
 }
 
+html[data-theme="light"] { color-scheme: light; }
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     background: var(--dd-bg);
@@ -1162,13 +1164,9 @@ html[data-theme="dark"] .instructions strong { color:var(--dd-primary-hover) !im
    - 移动 390px 视口：结果区 1341px（成功态 ipInfo 1285 + 间距；loading 146 / error 49）
    目标：CLS < 0.1。若线上结果态高度变化（如地图高度调整），需同步复测本值。
    ============================================================ */
+/* 结果卡改为首屏常驻，不再预留 690/1341px 空白。高度由内容决定。 */
 #result-zone {
-    min-height: 690px;
-}
-@media (max-width: 768px) {
-    #result-zone {
-        min-height: 1341px;
-    }
+    min-height: 0;
 }
 
 /* ==========================================================================

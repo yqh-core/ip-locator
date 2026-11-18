@@ -73,8 +73,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </nav>
 
         <header>
-            <h1>📚 IP 知识文档</h1>
-            <p class="subtitle">理解 IP 地址与归属地查询的技术基础</p>
+            <h1>IP 知识文档</h1>
+            <p class="subtitle">地址、网段、ASN，以及这份结果该怎么读</p>
         </header>
 
         <div class="content-section">
@@ -163,8 +163,21 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <p>结论：把 IP 定位当作<strong>概率信号</strong>而非事实。它在内容分发、粗略风控、日志分析中很有用，但不适合单独作为决策依据。</p>
             </div>
 
+            <div class="about-section" id="api">
+                <h2>7. 接口</h2>
+                <p>页面和接口看的是同一套字段。一次只接受一个地址，没有批量 URL。请不要并发打满，上游有频率限制。</p>
+                <ul>
+                    <li><code>GET /api/ip</code> — 查调用方自己的出口地址。正常情况下 <code>source</code> 为 <code>cloudflare-edge</code>，不另调第三方库。</li>
+                    <li><code>GET /api/ip?ip=8.8.8.8</code> — 查指定地址。当前应答方是 ipinfo.io，<code>source</code> 会写成 <code>ipinfo.io</code>。</li>
+                </ul>
+                <p>成功时返回 JSON：<code>ip</code>、<code>country</code>、<code>region</code>、<code>city</code>、<code>postal</code>、<code>lat</code>、<code>lon</code>、<code>timezone</code>、<code>asn</code>、<code>org</code>、<code>isp</code>，以及 <code>source</code>、<code>cached</code>、<code>country_original</code>。<code>country</code> 是中文地区名，<code>country_original</code> 保留上游原来的国家码。没有代理、VPN 或住宅/机房这类字段，因为本站不判断这些。</p>
+                <p>指定地址的边缘缓存最长 1 小时，自身地址最长 5 分钟。错误响应不缓存。浏览器里的批量核对、复制和 CSV 不走单独接口，列表也不会发到本站保存。</p>
+                <p>示例：</p>
+                <p><code>curl "https://ip.digdevbox.com/api/ip?ip=8.8.8.8"</code></p>
+            </div>
+
             <div class="about-section">
-                <h2>7. 相关资源</h2>
+                <h2>8. 相关资源</h2>
                 <ul>
                     <li><a href="/guides">使用教程</a> — 四步上手实操与异常访问排查</li>
                     <li><a href="/faq">常见问题</a> — 为什么城市不准、支持 IPv6 吗</li>

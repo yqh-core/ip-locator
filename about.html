@@ -74,13 +74,13 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
         <header>
             <h1>关于本站</h1>
-            <p class="subtitle">一个纯在前端跑的 IP 归属地查询工具</p>
+            <p class="subtitle">帮你看一个地址大概登记在哪儿、挂在哪家网络名下</p>
         </header>
 
         <div class="content-section">
             <div class="about-section">
                 <h2>它解决什么问题</h2>
-                <p>拿到一个 IP，想知道它大概在哪儿、在注册归属数据里对应哪家组织或网络——排查异常访问、看服务器出口、判断日志里某个请求的来源时，这是很常见的一步。需要提醒的是：这不一定代表用户当前实际使用的网络运营商，也不代表设备的物理位置。这个工具把这件事做成一个输入框：贴进去，回车，看结果。不需要注册，也不存你的查询记录。输入 <code>8.8.8.8</code> 这类公开 IP 试试，或直接点「查询我的 IP」看你自己的公网出口。</p>
+                <p>拿到一个 IP，想知道它大概在哪儿、在注册归属数据里对应哪家组织或网络。查异常访问、看服务器出口、对日志时，经常就差这一步。这不一定代表用户当前实际使用的网络运营商，也不代表设备的物理位置。贴进去，回车，看结果。不用注册。输入 <code>8.8.8.8</code> 试试，或回到首页看你自己的出口地址。</p>
             </div>
 
             <div class="about-section">
@@ -94,8 +94,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
             <div class="about-section">
                 <h2>数据从哪来，要多准</h2>
-                <p>本站自己不做 IP 定位——查询您自己的 IP 时，用的是 Cloudflare 边缘节点随请求附带的地理信息，不额外调用第三方；查询您手动输入的其它 IP 时，数据并发取自 ipwho.is、ipinfo.io 公开服务，任一可用即返回，再统一归一化后展示。结果区会显示本次实际生效的数据源。</p>
-                <p>要知道的边界：IP 归属地反映的是<strong>分配该地址的运营商 / 机构的大致位置</strong>，不是物理精确地址。走 VPN、代理或 CDN 时，查到的是出口 / 节点位置而非终端真实位置。把它当「大概在这个城市、属于这家运营商」来用是可靠的，指望定位到门牌号则会失望。</p>
+                <p>本站自己不维护 IP 库。查你自己的地址时，用 Cloudflare 边缘节点随请求附带的地理信息，不另调第三方。查你输入的其他地址时，只请求 ipinfo.io：它的免费层可以商用，但必须署名，结果里会放链接。ipwho.is 的商用条款没有核到一手说明，已经停用。</p>
+                <p>要知道的边界：IP 归属地反映的是<strong>分配该地址的运营商 / 机构的大致位置</strong>，不是物理精确地址。走 VPN、代理或 CDN 时，查到的是出口，不是人在的地方。把它当「大概在这个城市、属于这家运营商」来用就好，指望定位到门牌号则会失望。</p>
             </div>
 
             <div class="about-section">
@@ -105,12 +105,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
             <div class="about-section">
                 <h2>技术栈</h2>
-                <p>纯静态：HTML5 + CSS3 + 原生 JavaScript，无后端、无数据库。托管在 Cloudflare Pages，全站 HTTPS。</p>
+                <p>页面是静态的 HTML、CSS 和原生 JavaScript，托管在 Cloudflare Pages。查指定地址时由 Pages Function 转发到 ipinfo.io，并做不超过 1 小时的技术缓存。没有账号数据库。</p>
             </div>
 
             <div class="about-section">
                 <h2>反馈</h2>
-                <p>字段有错、某个数据源挂了、或想加什么能力，请通过<a href="/contact">联系页</a>告诉我们；附上你查的 IP 和实际看到的结果，处理会快很多。
+                <p>字段不对、接口挂了，或有别的想法，去<a href="/contact">联系页</a>说一声。带上你查的 IP 和页面上看到的结果，会快很多。</p>
 
             <div class="back-link">
                 <a href="/">← 返回首页</a>

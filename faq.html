@@ -73,8 +73,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </nav>
 
         <header>
-            <h1>❓ 常见问题</h1>
-            <p class="subtitle">关于 IP 查询，你大概率想问这些</p>
+            <h1>常见问题</h1>
+            <p class="subtitle">先看这几条，多数「不准」其实是预期之内</p>
         </header>
 
         <div class="content-section">
@@ -122,7 +122,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
             <div class="about-section">
                 <h2>可以批量查询吗？有 API 吗？</h2>
-                <p>本站提供同源的 <code>/api/ip</code> 端点（<code>/api/ip?ip=8.8.8.8</code>），返回 JSON 结果，可用于轻量调用。请勿用于高频批量场景，否则可能触发上游限流。批量功能正在规划中。</p>
+                <p>首页可以一次贴最多 20 个地址，在浏览器里逐个查，并能复制或下载 CSV。接口是 <code>/api/ip?ip=8.8.8.8</code>，一次一个地址，返回 JSON。没有批量接口，请不要高并发，不然会碰到上游限流。</p>
             </div>
 
             <div class="about-section">

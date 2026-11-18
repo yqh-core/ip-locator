@@ -100,38 +100,12 @@ function normalizeInfo(partial) {
 /**
  * 上游数据源清单。注意实际行为是**并发竞速**（lookupUpstreams 同时发起，先成功者胜），不是串行降级。
  *
- * 2026-11-17 合规改造后仅保留 ipwho.is、ipinfo.io 两家（ipapi.co 已移除，见下）。
- * 注意：自检查询（查访问者自己 IP）在 onRequestGet 里直接走 cloudflare-edge，
- * 不经过这里的任何第三方上游；本清单只服务"查任意指定 IP"这一路径。
+ * 2026-11-18：指定 IP 只请求 ipinfo.io。
+ * ipapi.co 免费计划不可用于生产（2026-11-17 已移除）。
+ * ipwho.is 商用条款没有一手核验，不再请求。
+ * 自检查询在 onRequestGet 里直接走 cloudflare-edge，不经过这里。
  */
 const UPSTREAMS = [
-  {
-    id: 'ipwho.is',
-    build: ip => `https://ipwho.is/${encodeURIComponent(ip)}`,
-    normalize(raw) {
-      if (!raw || raw.success === false) return null;
-      const conn = raw.connection || {};
-      const tz = typeof raw.timezone === 'string' ? raw.timezone : raw.timezone?.id;
-      return normalizeInfo({
-        ip: toText(raw.ip),
-        // 取 country_code（"US"）而非全名：expandCountryName 会补成展示名，
-        // country_original 保留码，客户端国旗 emoji 才能在 ipwho.is 路径下生效。
-        country: toText(raw.country_code) || toText(raw.country),
-        region: toText(raw.region),
-        city: toText(raw.city),
-        postal: toText(raw.postal),
-        lat: toNumber(raw.latitude),
-        lon: toNumber(raw.longitude),
-        timezone: toText(tz),
-        asn: formatAsn(conn.asn),
-        org: toText(conn.org) || toText(conn.isp),
-        isp: toText(conn.isp) || toText(conn.org),
-      });
-    },
-  },
-  // ipapi.co 已于 2026-11-17 整体移除：官方 Pricing 明确免费计划仅供测试/开发、
-  // 不适用于生产部署（VERIFIED，核验日 2026-11-17），本站为商用（AdSense）→ 禁止依赖。
-  // 在取得针对"公开 IP 展示产品"的书面授权之前不得加回。见 js/ip-sources.js 同步说明。
   {
     id: 'ipinfo.io',
     build: ip => `https://ipinfo.io/${encodeURIComponent(ip)}/json`,
@@ -159,13 +133,13 @@ const UPSTREAMS = [
 /**
  * 把 2 字母国家码补成完整国家名。
  *
- * 各家给的形态不一致：ipwho.is 给 "United States"，ipinfo.io 给 "US"，
+ * 各家给的形态不一致：有的库给 "United States"，ipinfo.io 给 "US"，
  * 直接用会让界面上同一个字段随数据源变样。这里统一成完整国家名。
  *
  * 用 Intl.DisplayNames 而不是维护一张国家表 —— Workers 自带完整 ICU 数据，
  * 零维护成本，也不会漏国家。拿不到就原样返回，宁可显示码也不要出错。
  */
-const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const regionNames = new Intl.DisplayNames(['zh-Hans'], { type: 'region' });
 
 function expandCountryName(country) {
   const s = toText(country);
@@ -185,12 +159,8 @@ function isPlausibleIP(ip) {
 /**
  * 并发问所有上游，谁先给出可用结果就用谁。
  *
- * 一开始写的是串行降级，但线上观察发现排第一的 ipwho.is 在边缘节点
- * 常年超时（本机直连却是好的，怀疑是它对 Cloudflare 出口 IP 有限制），
- * 于是每次查询都要先白等 4 秒才轮到 ipinfo.io。
- *
- * 改成并发后总耗时取决于最快的那个源，慢的源不阻塞。
- * 因为有 24 小时缓存兜着，真正打到上游的请求很少，多发的那几路可以接受。
+ * 目前只有 ipinfo.io 一路。保留并发结构，是为了以后在许可核清后加回第二家，
+ * 而不是再改成串行等待。指定 IP 的边缘缓存是 1 小时，重复查询不会反复打上游。
  */
 async function lookupUpstreams(ip) {
   let settled = false;
@@ -247,12 +217,13 @@ function infoFromRequestCf(ip, cf) {
   };
 }
 
-function jsonResponse(body, status = 200) {
+function jsonResponse(body, status = 200, browserSeconds = BROWSER_CACHE_SECONDS) {
+  const seconds = status === 200 ? browserSeconds : 0;
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': `public, max-age=${BROWSER_CACHE_SECONDS}`,
+      'Cache-Control': `public, max-age=${seconds}`,
       ...CORS_HEADERS,
     },
   });
@@ -348,5 +319,6 @@ export async function onRequestGet(context) {
     // 写缓存失败不影响本次响应
   }
 
-  return jsonResponse(payload);
+  const browserTtl = isSelfQuery ? SELF_CACHE_TTL_SECONDS : BROWSER_CACHE_SECONDS;
+  return jsonResponse(payload, 200, browserTtl);
 }

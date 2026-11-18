@@ -123,7 +123,7 @@ function expandCountry(country) {
   if (!s) return { country: null, countryOriginal: s };
   if (!/^[A-Za-z]{2}$/.test(s)) return { country: s, countryOriginal: s };
   try {
-    if (!regionNames) regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+    if (!regionNames) regionNames = new Intl.DisplayNames(['zh-Hans'], { type: 'region' });
     return { country: regionNames.of(s.toUpperCase()) || s, countryOriginal: s };
   } catch {
     return { country: s, countryOriginal: s };
@@ -304,40 +304,10 @@ export const IP_SOURCES = [
       return info;
     },
   },
-  // 客户端 ipapi.co 直连源于 2026-11-17 移除：
-  // 官方 Pricing 明确免费计划仅供测试/开发、不适用于生产部署（VERIFIED，核验日 2026-11-17），
-  // 本站为商业部署（AdSense）→ 浏览器直连该免费端点属于未经许可的生产使用，禁止。
-  // 未取得针对公开 IP 展示产品的书面授权前不得恢复；ENTITY_LABELS 中的显示项仅作缓存过渡。
-  {
-    id: 'ipwho.is',
-    label: 'ipwho.is',
-    build: ip => (ip ? `https://ipwho.is/${encodeURIComponent(ip)}` : 'https://ipwho.is/'),
-    normalize(raw) {
-      if (!raw || raw.success === false) return null;
-      const conn = raw.connection || {};
-      const tz = typeof raw.timezone === 'string' ? raw.timezone : raw.timezone?.id;
-      const shown = expandCountry(toText(raw.country));
-      return normalizeInfo({
-        ip: toText(raw.ip),
-        country: shown.country,
-        region: toText(raw.region),
-        city: toText(raw.city),
-        postal: toText(raw.postal),
-        lat: toNumber(raw.latitude),
-        lon: toNumber(raw.longitude),
-        timezone: toText(tz),
-        asn: formatAsn(conn.asn),
-        org: toText(conn.org) || toText(conn.isp),
-        isp: toText(conn.isp) || toText(conn.org),
-      }, {
-        source: 'ipwho.is',
-        cached: null,
-        // ipwho.is 的 country 是全名（"United States"）、country_code 才是码（"US"）。
-        // 取码做原值，国旗 emoji 才能在任何数据源下都生效（与 ipapi.co 同口径）。
-        countryOriginal: toText(raw.country_code) || shown.countryOriginal,
-      });
-    },
-  },
+  // 直连兜底只保留 ipinfo.io（2026-11-18）：
+  // ipapi.co 免费计划不可用于生产，2026-11-17 已移除。
+  // ipwho.is 商用条款未能核到一手说明，复盘包要求未确认许可的端点不得用于本站，故不再请求。
+  // ENTITY_LABELS 仍保留旧 id，避免历史缓存里的 source 显示成空白。
   {
     id: 'ipinfo.io',
     label: 'ipinfo.io',

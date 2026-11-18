@@ -50,17 +50,10 @@
   function detectLocale() {
     var saved = readStored();
     if (saved && DATA[saved]) return saved; // 1. 用户手动选择优先（验收硬规则）
-    var langs = (navigator.languages && navigator.languages.length)
-      ? navigator.languages : [navigator.language || DEFAULT_LOCALE];
-    for (var i = 0; i < langs.length; i++) {
-      var tag = String(langs[i] || '').toLowerCase();
-      if (!tag) continue;
-      if (tag.indexOf('zh') === 0) return 'zh'; // 2a. 中文区 → zh
-      for (var loc in DATA) {                    // 2b. 其它已配置 locale 前缀匹配
-        if (tag.indexOf(loc) === 0) return loc;
-      }
-    }
-    return DEFAULT_LOCALE;                      // 3. 兜底英文
+    // 本站按 2026-11-18 复盘维持中文：历史访问以中国和香港为主，
+    // 不按浏览器语言自动切成英文。英文仍可通过已保存的 dd-locale=en 进入。
+    if (DATA.zh) return 'zh';
+    return DEFAULT_LOCALE;
   }
 
   var current = detectLocale();
