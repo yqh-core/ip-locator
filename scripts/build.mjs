@@ -37,6 +37,7 @@ const ENTRIES = [
   'css',
   'js',
   'images',
+  'ip-geolocation',
 ];
 
 /** 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站 */
