@@ -163,5 +163,19 @@ jobs:
           }
           if (!sitemap) throw new Error('Production sitemap did not include the English landing page');
 
-          console.log('PASS: exact Cloudflare commit, Googlebot English source HTML, canonical, structured data, robots, landing page and sitemap');
+          // Chinese-only secondary pages are intentionally excluded from the US/EU index
+          // until English source HTML is published. They remain crawlable for link discovery.
+          const excludedChinesePages = ['/about', '/docs', '/guides', '/faq', '/contact', '/privacy', '/terms'];
+          for (const path of excludedChinesePages) {
+            const page = await get(path);
+            if (!page.response.ok) throw new Error(path + ' should remain accessible (HTTP ' + page.response.status + ')');
+            if (!/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex\s*,?\s*follow/i.test(page.body)) {
+              throw new Error(path + ' must carry noindex, follow until its English rewrite is published');
+            }
+            if (sitemap.body.includes(origin + path + '</loc>')) {
+              throw new Error(path + ' must not appear in the indexable sitemap while noindexed');
+            }
+          }
+
+          console.log('PASS: exact Cloudflare commit, English homepage and landing page, canonical, robots, sitemap, and noindex policy for Chinese-only support pages');
           NODE
