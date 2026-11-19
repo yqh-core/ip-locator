@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head><script id="dd-theme-bootstrap">/* inject-dd-shell: 主题防闪烁 */
 (function(){try{var t=localStorage.getItem('dd-theme');var h=document.documentElement;
 if(t==='dark'){h.setAttribute('data-theme','dark');h.removeAttribute('data-dd-auto');}
@@ -18,16 +18,15 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>使用教程 - 如何用 IP 归属地查询排查问题 | IP 归属地查询</title>
-    <meta name="description" content="IP 归属地查询实操教程：查询单个 IP、查询自己的公网 IP、读懂 ASN 与运营商字段、用 API 批量取数、结合日志排查异常访问。">
-    <meta name="robots" content="noindex, follow">
-    <link rel="canonical" href="https://ip.digdevbox.com/guides">
+    <title>IP Lookup Guides: Find, Check & Understand an IP | IP Locator</title>
+    <meta name="description" content="Step-by-step guides to look up a public IP, check your network exit, interpret ASN and location fields, and troubleshoot inaccurate geolocation results.">
+<link rel="canonical" href="https://ip.digdevbox.com/guides">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="使用教程 - 如何用 IP 归属地查询排查问题">
-    <meta property="og:description" content="从查询单个 IP 到结合日志排查异常访问的四步实操教程。">
+    <meta property="og:title" content="IP Lookup Guides: Find, Check & Understand an IP | IP Locator">
+    <meta property="og:description" content="Step-by-step guides to look up a public IP, check your network exit, interpret ASN and location fields, and troubleshoot inaccurate geolocation results.">
     <meta property="og:url" content="https://ip.digdevbox.com/guides">
-    <meta property="og:site_name" content="IP 归属地查询">
-    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="IP Locator">
+    <meta property="og:locale" content="en_US">
     <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
@@ -38,7 +37,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <meta property="og:image" content="https://ip.digdevbox.com/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="IP 归属地查询 - 免费在线 IP 查询工具">
+    <meta property="og:image:alt" content="IP Locator — free IP address lookup">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://ip.digdevbox.com/images/og-image.jpg">
 
@@ -54,153 +53,92 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <div class="dd-shell-inner">
         <a class="dd-brand" href="https://digdevbox.com/"><span class="dd-brand-mark">DB</span>DigDevBox</a>
         <nav>
-                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/" data-i18n="nav.player">流影播放器</a>
-                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP 查询</a>
-                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">房贷计算器</a>
-                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">图片压缩</a>
+                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Developer tools</a>
+                <a href="https://play.digdevbox.com/" data-i18n="nav.player">StreamPlay</a>
+                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP Lookup</a>
+                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">Mortgage calculator</a>
+                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">Image tools</a>
         </nav>
 
-        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
+        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
     </div>
 </div>
     <div class="container">
         <nav class="top-nav">
             <ul>
-                <li><a href="/" data-i18n="topnav.home">首页</a></li>
-                <li><a href="/guides" class="active" data-i18n="topnav.guides">使用教程</a></li>
-                <li><a href="/docs" data-i18n="topnav.docs">IP 知识文档</a></li>
-                <li><a href="/faq" data-i18n="topnav.faq">常见问题</a></li>
-                <li><a href="/about" data-i18n="topnav.about">关于</a></li>
+                <li><a href="/" data-i18n="topnav.home">Home</a></li>
+                <li><a href="/guides" class="active" data-i18n="topnav.guides">Guides</a></li>
+                <li><a href="/docs" data-i18n="topnav.docs">Documentation</a></li>
+                <li><a href="/faq" data-i18n="topnav.faq">FAQ</a></li>
+                <li><a href="/about" data-i18n="topnav.about">About</a></li>
             </ul>
         </nav>
 
         <header>
-            <h1>📖 使用教程</h1>
-            <p class="subtitle">从「查一个 IP」到「用数据排查问题」</p>
+            <h1>IP Lookup Guides</h1>
+            <p class="subtitle">Practical steps for checking an address and interpreting the result</p>
         </header>
-
-        <div class="content-section">
+        <div class="content-section" role="main">
             <div class="about-section">
-                <h2>第 1 步：查询一个指定 IP</h2>
-                <p>打开<a href="/">首页</a>，在输入框中填入 IPv4 地址，例如 <code>8.8.8.8</code>，点击「查询」。页面会返回十个字段：国家/地区、省份/州、城市、邮编、ASN、运营商、组织、经纬度、时区，以及一个可直接打开的地图链接。</p>
-                <div class="api-notice">
-                    <strong>注意：</strong>只支持公网 IPv4。像 <code>192.168.1.1</code> 这类内网地址没有全球唯一归属，工具会直接报错——这是正确行为，不是故障。
-                </div>
+                <h2>1. Look up a public IP address</h2>
+                <ol>
+                    <li>Open the <a href="/">IP Locator</a> homepage.</li>
+                    <li>Paste a public IPv4 or IPv6 address into the lookup field.</li>
+                    <li>Select <strong>Lookup</strong> or press Enter.</li>
+                    <li>Review the country, region, city, network organization, ASN and data-source label when available.</li>
+                </ol>
+                <p>Try a well-known public address such as <code>8.8.8.8</code> to see the result format. Private and reserved addresses do not have a unique public geolocation.</p>
             </div>
-
             <div class="about-section">
-                <h2>第 2 步：查询自己的公网 IP</h2>
-                <p>点击「📍 查询我的 IP」，工具会自动识别你当前的公网出口地址并查询。这一步常用于：</p>
-                <ul class="use-cases">
-                    <li><strong>确认代理是否生效：</strong>如果你开了 VPN 但查到的仍是本地城市，说明流量没走代理。</li>
-                    <li><strong>看出口归属：</strong>查到的城市通常对应运营商侧的<strong>出口与登记归属</strong>，
-                        不一定是你本人所在的位置；要确认实际位置还得结合自己的网络情况。</li>
-                    <li><strong>排查 NAT：</strong>若查到的城市与你的居住地跨省，可能是运营商做了跨区域地址复用，
-                        这属于登记归属与物理位置不一致的常见情形之一。</li>
-                </ul>
+                <h2>2. Check your own public IP</h2>
+                <p>Choose <strong>Find my IP</strong> on the homepage. The page displays the public address observed at the Cloudflare edge and the available location context. If you are connected through a VPN, corporate proxy or privacy relay, the result usually describes that exit path rather than your device's local network.</p>
             </div>
-
             <div class="about-section">
-                <h2>第 3 步：读懂结果里的关键字段</h2>
-                <p>十个字段里，有三个最容易被忽略、却最有信息量：</p>
+                <h2>3. Understand the result fields</h2>
                 <ul>
-                    <li><strong>ASN：</strong>告诉你这个 IP 属于哪个网络运营实体。例如 AS15169 是 Google，AS13335 是 Cloudflare。如果访客 IP 的 ASN 是某云厂商，那它很可能是爬虫或机器人，而不是真实用户。</li>
-                    <li><strong>组织（Org）：</strong>常能直接看出公司或机构名。结合 ASN 一起看，比单看城市可靠得多。</li>
-                    <li><strong>时区：</strong>做跨时区业务时，可用它判断用户的作息区间，比用国家推断更准（例如美国跨多个时区）。</li>
+                    <li><strong>Country / region / city:</strong> an estimate from the provider's IP database.</li>
+                    <li><strong>ISP / organization:</strong> the registered network or organization associated with the range.</li>
+                    <li><strong>ASN:</strong> the autonomous system announcing the route.</li>
+                    <li><strong>Coordinates:</strong> approximate map coordinates; they are not a street address.</li>
+                    <li><strong>Time zone / postal code:</strong> supplementary database fields that may be missing or approximate.</li>
                 </ul>
-                <p>想系统理解这些概念，请看<a href="/docs">IP 知识文档</a>。</p>
             </div>
-
             <div class="about-section">
-                <h2>第 4 步：用 API 做轻量自动化</h2>
-                <p>本站提供同源 API，返回 JSON，适合脚本调用：</p>
-                <div class="disclaimer">
-                    <p><code>GET /api/ip?ip=8.8.8.8</code> — 查询指定 IP</p>
-                    <p><code>GET /api/ip</code> — 查询调用方自身 IP</p>
-                </div>
-                <p>一个最小可用的 curl 示例：</p>
-                <div class="disclaimer">
-                    <p><code>curl "https://ip.digdevbox.com/api/ip?ip=8.8.8.8"</code></p>
-                </div>
-                <p>结果会被边缘节点缓存（指定 IP 缓存 24 小时，自身 IP 缓存 5 分钟），因此重复查询同一地址响应极快。请勿高并发调用，上游数据源有频率限制。</p>
+                <h2>4. Investigate a VPN, proxy or CDN address</h2>
+                <p>Look at the organization and ASN alongside the location. A cloud, hosting or security-network provider may indicate that the address belongs to an intermediary or edge service. It does not, by itself, prove that a person is using a VPN or identify the end user.</p>
             </div>
-
             <div class="about-section">
-                <h2>实战：用 IP 查询排查网站异常访问</h2>
-                <p>假设你的网站日志里出现大量请求，怀疑是爬虫，可以按这个顺序排查：</p>
-                <ul class="use-cases">
-                    <li><strong>取样本：</strong>从日志里挑出请求量最高的 10 个 IP，不要一上来就全量查。</li>
-                    <li><strong>看 ASN：</strong>如果它们的 ASN 都属于同一家云厂商（如阿里云、AWS、DigitalOcean），
-                        说明这些地址的<strong>资源登记归属</strong>集中在同一网络运营方。
-                        这是一个<strong>线索，不是结论</strong>：云厂商地址也可能是真实用户在用，
-                        登记归属也不能告诉你使用者属于住宅、移动还是机房网络。</li>
-                    <li><strong>看地理集中度：</strong>若集中在少数几个城市且 ASN 一致，
-                        更可能反映<strong>网络拓扑或注册归属的集中</strong>；
-                        不要据此把地址判定为机房地址或真实用户分布——这类推断我们没有可靠依据。</li>
-                    <li><strong>交叉验证：</strong>结合 User-Agent、请求路径与频率判断，不要仅凭 IP 归属地下结论——误杀真实用户的代价很高。</li>
-                </ul>
-                <div class="api-notice">
-                    <strong>提醒：</strong>IP 定位是<strong>概率推断</strong>，<strong>通常只能精确到城市级</strong>，
-                    而且<strong>不代表设备或用户的实际物理位置</strong>，结果<strong>仅供参考</strong>，
-                    可作为辅助信号，但不应作为封禁的唯一依据。这是使用这类工具最重要的一条原则。
-                    国家与组织字段是<strong>资源登记归属信息</strong>，ASN 与「运营商 / 组织」来自第三方库的归属记录，
-                    不等同于实际服务运营商，也不能用来判断接入网络类型。
-                </div>
-            </div>
-
-            <div class="about-section">
-                <h2>实战：用 CIDR 计算器划分子网</h2>
-                <p>首页内置「<a href="/#cidr">CIDR / 子网计算器</a>」：输入 CIDR（如 <code>192.168.1.0/24</code>）或单个 IP，即可在本机算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类。支持 IPv4 / IPv6，计算完全在本机浏览器完成，不发出任何请求。</p>
-                <p>以 <code>192.168.1.0/24</code> 为例：地址总数 <strong>256</strong>，可用主机 <strong>254</strong>（去掉网络地址 192.168.1.0 与广播地址 192.168.1.255），子网掩码 255.255.255.0，可用范围 192.168.1.1 – 192.168.1.254。</p>
-                <p>要把这个网段拆成两个等大的子网，各取一半地址空间，即两个 /25：</p>
-                <ul class="use-cases">
-                    <li><strong>192.168.1.0/25：</strong>掩码 255.255.255.128，广播 192.168.1.127，可用 192.168.1.1 – 192.168.1.126，共 128 个地址、126 台可用主机。</li>
-                    <li><strong>192.168.1.128/25：</strong>掩码 255.255.255.128，广播 192.168.1.255，可用 192.168.1.129 – 192.168.1.254，同样 128 个地址、126 台可用主机。</li>
-                </ul>
-                <p>两个 /25 的结果都可以直接输回计算器核对。点对点链路可用 /30（4 个地址、2 台可用主机）；/31 按 RFC 3021 两个地址均可用。IPv6 没有广播地址，同样支持前缀计算（如 <code>2001:db8::/32</code>）。更多地址结构概念见<a href="/docs">IP 知识文档</a>。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>实战：DNS/rDNS 查解析与反查</h2>
-                <p>首页内置「<a href="/#dns">DNS / rDNS 查询</a>」：数据来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。</p>
-                <ul class="use-cases">
-                    <li><strong>查域名解析：</strong>输入域名（如 <code>example.com</code>），选择记录类型（A/AAAA/CNAME/MX/TXT/NS/SOA/CAA），点击「查询」即可看到应答记录。</li>
-                    <li><strong>IP 反查（rDNS）：</strong>直接输入 IP（如 <code>8.8.8.8</code>），工具自动构造 in-addr.arpa / ip6.arpa 反查 PTR 记录；也可以手动选择 PTR 类型。</li>
-                    <li><strong>看状态码：</strong>应答会标出 DNS 状态码；域名不存在时如实返回 NXDOMAIN（域名不存在），不会编造解析结果。</li>
-                </ul>
-                <p>常见用法：核对域名是否解析到预期服务器（A/AAAA）、检查邮件交换记录（MX）、确认 IP 的反向解析名称（PTR）。注意解析结果与 IP 归属地是两回事：前者是域名到地址的映射，后者是地址的登记归属估算，可结合<a href="/">IP 归属地查询</a>一起看。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>下一步</h2>
+                <h2>5. Troubleshoot an unexpected location</h2>
                 <ul>
-                    <li><a href="/docs">IP 知识文档</a> — 理解 IPv4 地址结构、CIDR、ASN 与定位原理</li>
-                    <li><a href="/faq">常见问题</a> — 为什么城市不准、支持 IPv6 吗、数据会被记录吗</li>
-                    <li><a href="/">立即查询</a></li>
+                    <li>Check whether the address is public rather than private or reserved.</li>
+                    <li>Compare the result with another reputable IP database.</li>
+                    <li>Check whether the address belongs to a mobile carrier, VPN, proxy or CDN.</li>
+                    <li>Remember that providers update allocation data on different schedules.</li>
                 </ul>
+                <p>Different databases can legitimately return different city or region estimates for the same address.</p>
             </div>
-
-            <div class="back-link">
-                <a href="/">← 返回首页</a>
+            <div class="about-section">
+                <h2>6. Use IP geolocation responsibly</h2>
+                <p>IP geolocation is an estimate and is usually only accurate to the city level. It is not the actual physical location of the device or user. Treat results as a reference only; an ISP or ASN record does not necessarily identify the actual service provider for a connection.</p>
+                <p>Use IP lookup as a troubleshooting signal, not as proof of a person's identity or exact location. Do not rely on a single IP field for fraud decisions, access control or legal conclusions. Combine it with other verified signals and your own review process.</p>
             </div>
+            <div class="back-link"><a href="/">← Back to IP Locator</a></div>
         </div>
-
         <footer>
-            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
-            <p><a href="/about">关于</a> | <a href="/guides">使用教程</a> | <a href="/docs" data-i18n="topnav.docs">文档</a> | <a href="/faq">常见问题</a> | <a href="/contact">联系</a> | <a href="/privacy">隐私政策</a> | <a href="/terms">服务条款</a></p>
+            <p>© 2026 <a href="/">IP Locator</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
+            <p><a href="/about">About</a> | <a href="/guides">Guides</a> | <a href="/docs" data-i18n="topnav.docs">Documentation</a> | <a href="/faq">FAQ</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </footer>
     </div>
 
 
 <footer class="dd-brandfoot compact">
     <div class="dd-shell-inner">
-        <p class="dd-brandfoot-title">DigDevBox · 免费在线开发者工具集</p>
+        <p class="dd-brandfoot-title">DigDevBox · Free online developer tools</p>
         <nav class="dd-brandfoot-nav">
-                <a href="https://digdevbox.com/">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/">流影播放器</a>
-                <a href="https://fangdai.digdevbox.com/">房贷计算器</a>
-                <a href="https://img.digdevbox.com/">图片压缩</a>
+                <a href="https://digdevbox.com/">Developer tools</a>
+                <a href="https://play.digdevbox.com/">StreamPlay</a>
+                <a href="https://fangdai.digdevbox.com/">Mortgage calculator</a>
+                <a href="https://img.digdevbox.com/">Image tools</a>
         </nav>
     </div>
 </footer>
@@ -226,8 +164,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     var d=effective()==='dark';
     b.textContent=d?'☀️':'🌙';
     if(window.DD_I18N&&window.DD_I18N.t)return;
-    b.setAttribute('aria-label', d?'切换到浅色模式':'切换到深色模式');
-    b.setAttribute('title', d?'切换到浅色模式':'切换到深色模式');}
+    b.setAttribute('aria-label', d?'Switch to light mode':'Switch to dark mode');
+    b.setAttribute('title', d?'Switch to light mode':'Switch to dark mode');}
   function toggle(){var c=effective();apply(c==='dark'?'light':'dark');}
   function init(){var b=document.getElementById('dd-theme-toggle');if(b)b.addEventListener('click',toggle);sync();}
   if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);

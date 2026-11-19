@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head><script id="dd-theme-bootstrap">/* inject-dd-shell: 主题防闪烁 */
 (function(){try{var t=localStorage.getItem('dd-theme');var h=document.documentElement;
 if(t==='dark'){h.setAttribute('data-theme','dark');h.removeAttribute('data-dd-auto');}
@@ -18,16 +18,15 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>常见问题 FAQ - IP 归属地查询</title>
-    <meta name="description" content="IP 归属地查询常见问题：为什么查到的城市不对、什么是 ASN、能定位到街道吗、查询会被记录吗、支持 IPv6 吗，以及内网地址为什么查不了。">
-    <meta name="robots" content="noindex, follow">
-    <link rel="canonical" href="https://ip.digdevbox.com/faq">
+    <title>IP Lookup FAQ: Accuracy, VPNs, IPv6 & Privacy | IP Locator</title>
+    <meta name="description" content="Answers to common IP lookup questions about location accuracy, VPNs, private addresses, IPv6 support, data sources and query privacy.">
+<link rel="canonical" href="https://ip.digdevbox.com/faq">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="常见问题 FAQ - IP 归属地查询">
-    <meta property="og:description" content="为什么查到的城市不对？什么是 ASN？能定位到街道吗？查询会被记录吗？">
+    <meta property="og:title" content="IP Lookup FAQ: Accuracy, VPNs, IPv6 & Privacy | IP Locator">
+    <meta property="og:description" content="Answers to common IP lookup questions about location accuracy, VPNs, private addresses, IPv6 support, data sources and query privacy.">
     <meta property="og:url" content="https://ip.digdevbox.com/faq">
-    <meta property="og:site_name" content="IP 归属地查询">
-    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="IP Locator">
+    <meta property="og:locale" content="en_US">
     <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
@@ -38,7 +37,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <meta property="og:image" content="https://ip.digdevbox.com/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="IP 归属地查询 - 免费在线 IP 查询工具">
+    <meta property="og:image:alt" content="IP Locator — free IP address lookup">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://ip.digdevbox.com/images/og-image.jpg">
 
@@ -54,105 +53,58 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <div class="dd-shell-inner">
         <a class="dd-brand" href="https://digdevbox.com/"><span class="dd-brand-mark">DB</span>DigDevBox</a>
         <nav>
-                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/" data-i18n="nav.player">流影播放器</a>
-                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP 查询</a>
-                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">房贷计算器</a>
-                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">图片压缩</a>
+                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Developer tools</a>
+                <a href="https://play.digdevbox.com/" data-i18n="nav.player">StreamPlay</a>
+                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP Lookup</a>
+                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">Mortgage calculator</a>
+                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">Image tools</a>
         </nav>
 
-        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
+        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
     </div>
 </div>
     <div class="container">
         <nav class="top-nav">
             <ul>
-                <li><a href="/" data-i18n="topnav.home">首页</a></li>
-                <li><a href="/guides" data-i18n="topnav.guides">使用教程</a></li>
-                <li><a href="/docs" data-i18n="topnav.docs">IP 知识文档</a></li>
-                <li><a href="/faq" class="active" data-i18n="topnav.faq">常见问题</a></li>
-                <li><a href="/about" data-i18n="topnav.about">关于</a></li>
+                <li><a href="/" data-i18n="topnav.home">Home</a></li>
+                <li><a href="/guides" data-i18n="topnav.guides">Guides</a></li>
+                <li><a href="/docs" data-i18n="topnav.docs">Documentation</a></li>
+                <li><a href="/faq" class="active" data-i18n="topnav.faq">FAQ</a></li>
+                <li><a href="/about" data-i18n="topnav.about">About</a></li>
             </ul>
         </nav>
 
         <header>
-            <h1>❓ 常见问题</h1>
-            <p class="subtitle">关于 IP 查询，你大概率想问这些</p>
+            <h1>Frequently Asked Questions</h1>
+            <p class="subtitle">Clear answers about IP lookups, location estimates and privacy</p>
         </header>
-
-        <div class="content-section">
-            <div class="about-section">
-                <h2>为什么查出来的城市和我实际位置不一致？</h2>
-                <p>这是 IP 地理定位最常见的误解。IP 地址归属于<strong>运营商的网络设备</strong>，而不是你本人。以下情况都会导致偏差：</p>
-                <ul>
-                    <li>你使用了 VPN 或代理，出口节点在别的城市甚至别的国家；</li>
-                    <li>你用的是移动网络（4G/5G），出口通常在省会或区域核心节点；</li>
-                    <li>运营商使用了 NAT 或地址池跨市复用；</li>
-                    <li>IP 归属关系近期变更过，但 IP 库尚未更新。</li>
-                </ul>
-                <p>一般来说，IP 定位能到<strong>城市级已属正常</strong>，省级更可靠。想深入了解原理，请看<a href="/docs">IP 知识文档</a>。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>能定位到街道或门牌号吗？</h2>
-                <p>不能，任何声称能用 IP 定位到街道的服务都不可信。IP 定位依赖的是 IP 地址段的注册与分配记录，其颗粒度由运营商发布的 WHOIS 数据决定，最细通常只到城市。要获得精确位置，必须由设备本身授权（如浏览器地理定位 API 或手机 GPS）。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>什么是 ASN？它有什么用？</h2>
-                <p>ASN（Autonomous System Number，自治系统号）是互联网上每个独立网络运营实体的编号。比如 AS15169 登记在 Google 名下，AS4837 登记在中国联通 CHINA169 骨干网名下。通过 ASN 你看到的是这个 IP 段在<strong>注册数据库里的归属组织</strong>，它不等同于该地址当前由哪家运营商提供接入服务，也不能用来判断使用者属于住宅、移动还是机房网络。在排查网络问题、看流量是否来自某家云厂商的地址段时，它是有用的线索——但只是线索，不是结论。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>为什么查询内网地址会失败？</h2>
-                <p>内网地址（<code>10.x.x.x</code>、<code>172.16.x.x</code>–<code>172.31.x.x</code>、<code>192.168.x.x</code>）是 RFC 1918 规定的私有地址段，在全球被无数局域网重复使用，不存在唯一归属地，因此无法查询。想查自己在互联网上的地址，请点击首页的「查询我的 IP」。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>我的查询会被记录下来吗？</h2>
-                <p>本工具本身不保存你的查询历史，也不设置追踪 Cookie。需要注意两点：一是你的访问 IP 会像访问任何网站一样出现在托管方的访问日志中；二是查询请求会经过第三方 IP 库，它们会看到被查询的 IP。详细说明见<a href="/privacy">隐私政策</a>。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>支持 IPv6 吗？</h2>
-                <p>支持 IPv4 与 IPv6 查询。IPv6 的归属覆盖度因第三方数据源与地址段而异：常见公共 IPv6（如 <code>2001:4860:4860::8888</code>）通常可查到城市与 ASN，部分地址段可能仅能精确到国家级。结果下方会标出本次实际应答的数据库，可据此判断覆盖情况。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>为什么有时查询很慢或直接失败？</h2>
-                <p>本工具会并发请求多个 IP 库，取最先返回结果。如果你所在网络到这些服务的链路不稳定，或这些服务对当前出口 IP 触发了限流，就可能出现超时。遇到这种情况请稍后重试；若持续失败，欢迎到<a href="/contact">联系页面</a>反馈。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>可以批量查询吗？有 API 吗？</h2>
-                <p>本站提供同源的 <code>/api/ip</code> 端点（<code>/api/ip?ip=8.8.8.8</code>），返回 JSON 结果，可用于轻量调用。请勿用于高频批量场景，否则可能触发上游限流。批量功能正在规划中。</p>
-            </div>
-
-            <div class="about-section">
-                <h2>查询结果可以用于风控或法律用途吗？</h2>
-                <p>不建议作为唯一依据。IP 定位是概率性推断，且可被代理、VPN、云主机轻易改变。在风控场景中它只适合作为辅助信号，在法律场景中通常不具备证明力。详见<a href="/terms">服务条款</a>。</p>
-            </div>
-
-            <div class="back-link">
-                <a href="/">← 返回首页</a>
-            </div>
+        <div class="content-section" role="main">
+            <div class="about-section"><h2>Can an IP address reveal someone's exact home address?</h2><p>No. IP geolocation databases estimate a network's location, often at country, region or city level. They do not provide a reliable street address or identify the person using the connection.</p></div>
+            <div class="about-section"><h2>Why does a VPN show a different location?</h2><p>A VPN routes traffic through an exit server. The lookup usually reports the IP address and approximate location of that exit network, not the device's physical location.</p></div>
+            <div class="about-section"><h2>Why can't I look up a private IP such as 192.168.1.1?</h2><p>Private ranges are reused by millions of local networks and are not globally routed. They do not map to one unique public organization or location.</p></div>
+            <div class="about-section"><h2>Does the tool support IPv6?</h2><p>Yes. IPv4 and IPv6 inputs are supported. Database coverage for IPv6 can be less complete, so some fields may be missing or less precise.</p></div>
+            <div class="about-section"><h2>Why do two IP lookup providers show different cities?</h2><p>Providers maintain separate datasets and update them on different schedules. City-level IP geolocation is an estimate, and a range may be registered to an organization in a different place from the user or server using it.</p></div>
+            <div class="about-section"><h2>What does an ASN mean?</h2><p>An Autonomous System Number identifies a network that participates in internet routing. It helps describe network ownership or routing context, but it does not identify an individual user.</p><p>The ASN and organization fields show the registered organization associated with an address range. They do not necessarily show which carrier currently provides access to that address, and they cannot determine whether the user is on a residential, mobile or data center network.</p></div>
+            <div class="about-section"><h2>Does IP Locator store the addresses I enter?</h2><p>The site does not keep a server-side query history. An address you enter is sent to the selected public lookup provider to retrieve its data. Advertising services may process their own data as described in the <a href="/privacy">privacy policy</a>.</p></div>
+            <div class="about-section"><h2>Can I use an IP result as proof of identity or location?</h2><p>No. Treat the result as a troubleshooting clue only. It should not be the sole basis for identity verification, fraud decisions, legal claims or access control.</p></div>
+            <div class="about-section"><h2>Is IP Locator free to use?</h2><p>Yes. The web lookup is free and does not require an account.</p></div>
+            <div class="back-link"><a href="/">← Back to IP Locator</a></div>
         </div>
-
         <footer>
-            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
-            <p><a href="/about">关于</a> | <a href="/guides">使用教程</a> | <a href="/docs" data-i18n="topnav.docs">文档</a> | <a href="/faq">常见问题</a> | <a href="/contact">联系</a> | <a href="/privacy">隐私政策</a> | <a href="/terms">服务条款</a></p>
+            <p>© 2026 <a href="/">IP Locator</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
+            <p><a href="/about">About</a> | <a href="/guides">Guides</a> | <a href="/docs" data-i18n="topnav.docs">Documentation</a> | <a href="/faq">FAQ</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </footer>
     </div>
 
 
 <footer class="dd-brandfoot compact">
     <div class="dd-shell-inner">
-        <p class="dd-brandfoot-title">DigDevBox · 免费在线开发者工具集</p>
+        <p class="dd-brandfoot-title">DigDevBox · Free online developer tools</p>
         <nav class="dd-brandfoot-nav">
-                <a href="https://digdevbox.com/">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/">流影播放器</a>
-                <a href="https://fangdai.digdevbox.com/">房贷计算器</a>
-                <a href="https://img.digdevbox.com/">图片压缩</a>
+                <a href="https://digdevbox.com/">Developer tools</a>
+                <a href="https://play.digdevbox.com/">StreamPlay</a>
+                <a href="https://fangdai.digdevbox.com/">Mortgage calculator</a>
+                <a href="https://img.digdevbox.com/">Image tools</a>
         </nav>
     </div>
 </footer>
@@ -178,8 +130,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     var d=effective()==='dark';
     b.textContent=d?'☀️':'🌙';
     if(window.DD_I18N&&window.DD_I18N.t)return;
-    b.setAttribute('aria-label', d?'切换到浅色模式':'切换到深色模式');
-    b.setAttribute('title', d?'切换到浅色模式':'切换到深色模式');}
+    b.setAttribute('aria-label', d?'Switch to light mode':'Switch to dark mode');
+    b.setAttribute('title', d?'Switch to light mode':'Switch to dark mode');}
   function toggle(){var c=effective();apply(c==='dark'?'light':'dark');}
   function init(){var b=document.getElementById('dd-theme-toggle');if(b)b.addEventListener('click',toggle);sync();}
   if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);

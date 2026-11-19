@@ -90,7 +90,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
     </div>
 </div>
-    <div class="container">
+    <div class="container" role="main">
         <nav class="top-nav">
             <ul>
                 <li><a href="/" class="active" data-i18n="topnav.home">Home</a></li>
@@ -111,7 +111,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div class="search-box">
                 <input
                     type="text"
-                    id="ipInput"
+                    id="ipInput" aria-label="IP address to look up"
                     placeholder="Enter an IP address (e.g. 8.8.8.8)" data-i18n-attr="placeholder:placeholder.ipInput"
                     autocomplete="off"
                 >
@@ -243,7 +243,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </div>
             <p class="tool-sub">Enter a CIDR range (such as 192.168.1.0/24) or a single IP address to calculate the network address, mask, broadcast address, usable host range and address classification. Supports IPv4 and IPv6; calculations run locally.</p>
             <div class="net-row">
-                <input type="text" id="cidr-input" placeholder="192.168.1.0/24 or 2001:db8::/32" autocomplete="off" spellcheck="false">
+                <input type="text" id="cidr-input" aria-label="IP range in CIDR notation" placeholder="192.168.1.0/24 or 2001:db8::/32" autocomplete="off" spellcheck="false">
                 <button id="cidr-calc" class="btn-secondary" type="button">Calculate</button>
             </div>
             <div class="net-examples">
@@ -262,7 +262,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </div>
             <p class="tool-sub">Look up A, AAAA, CNAME, MX, TXT, NS and other DNS records. Enter an IP address to run a reverse DNS (PTR) lookup. Queries use Cloudflare 1.1.1.1 DNS-over-HTTPS directly from your browser, not through this site's server.</p>
             <div class="net-row">
-                <input type="text" id="dns-input" placeholder="example.com or 8.8.8.8 (automatic reverse DNS)" autocomplete="off" spellcheck="false">
+                <input type="text" id="dns-input" aria-label="Domain name or IP address for DNS lookup" placeholder="example.com or 8.8.8.8 (automatic reverse DNS)" autocomplete="off" spellcheck="false">
                 <select id="dns-type" aria-label="Record type">
                     <option value="A" selected>A</option>
                     <option value="AAAA">AAAA</option>

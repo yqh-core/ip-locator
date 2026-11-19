@@ -31,13 +31,12 @@ const ok = (name, cond, detail) => {
 const REQUIRED = {
   'index.html': ['IP geolocation reflects provider databases', 'usually approximate at city level', "not proof of a device's physical location", 'network registration', 'Treat the result as an investigation clue'],
   'terms.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不判断、也不输出'],
-  'guides.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不等同于实际服务运营商'],
+  'guides.html': ['IP geolocation is an estimate', 'usually only accurate to the city level', 'not the actual physical location of the device or user', 'Treat results as a reference only', 'does not necessarily identify the actual service provider'],
   // 裁定④（本轮新增授权页）：FAQ 里必须把"登记归属组织"和"实际接入运营商"分开说
-  'faq.html': ['注册数据库里的归属组织', '不等同于该地址当前由哪家运营商提供接入服务', '不能用来判断使用者属于住宅、移动还是机房网络'],
+  'faq.html': ['registered organization associated with an address range', 'do not necessarily show which carrier currently provides access to that address', 'cannot determine whether the user is on a residential, mobile or data center network'],
   // 裁定②：docs 的精度边界段必须落在"注册归属 ≠ 实际位置"上；
   // 本轮再把 ASN 比较式的作用域钉进去（"更适合识别网络归属线索"，而不是笼统的"更可靠"）
-  'docs.html': ['注册归属', '不等于设备的实际位置', '更适合用来识别流量所属的网络归属线索',
-                '不能据此判断用户当前使用的接入运营商'],
+  'docs.html': ["registered network ownership", "not the device's actual location", 'a clue about the network that announces traffic', "not proof of the user's current access provider"],
   // 本轮：about 把"属于哪家运营商"限定为注册归属组织 / 网络信息
   'about.html': ['在注册归属数据里对应哪家组织或网络', '不一定代表用户当前实际使用的网络运营商', '也不代表设备的物理位置'],
   // 本轮：privacy 的数据处理描述必须与**实测缓存行为**一致（键含被查询 IP、有 TTL、无单条清除入口）
@@ -210,6 +209,9 @@ const MUST_GREEN = [
   'Treat the result as an investigation clue, not proof of a person\'s identity or location.',
   // 英文合规否定句：放宽后的 datacenter 判据不得把它判红（否则等于逼产品删掉英文免责）
   'We do not classify IPs as data center or residential traffic, and we never expose such a field.',
+  'An IP address\'s registered network ownership is not the device\'s actual location. ASN is a clue about the network that announces traffic, not proof of the user\'s current access provider.',
+  'IP geolocation is an estimate and is usually only accurate to the city level. It is not the actual physical location of the device or user. Treat results as a reference only; an ISP or ASN record does not necessarily identify the actual service provider for a connection.',
+  'The ASN and organization fields show the registered organization associated with an address range. They do not necessarily show which carrier currently provides access to that address, and they cannot determine whether the user is on a residential, mobile or data center network.',
   // 本轮三页新文案：不得被任何禁令误红（红了就是判据过宽）
   '在排查异常流量时，它通常比城市字段更适合用来识别流量所属的网络归属线索；但这不代表设备的实际位置，也不能据此判断用户当前使用的接入运营商。',
   '拿到一个 IP，想知道它大概在哪儿、在注册归属数据里对应哪家组织或网络。',
