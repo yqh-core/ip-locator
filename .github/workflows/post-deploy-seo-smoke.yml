@@ -125,6 +125,11 @@ jobs:
           
           const canonical = home.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
           if (canonical !== origin + '/') throw new Error('Unexpected homepage canonical: ' + canonical);
+          if (!home.body.includes('role="main"')) throw new Error('Homepage main landmark is missing');
+          const requiredInputLabels = ['IP address to look up', 'IP range in CIDR notation', 'Domain name or IP address for DNS lookup'];
+          for (const label of requiredInputLabels) {
+            if (!home.body.includes('aria-label="' + label + '"')) throw new Error('Missing accessible input label: ' + label);
+          }
           if (!home.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
           if (!home.body.includes('"priceCurrency": "USD"')) throw new Error('USD offer metadata missing');
           if (!home.body.includes('What can this IP lookup show?') || !home.body.includes('Data sources and accuracy') || !home.body.includes('Which IP address types are supported?')) {
