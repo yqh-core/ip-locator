@@ -21,6 +21,7 @@ const OUT = join(ROOT, 'dist');
 /** 白名单：仓库根下这些条目会进入发布目录 */
 const ENTRIES = [
   'index.html',
+  'analytics-consent.js',
   'about.html',
   'privacy.html',
   'terms.html',

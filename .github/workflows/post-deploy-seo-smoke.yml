@@ -98,6 +98,23 @@ jobs:
           }
           if (!home) throw new Error('Production homepage did not expose expected English HTML after exact deployment');
 
+          if (!home.body.includes('/analytics-consent.js')) throw new Error('Production homepage is missing the GA4 consent loader');
+          const gaScript = await get('/analytics-consent.js');
+          if (!gaScript.response.ok || !gaScript.body.includes('G-6H3Z1K9R7P') ||
+              !gaScript.body.includes("analytics_storage: 'denied'") ||
+              !gaScript.body.includes('send_page_view: false') ||
+              !gaScript.body.includes('Reject Google Analytics')) {
+            throw new Error('Production IP Locator GA4 loader is missing, misconfigured or not consent-gated');
+          }
+          const privacyPage = await get('/privacy');
+          if (!privacyPage.response.ok || !privacyPage.body.includes('Google Analytics 4') ||
+              !privacyPage.body.includes('metrics.digdevbox.com') ||
+              !privacyPage.body.includes('不会发出 GA4 请求')) {
+            throw new Error('Production IP Locator privacy page is missing GA4 and first-party metrics disclosures');
+          }
+
+
+
           if (!home.body.includes('>🌍 IP Geolocation Lookup</h1>')) throw new Error('English IP lookup H1 missing from source HTML');
           if (!home.body.includes('Look up detailed geolocation info for any IP address')) throw new Error('English IP lookup hero description missing from source HTML');
           if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
