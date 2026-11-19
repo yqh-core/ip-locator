@@ -37,6 +37,19 @@ jobs:
       - name: 组装发布目录
         run: node scripts/build.mjs
 
+      - name: GA4 consent 发布产物门禁
+        run: |
+          set -euo pipefail
+          test -s dist/analytics-consent.js
+          for page in index.html ip-geolocation/index.html about.html contact.html docs.html faq.html guides.html privacy.html terms.html; do
+            grep -Fq '/analytics-consent.js' "dist/$page"
+          done
+          if grep -Fq '/analytics-consent.js' dist/404.html; then
+            echo "::error::404 must not load GA4 consent or emit page_view"
+            exit 1
+          fi
+          echo "PASS: consent loader and all nine public HTML pages are present in the production artifact"
+
       - name: 验证英文 IP 落地页与 sitemap 已进入产物
         run: |
           set -euo pipefail
