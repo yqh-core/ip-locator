@@ -29,7 +29,7 @@ async function copyText(text, btn, okLabel) {
     try { ok = document.execCommand('copy'); } catch { ok = false; }
     document.body.removeChild(ta);
   }
-  btn.textContent = ok ? (okLabel || '已复制 ✓') : '复制失败';
+  btn.textContent = ok ? (okLabel || 'Copied ✓') : 'Copy failed';
   setTimeout(() => { btn.textContent = original; }, 1800);
 }
 
@@ -44,15 +44,15 @@ const cidrResult = $('cidr-result');
 const cidrStatus = $('cidr-status');
 
 const CIDR_FIELDS = [
-  ['network', '网络地址'],
-  ['mask', '子网掩码'],
-  ['wildcard', '通配符掩码'],
-  ['broadcast', '广播地址'],
-  ['firstUsable', '首个可用地址'],
-  ['lastUsable', '末个可用地址'],
-  ['totalAddresses', '地址总数'],
-  ['usableHosts', '可用主机数'],
-  ['classification', '地址分类'],
+  ['network', 'Network address'],
+  ['mask', 'Subnet mask'],
+  ['wildcard', 'Wildcard mask'],
+  ['broadcast', 'Broadcast address'],
+  ['firstUsable', 'First usable address'],
+  ['lastUsable', 'Last usable address'],
+  ['totalAddresses', 'Total addresses'],
+  ['usableHosts', 'Usable hosts'],
+  ['classification', 'Address type'],
 ];
 
 function renderCidr(r) {
@@ -89,14 +89,14 @@ function renderCidr(r) {
   const copyBtn = document.createElement('button');
   copyBtn.type = 'button';
   copyBtn.className = 'btn-secondary';
-  copyBtn.textContent = '复制 JSON';
+  copyBtn.textContent = 'Copy JSON';
   copyBtn.addEventListener('click', () => copyText(JSON.stringify(r, null, 2), copyBtn));
   cidrResult.appendChild(copyBtn);
 }
 
 function runCidr() {
   const raw = cidrInput.value.trim();
-  if (!raw) { setStatus(cidrStatus, '请输入 CIDR（如 192.168.1.0/24）或单个 IP', 'warn'); return; }
+  if (!raw) { setStatus(cidrStatus, 'Enter a CIDR range (e.g. 192.168.1.0/24) or a single IP address.', 'warn'); return; }
   try {
     const r = cidrInfo(raw);
     setStatus(cidrStatus, '', '');
@@ -142,7 +142,7 @@ function renderDns(json, queriedName, type) {
     table.className = 'net-table';
     const thead = document.createElement('thead');
     const hr = document.createElement('tr');
-    ['名称', '类型', 'TTL', '数据'].forEach((h) => {
+    ['Name', 'Type', 'TTL', 'Data'].forEach((h) => {
       const th = document.createElement('th');
       th.textContent = h;
       hr.appendChild(th);
@@ -166,26 +166,26 @@ function renderDns(json, queriedName, type) {
   } else {
     const p = document.createElement('p');
     p.className = 'net-note';
-    p.textContent = json.Status === 3 ? '该域名不存在（NXDOMAIN）。检查拼写，或换一条记录类型试试。' : '没有应答记录。';
+    p.textContent = json.Status === 3 ? 'The domain does not exist (NXDOMAIN). Check the spelling or try another record type.' : 'No records were returned.';
     dnsResult.appendChild(p);
   }
 
   const src = document.createElement('p');
   src.className = 'net-note';
-  src.textContent = '数据来源：Cloudflare 1.1.1.1 DoH（浏览器直连，不经本站服务器）。';
+  src.textContent = 'Data source: Cloudflare 1.1.1.1 DNS-over-HTTPS (queried directly from your browser, not through this site).';
   dnsResult.appendChild(src);
 
   const copyBtn = document.createElement('button');
   copyBtn.type = 'button';
   copyBtn.className = 'btn-secondary';
-  copyBtn.textContent = '复制 JSON';
+  copyBtn.textContent = 'Copy JSON';
   copyBtn.addEventListener('click', () => copyText(JSON.stringify(json, null, 2), copyBtn));
   dnsResult.appendChild(copyBtn);
 }
 
 async function runDns() {
   const raw = dnsInput.value.trim().replace(/\.$/, '');
-  if (!raw) { setStatus(dnsStatus, '请输入域名（如 example.com）或 IP（自动反查 rDNS）', 'warn'); return; }
+  if (!raw) { setStatus(dnsStatus, 'Enter a domain (e.g. example.com) or an IP address (automatic reverse DNS lookup).', 'warn'); return; }
   const seq = ++dnsSeq;
   let name = raw;
   let type = dnsType.value;
@@ -194,17 +194,17 @@ async function runDns() {
       name = ptrName(raw);
       type = 'PTR';
       dnsType.value = 'PTR';
-      setStatus(dnsStatus, `检测到 IP，自动反查 rDNS（${name}）…`, 'info');
+      setStatus(dnsStatus, `IP address detected; running reverse DNS lookup (${name})…`, 'info');
     } catch (e) {
       setStatus(dnsStatus, e.message, 'error');
       return;
     }
   } else {
     if (!/^[a-zA-Z0-9._-]+$/.test(raw)) {
-      setStatus(dnsStatus, '域名含非法字符（仅允许字母、数字、点、连字符、下划线）', 'error');
+      setStatus(dnsStatus, 'The domain contains invalid characters. Use only letters, numbers, dots, hyphens and underscores.', 'error');
       return;
     }
-    setStatus(dnsStatus, '正在查询…', 'info');
+    setStatus(dnsStatus, 'Looking up…', 'info');
   }
   dnsResult.innerHTML = '';
   try {
@@ -214,7 +214,7 @@ async function runDns() {
     renderDns(json, name, type);
   } catch (e) {
     if (seq !== dnsSeq) return;
-    setStatus(dnsStatus, '查询失败：' + e.message, 'error');
+    setStatus(dnsStatus, 'Lookup failed: ' + e.message, 'error');
   }
 }
 
