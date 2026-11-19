@@ -73,3 +73,16 @@ jobs:
           name: dist
           path: dist
           retention-days: 7
+
+      # SEO regression guard: the initial server HTML must describe the English product,
+      # not rely on JavaScript to replace a Chinese fallback before a crawler can understand it.
+      - name: SEO 首页英文源 HTML 门禁（metadata + structured data）
+        run: |
+          set -euo pipefail
+          grep -Fq '<html lang="en" data-i18n-page="home">' index.html
+          grep -Fq '<title>IP Geolocation Lookup' index.html
+          grep -Fq 'name="description" content="Look up public IPv4 and IPv6 addresses' index.html
+          grep -Fq 'property="og:locale" content="en_US"' index.html
+          grep -Fq '"inLanguage": "en"' index.html
+          grep -Fq '"priceCurrency": "USD"' index.html
+          echo "English-first IP homepage metadata and structured data verified"
