@@ -112,6 +112,9 @@ jobs:
           if (canonical !== origin + '/') throw new Error('Unexpected homepage canonical: ' + canonical);
           if (!home.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
           if (!home.body.includes('"priceCurrency": "USD"')) throw new Error('USD offer metadata missing');
+          if (!home.body.includes('What can this IP lookup show?') || !home.body.includes('Data sources and accuracy') || !home.body.includes('Which IP address types are supported?')) {
+            throw new Error('English IP lookup content and FAQ are missing from source HTML');
+          }
           if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(home.body)) {
             throw new Error('Homepage unexpectedly carries noindex');
           }
