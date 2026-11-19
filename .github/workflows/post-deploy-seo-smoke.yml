@@ -97,6 +97,13 @@ jobs:
             await sleep(10000);
           }
           if (!home) throw new Error('Production homepage did not expose expected English HTML after exact deployment');
+          const csp = home.response.headers.get('content-security-policy') || '';
+          if (!csp.includes("default-src 'self'") || !csp.includes("object-src 'none'") || !csp.includes("frame-ancestors 'none'")) {
+            throw new Error('Production homepage is missing the expected Content Security Policy baseline');
+          }
+          if ((home.response.headers.get('x-frame-options') || '').toLowerCase() !== 'deny') {
+            throw new Error('Production homepage is missing X-Frame-Options: DENY');
+          }
 
           if (!home.body.includes('/analytics-consent.js')) throw new Error('Production homepage is missing the GA4 consent loader');
           const gaScript = await get('/analytics-consent.js');
