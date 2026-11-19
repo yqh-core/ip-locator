@@ -43,7 +43,7 @@ jobs:
           for (let attempt = 1; attempt <= 20; attempt++) {
             try {
               const result = await get(origin + '/');
-              const title = result.body.match(/<title[^>]*>([\s\\S]*?)<\/title>/i)?.[1] || '';
+              const title = result.body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '';
               if (result.response.ok && result.body.includes('<html lang="en"') && title.includes(expectedTitle)) {
                 homepage = result;
                 console.log(`Production homepage updated and crawler-readable (attempt ${attempt})`);
