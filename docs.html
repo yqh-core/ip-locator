@@ -37,7 +37,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <meta property="og:image" content="https://ip.digdevbox.com/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="IP Locator - 免费在线 IP Lookup工具">
+    <meta property="og:image:alt" content="IP Locator — free IP address lookup">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://ip.digdevbox.com/images/og-image.jpg">
 
@@ -125,7 +125,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         </div>
         <footer>
             <p>© 2026 <a href="/">IP Locator</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
-            <p><a href="/about">About</a> | <a href="/guides">Guides</a> | <a href="/docs" data-i18n="topnav.docs">文档</a> | <a href="/faq">FAQ</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
+            <p><a href="/about">About</a> | <a href="/guides">Guides</a> | <a href="/docs" data-i18n="topnav.docs">Documentation</a> | <a href="/faq">FAQ</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </footer>
     </div>
 
@@ -163,8 +163,8 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     var d=effective()==='dark';
     b.textContent=d?'☀️':'🌙';
     if(window.DD_I18N&&window.DD_I18N.t)return;
-    b.setAttribute('aria-label', d?'切换到浅色模式':'切换到深色模式');
-    b.setAttribute('title', d?'切换到浅色模式':'切换到深色模式');}
+    b.setAttribute('aria-label', d?'Switch to light mode':'Switch to dark mode');
+    b.setAttribute('title', d?'Switch to light mode':'Switch to dark mode');}
   function toggle(){var c=effective();apply(c==='dark'?'light':'dark');}
   function init(){var b=document.getElementById('dd-theme-toggle');if(b)b.addEventListener('click',toggle);sync();}
   if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
