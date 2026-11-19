@@ -28,6 +28,12 @@ jobs:
       - name: 校验 IP V1 商业口径（G3 文案限定语 / 接入类型断言禁令 / network_type 全链路）
         run: node scripts/check-copy-policy.mjs
 
+      - name: GA4 consent 静态门禁（ID / 页面覆盖 / 隐私边界）
+        run: node scripts/check-ga4-consent.mjs
+
+      - name: GA4 consent 运行时回归（同意 / 拒绝 / noindex / 撤回）
+        run: node scripts/test-ga4-consent-runtime.mjs
+
       - name: 组装发布目录
         run: node scripts/build.mjs
 
