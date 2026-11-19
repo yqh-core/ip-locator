@@ -21,15 +21,15 @@ const el = {};
 
 /** 结果区每个字段对应的 DOM id，顺序即展示顺序 */
 const FIELDS = [
-  { id: 'country', label: '国家/地区' },
-  { id: 'region', label: '省份/州' },
-  { id: 'city', label: '城市' },
-  { id: 'zip', label: '邮编', key: 'postal' },
+  { id: 'country', label: 'Country / region' },
+  { id: 'region', label: 'Region / state' },
+  { id: 'city', label: 'City' },
+  { id: 'zip', label: 'Postal code', key: 'postal' },
   { id: 'asn', label: 'ASN' },
-  { id: 'isp', label: '运营商' },
-  { id: 'org', label: '组织' },
-  { id: 'location', label: '经纬度' },
-  { id: 'timezone', label: '时区' },
+  { id: 'isp', label: 'ISP' },
+  { id: 'org', label: 'Organization' },
+  { id: 'location', label: 'Coordinates' },
+  { id: 'timezone', label: 'Time zone' },
 ];
 
 const PLACEHOLDER = '-';
@@ -91,7 +91,7 @@ async function copyText(text, btn) {
   }
   if (!btn) return;
   const txt = btn.querySelector('.copy-txt');
-  const msg = ok ? t('feedback.copied', '已复制') : t('feedback.copyFailed', '复制失败，请手动选择复制');
+  const msg = ok ? t('feedback.copied', 'Copied') : t('feedback.copyFailed', 'Copy failed. Select and copy the value manually.');
   btn.classList.add(ok ? 'copied' : 'copy-failed');
   if (txt) {
     const prev = txt.textContent;
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   el.clientToggle?.addEventListener('click', () => {
     const open = el.clientInfo.hidden;
     el.clientInfo.hidden = !open;
-    el.clientToggle.textContent = open ? '收起' : '展开';
+    el.clientToggle.textContent = open ? 'Hide' : 'Show';
     el.clientToggle.setAttribute('aria-expanded', String(open));
   });
   el.historyClear?.addEventListener('click', () => {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function showLoading() {
   el.loading.style.display = 'block';
   const lp = el.loading.querySelector('p');
-  if (lp) lp.textContent = '正在查询IP信息...';
+  if (lp) lp.textContent = 'Looking up IP information...';
   el.error.style.display = 'none';
   el.ipInfo.style.display = 'none';
   if (el.extraTools) el.extraTools.hidden = true;
@@ -168,7 +168,7 @@ function readInput() {
     return null;
   }
   if (!isValidIPv4(ip) && !isValidIPv6(ip)) {
-    showError('请输入有效的 IPv4 或 IPv6 地址（如 8.8.8.8 或 2001:4860:4860::8888）');
+    showError('Enter a valid public IPv4 or IPv6 address (for example, 8.8.8.8 or 2001:4860:4860::8888).');
     return null;
   }
   return ip;
@@ -203,7 +203,7 @@ async function runQuery(ip) {
         attempted.push({ label: src.pathLabel || src.label, ok });
         if (!ok) {
           const lp = el.loading.querySelector('p');
-          if (lp) lp.textContent = `正在尝试其他数据源…（已尝试 ${attempted.length} 个）`;
+          if (lp) lp.textContent = `Trying another data source… (${attempted.length} attempted)`;
         }
       },
     });
@@ -218,8 +218,8 @@ async function runQuery(ip) {
     renderSourceNote(source, entity, info, attempted);
   } catch (error) {
     if (seq !== requestSeq && error?.name === 'AbortError') return;
-    console.error('查询IP信息失败:', error);
-    showError(error.message || '查询失败，请稍后重试');
+    console.error('IP lookup failed:', error);
+    showError(error.message || 'Lookup failed. Please try again.');
   } finally {
     if (seq === requestSeq) hideLoading();
   }
@@ -232,8 +232,8 @@ function addFieldCopy(node) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'field-copy';
-  btn.setAttribute('aria-label', t('aria.copyField', '复制该字段'));
-  btn.setAttribute('title', t('aria.copyField', '复制该字段'));
+  btn.setAttribute('aria-label', t('aria.copyField', 'Copy this field'));
+  btn.setAttribute('title', t('aria.copyField', 'Copy this field'));
   btn.innerHTML = '<span class="copy-ico" aria-hidden="true">📋</span>';
   btn.addEventListener('click', () => copyText(node.textContent, btn));
   item.appendChild(btn);
@@ -243,7 +243,7 @@ function addFieldCopy(node) {
 function render(info) {
   el.ipAddress.textContent = info.ip ?? PLACEHOLDER;
   const ver = ipVersion(info.ip);
-  el.ipType.textContent = `${isPrivateIP(info.ip) ? '内网' : '公网'}${ver ? ' IPv' + ver : ' IP'}`;
+  el.ipType.textContent = `${isPrivateIP(info.ip) ? 'Private' : 'Public'}${ver ? ' IPv' + ver : ' IP'}`;
 
   for (const field of FIELDS) {
     const node = el[field.id];
@@ -252,7 +252,7 @@ function render(info) {
     // 国家是"可能经本站转换"的字段：展示值与原值不同时，把上游原值一并显示出来，
     // 这样用户能看到 United States 是本站把 US 补全的，而不是上游就这么写的。
     if (field.id === 'country' && raw && info.countryOriginal && info.countryOriginal !== raw) {
-      raw = `${raw}（上游原值 ${info.countryOriginal}）`;
+      raw = `${raw} (upstream value: ${info.countryOriginal})`;
     }
     if (field.id === 'country' && raw) {
       const flag = flagEmoji(info.countryOriginal);
@@ -293,16 +293,16 @@ function renderClientInfo() {
   let tz = '—';
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; } catch { /* ignore */ }
   const rows = [
-    ['用户代理', nav.userAgent || '—'],
-    ['平台', nav.platform || '—'],
-    ['语言', nav.language || '—'],
-    ['屏幕分辨率', `${screen.width}×${screen.height}`],
-    ['颜色深度', `${screen.colorDepth} bit`],
-    ['在线状态', nav.onLine ? '在线' : '离线'],
-    ['网络类型', conn ? `${conn.effectiveType || '—'}${conn.downlink ? ` · 约 ${conn.downlink} Mbps` : ''}` : '浏览器不支持检测'],
-    ['时区', tz],
-    ['Cookie 启用', nav.cookieEnabled ? '是' : '否'],
-    ['Do Not Track', nav.doNotTrack === '1' ? '开启' : '关闭 / 未设置'],
+    ['User agent', nav.userAgent || '—'],
+    ['Platform', nav.platform || '—'],
+    ['Language', nav.language || '—'],
+    ['Screen resolution', `${screen.width}×${screen.height}`],
+    ['Color depth', `${screen.colorDepth} bit`],
+    ['Online status', nav.onLine ? 'Online' : 'Offline'],
+    ['Network type', conn ? `${conn.effectiveType || '—'}${conn.downlink ? ` · 约 ${conn.downlink} Mbps` : ''}` : 'Not exposed by this browser'],
+    ['Time zone', tz],
+    ['Cookies enabled', nav.cookieEnabled ? 'Yes' : 'No'],
+    ['Do Not Track', nav.doNotTrack === '1' ? 'On' : 'Off / not set'],
   ];
   el.clientInfo.innerHTML = rows.map(([k, v]) => (
     `<div class="client-row"><span class="client-key">${escapeHtml(k)}</span><span class="client-val">${escapeHtml(v)}</span></div>`
@@ -350,7 +350,7 @@ function renderHistory() {
     const del = document.createElement('button');
     del.type = 'button';
     del.className = 'history-del';
-    del.setAttribute('aria-label', '删除这条记录');
+    del.setAttribute('aria-label', 'Delete this entry');
     del.textContent = '✕';
     del.addEventListener('click', () => {
       writeHistory(readHistory().filter(x => x !== ip));
@@ -368,7 +368,7 @@ function renderMap(info) {
   el.mapEmbed.innerHTML = '';
   if (!info) {
     el.mapShowBtn.hidden = true;
-    el.mapLink.innerHTML = '<p>暂无地理位置信息</p>';
+    el.mapLink.innerHTML = '<p>No geolocation data is available.</p>';
     return;
   }
   const { lat, lon } = info;
@@ -377,7 +377,7 @@ function renderMap(info) {
     // 点击才加载第三方瓦片（隐私：不自动向 OSM 发请求）；坐标是 IP 估算位置。
     const d = 0.02;
     const bbox = `${lon - d},${lat - d},${lon + d},${lat + d}`;
-    el.mapEmbed.innerHTML = `<iframe title="${t('map.embedTitle', '大致地理位置地图')}" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${lat},${lon}"></iframe>`;
+    el.mapEmbed.innerHTML = `<iframe title="${t('map.embedTitle', 'Approximate location map')}" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${lat},${lon}"></iframe>`;
     el.mapEmbed.hidden = false;
     el.mapShowBtn.hidden = true;
   };
@@ -411,18 +411,18 @@ function renderSourceNote(source, entity, info, attempted) {
     : '';
 
   const via = entity ? entityLabel(entity) : null;
-  const sourceText = via || '来源未上报';
+  const sourceText = via || 'Source not reported';
 
   // 经代理时补一句路径说明，避免用户把 ipinfo.io 误当成本站自己的数据
   const pathNote = entity && source.id === 'locip-server' && entity !== 'locip-server'
-    ? '（经本站服务端代理转发）'
+    ? ' (proxied by this site)'
     : '';
 
   let cacheNote = '';
-  if (info && info.cached === true) cacheNote = ' · 命中本站缓存';
-  else if (info && info.cached === false) cacheNote = ' · 本次已回源';
+  if (info && info.cached === true) cacheNote = ' · served from this site cache';
+  else if (info && info.cached === false) cacheNote = ' · fetched from source for this lookup';
 
-  el.sourceNote.textContent = `数据来源：${sourceText}${pathNote}${cacheNote}${degrade}`;
+  el.sourceNote.textContent = `Data source: ${sourceText}${pathNote}${cacheNote}${degrade}`;
 
   // 许可署名（CC BY-SA / 数据源条款要求"可点击链接"，纯文本不满足）：
   // 仅对白名单应答方挂链接；href 取本地常量映射，绝不用服务端回报的字符串拼链接
@@ -434,7 +434,7 @@ function renderSourceNote(source, entity, info, attempted) {
     a.href = href;
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = '（数据许可与署名要求）';
+    a.textContent = '(data license and attribution requirements)';
     el.sourceNote.appendChild(a);
   }
 }
