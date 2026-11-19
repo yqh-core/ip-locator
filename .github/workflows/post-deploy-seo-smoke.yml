@@ -116,6 +116,8 @@ jobs:
 
 
           if (!home.body.includes('>🌍 IP Geolocation Lookup</h1>')) throw new Error('English IP lookup H1 missing from source HTML');
+          if (!home.body.includes('<title>IP Geolocation Lookup — IP Address, ASN &amp; DNS | DigDevBox</title>')) throw new Error('IP lookup title snippet is not the concise search-target version');
+          if (!home.body.includes('Look up public IPv4 and IPv6 addresses by location, ISP and ASN. Check CIDR subnets plus DNS and reverse DNS records')) throw new Error('IP lookup meta description is missing the concise search-intent summary');
           if (!home.body.includes('Look up detailed geolocation info for any IP address')) throw new Error('English IP lookup hero description missing from source HTML');
           if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
 
