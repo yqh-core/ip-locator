@@ -175,6 +175,7 @@ jobs:
             if (!page.response.ok) throw new Error(item.path + ' returned HTTP ' + page.response.status);
             if (!page.body.includes('<html lang="en"')) throw new Error(item.path + ' must serve English source HTML');
             if (!page.body.includes(item.heading)) throw new Error(item.path + ' is missing its English content heading');
+            if (!page.body.includes('role="main"')) throw new Error(item.path + ' is missing its main landmark');
             if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(page.body)) {
               throw new Error(item.path + ' unexpectedly carries noindex');
             }
