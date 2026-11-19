@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Free IP Address Lookup — IPv4 & IPv6 Geolocation, ASN and CIDR | DigDevBox</title>
+  <meta name="description" content="Look up IPv4 and IPv6 addresses for approximate country, region, city, ASN, ISP and timezone data. Includes CIDR subnet calculations and DNS/rDNS lookup.">
+  <link rel="canonical" href="https://ip.digdevbox.com/ip-address-lookup/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DigDevBox IP Lookup">
+  <meta property="og:title" content="Free IP Address Lookup — IPv4 & IPv6 Geolocation, ASN and CIDR">
+  <meta property="og:description" content="Look up approximate IP geolocation, ASN and ISP details, calculate CIDR subnets, and inspect DNS/rDNS records.">
+  <meta property="og:url" content="https://ip.digdevbox.com/ip-address-lookup/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f7f9f9;color:#1d2c32;font:16px/1.7 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    main{max-width:850px;margin:auto;padding:28px 20px 64px}.brand{font-weight:750;color:#0f766e;text-decoration:none}
+    .eyebrow{margin:38px 0 8px;color:#0f766e;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem;font-weight:700}
+    h1{font-size:clamp(2rem,5vw,3rem);line-height:1.12;letter-spacing:-.03em;margin:0 0 14px}
+    h2{font-size:1.4rem;margin:34px 0 10px}p{max-width:72ch}.lead{font-size:1.12rem;color:#52636b}
+    .cta{display:inline-block;background:#0f766e;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin:12px 0}
+    .card{background:#fff;border:1px solid #dfe7e8;border-radius:12px;padding:18px 20px;margin:18px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.grid .card{margin:0}
+    .note{font-size:.92rem;color:#5c6c73}.callout{border-left:4px solid #0f766e;padding:12px 16px;background:#edf6f5}
+    a{color:#0b625b}footer{border-top:1px solid #dfe7e8;margin-top:40px;padding-top:18px;color:#5c6c73}
+  </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","@id":"https://ip.digdevbox.com/ip-address-lookup/#webpage","url":"https://ip.digdevbox.com/ip-address-lookup/","name":"Free IP Address Lookup","description":"Look up approximate IPv4 and IPv6 geolocation, ASN and ISP information, plus CIDR and DNS tools.","inLanguage":"en","isPartOf":{"@type":"WebSite","@id":"https://ip.digdevbox.com/#website","name":"DigDevBox IP Lookup","url":"https://ip.digdevbox.com/"}},
+    {"@type":"SoftwareApplication","name":"DigDevBox IP Lookup","url":"https://ip.digdevbox.com/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any modern browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["IPv4 and IPv6 lookup","Approximate geolocation","ASN and ISP information","CIDR subnet calculator","DNS and reverse DNS lookup"]},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"IP Lookup","item":"https://ip.digdevbox.com/"},{"@type":"ListItem","position":2,"name":"IP Address Lookup Guide","item":"https://ip.digdevbox.com/ip-address-lookup/"}]}
+  ]}
+  </script>
+</head>
+<body>
+<main>
+  <a class="brand" href="/">DigDevBox · IP Lookup</a>
+  <p class="eyebrow">Free IPv4 & IPv6 lookup</p>
+  <h1>IP Address Lookup — Geolocation, ASN and ISP Details</h1>
+  <p class="lead">Look up an IP address to inspect its approximate country, region, city, postal code, ASN, network provider and timezone. Use the same toolbox for CIDR subnet calculations and DNS or reverse-DNS checks.</p>
+  <a class="cta" href="/#ipInput">Open the free IP lookup tool</a>
+  <p class="note">Geolocation is an estimate based on provider databases. It can reflect an ISP's registered network location or an internet egress point, not the precise physical location of a person or device.</p>
+
+  <h2>What you can look up</h2>
+  <div class="grid">
+    <section class="card"><strong>IPv4 and IPv6</strong><p class="note">Query public IPv4 or IPv6 addresses and review the available network and location fields.</p></section>
+    <section class="card"><strong>ASN and ISP</strong><p class="note">Identify the autonomous system number, network organization and internet service provider where available.</p></section>
+    <section class="card"><strong>CIDR and subnets</strong><p class="note">Calculate network ranges, address counts and subnet boundaries, including IPv6 prefix ranges.</p></section>
+    <section class="card"><strong>DNS and rDNS</strong><p class="note">Inspect DNS records and reverse-DNS results to support network troubleshooting.</p></section>
+  </div>
+
+  <h2>How to use the IP address lookup</h2>
+  <ol>
+    <li>Open the lookup tool and enter a public IPv4 or IPv6 address.</li>
+    <li>Run the lookup and review the country, region, city, ASN, ISP and timezone fields returned by the available sources.</li>
+    <li>Compare the source and field-level attribution when providers disagree. IP geolocation is not GPS and should not be treated as an exact address.</li>
+    <li>For network planning, use the CIDR calculator; for hostname diagnostics, use DNS or reverse-DNS lookup.</li>
+  </ol>
+
+  <h2>How accurate is IP geolocation?</h2>
+  <p>IP geolocation databases infer approximate network locations from registration, routing and provider data. Results can differ between sources and may point to a carrier gateway, VPN exit, corporate network or ISP registration location. Use them for network context and troubleshooting, not for identifying a person's home or proving their physical presence.</p>
+
+  <h2>Privacy and data sources</h2>
+  <p>The lookup result is obtained from third-party IP geolocation services. The IP address or domain you choose to query is sent to those providers so they can return a result. Do not submit an address you are not authorized to investigate. See the <a href="/privacy">privacy policy</a> for the site's handling of input and diagnostics.</p>
+
+  <h2>Related resources</h2>
+  <p><a href="/guides">Read the IP lookup guides</a> · <a href="/docs">Review IP and network documentation</a> · <a href="/faq">Read frequently asked questions</a></p>
+  <a class="cta" href="/#ipInput">Look up an IP address</a>
+  <footer><a href="/">IP lookup tool</a> · <a href="/guides">Guides</a> · <a href="/privacy">Privacy</a> · <a href="https://digdevbox.com/">DigDevBox developer tools</a></footer>
+</main>
+</body>
+</html>
