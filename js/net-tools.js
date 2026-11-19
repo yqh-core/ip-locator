@@ -88,33 +88,33 @@ export function formatIPv6(n) {
 /* ---------------- CIDR 计算 ---------------- */
 
 const V4_SPECIALS = [
-  { start: 0x0A000000, end: 0x0AFFFFFF, label: '私有（RFC1918）' },
-  { start: 0xAC100000, end: 0xAC1FFFFF, label: '私有（RFC1918）' },
-  { start: 0xC0A80000, end: 0xC0A8FFFF, label: '私有（RFC1918）' },
-  { start: 0x7F000000, end: 0x7FFFFFFF, label: '环回' },
-  { start: 0xA9FE0000, end: 0xA9FEFFFF, label: '链路本地' },
-  { start: 0x64400000, end: 0x647FFFFF, label: '运营商级 NAT（RFC6598）' },
-  { start: 0xE0000000, end: 0xEFFFFFFF, label: '组播' },
-  { start: 0xF0000000, end: 0xFFFFFFFF, label: '保留' },
-  { start: 0x00000000, end: 0x00FFFFFF, label: '本网络' },
+  { start: 0x0A000000, end: 0x0AFFFFFF, label: 'Private (RFC 1918)' },
+  { start: 0xAC100000, end: 0xAC1FFFFF, label: 'Private (RFC 1918)' },
+  { start: 0xC0A80000, end: 0xC0A8FFFF, label: 'Private (RFC 1918)' },
+  { start: 0x7F000000, end: 0x7FFFFFFF, label: 'Loopback' },
+  { start: 0xA9FE0000, end: 0xA9FEFFFF, label: 'Link-local' },
+  { start: 0x64400000, end: 0x647FFFFF, label: 'Carrier-grade NAT (RFC 6598)' },
+  { start: 0xE0000000, end: 0xEFFFFFFF, label: 'Multicast' },
+  { start: 0xF0000000, end: 0xFFFFFFFF, label: 'Reserved' },
+  { start: 0x00000000, end: 0x00FFFFFF, label: 'This network' },
 ];
 
 function v4Classify(n) {
   for (const r of V4_SPECIALS) {
     if (n >= r.start && n <= r.end) return r.label;
   }
-  return '公网';
+  return 'Public';
 }
 
 function v6Classify(n) {
-  if (n === 1n) return '环回';
-  if (n === 0n) return '未指定';
-  if ((n >> 118n) === 0x3fan) return '链路本地'; // fe80::/10 → 高 10 位 1111111010
-  if ((n >> 121n) === 0x7en) return '唯一本地（fc00::/7）'; // fc00::/7 → 高 7 位 1111110
-  if ((n >> 112n) === 0x2001n && ((n >> 96n) & 0xffffn) === 0x0db8n) return '文档示例（2001:db8::/32）';
-  if ((n >> 120n) === 0xffn) return '组播';
+  if (n === 1n) return 'Loopback';
+  if (n === 0n) return 'Unspecified';
+  if ((n >> 118n) === 0x3fan) return 'Link-local'; // fe80::/10 → 高 10 位 1111111010
+  if ((n >> 121n) === 0x7en) return 'Unique local (fc00::/7)'; // fc00::/7 → 高 7 位 1111110
+  if ((n >> 112n) === 0x2001n && ((n >> 96n) & 0xffffn) === 0x0db8n) return 'Documentation range (2001:db8::/32)';
+  if ((n >> 120n) === 0xffn) return 'Multicast';
   if ((n >> 112n) === 0x2001n && ((n >> 96n) & 0xffffn) === 0n) return 'Teredo';
-  return '公网（全球单播）';
+  return 'Public (global unicast)';
 }
 
 /**
@@ -131,7 +131,7 @@ export function cidrInfo(input) {
   if (v4 !== null) {
     const prefix = slash < 0 ? 32 : Number(prefixPart);
     if (!Number.isInteger(prefix) || prefix < 0 || prefix > 32 || (slash >= 0 && !/^\d{1,2}$/.test(prefixPart))) {
-      throw new Error('IPv4 前缀必须是 0–32 的整数');
+      throw new Error('The IPv4 prefix must be an integer from 0 to 32.');
     }
     const mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
     const network = (v4 & mask) >>> 0;
@@ -152,7 +152,7 @@ export function cidrInfo(input) {
       totalAddresses: String(size),
       usableHosts: String(usable),
       classification: v4Classify(network),
-      note: prefix === 31 ? '/31 为点对点链路（RFC 3021），两个地址皆可用' : prefix === 32 ? '/32 为单个主机地址' : '',
+      note: prefix === 31 ? '/31 is a point-to-point link (RFC 3021); both addresses are usable.' : prefix === 32 ? '/32 represents a single host address.' : '',
     };
   }
 
@@ -160,7 +160,7 @@ export function cidrInfo(input) {
   if (v6 !== null) {
     const prefix = slash < 0 ? 128 : Number(prefixPart);
     if (!Number.isInteger(prefix) || prefix < 0 || prefix > 128 || (slash >= 0 && !/^\d{1,3}$/.test(prefixPart))) {
-      throw new Error('IPv6 前缀必须是 0–128 的整数');
+      throw new Error('The IPv6 prefix must be an integer from 0 to 128.');
     }
     const hostBits = 128n - BigInt(prefix);
     const size = 1n << hostBits;
@@ -180,11 +180,11 @@ export function cidrInfo(input) {
       totalAddresses: size.toString(),
       usableHosts: size.toString(),
       classification: v6Classify(network),
-      note: 'IPv6 无广播地址；子网内所有地址皆可分配（RFC 4291）',
+      note: 'IPv6 has no broadcast address; all addresses in the subnet are assignable (RFC 4291).',
     };
   }
 
-  throw new Error('不是合法的 IPv4/IPv6 地址或 CIDR（示例：192.168.1.0/24 或 2001:db8::/32）');
+  throw new Error('Enter a valid IPv4 or IPv6 address or CIDR range (e.g. 192.168.1.0/24 or 2001:db8::/32).');
 }
 
 /* ---------------- rDNS 名称构造 ---------------- */
@@ -199,7 +199,7 @@ export function ptrName(ip) {
     const hex = v6.toString(16).padStart(32, '0');
     return hex.split('').reverse().join('.') + '.ip6.arpa';
   }
-  throw new Error('不是合法的 IP 地址');
+  throw new Error('This is not a valid IP address.');
 }
 
 /* ---------------- DNS over HTTPS（Cloudflare 1.1.1.1） ---------------- */
@@ -220,11 +220,11 @@ export async function dohQuery(name, type = 'A', timeoutMs = 10000) {
       headers: { accept: 'application/dns-json' },
       signal: ctrl ? ctrl.signal : undefined,
     });
-    if (!resp.ok) throw new Error(`DoH 服务返回 HTTP ${resp.status}`);
+    if (!resp.ok) throw new Error(`The DNS-over-HTTPS service returned HTTP ${resp.status}`);
     return await resp.json();
   } catch (e) {
-    if (e && e.name === 'AbortError') throw new Error(`查询超时（${timeoutMs / 1000}s）`);
-    if (e instanceof TypeError) throw new Error('网络请求失败：无法连接 Cloudflare DoH（检查网络或跨域限制）');
+    if (e && e.name === 'AbortError') throw new Error(`Lookup timed out after ${timeoutMs / 1000}s`);
+    if (e instanceof TypeError) throw new Error('Network request failed: could not reach Cloudflare DNS-over-HTTPS. Check your connection or cross-origin restrictions.');
     throw e;
   } finally {
     if (timer) clearTimeout(timer);
@@ -234,8 +234,8 @@ export async function dohQuery(name, type = 'A', timeoutMs = 10000) {
 /** DNS 状态码 → 可读文案（RFC 1035 + 常见扩展）。 */
 export function dnsStatusText(code) {
   const map = {
-    0: 'NOERROR（有应答）', 1: 'FORMERR（查询格式错误）', 2: 'SERVFAIL（服务器失败）',
-    3: 'NXDOMAIN（域名不存在）', 4: 'NOTIMP（不支持）', 5: 'REFUSED（拒绝查询）',
+    0: 'NOERROR (response received)', 1: 'FORMERR (malformed query)', 2: 'SERVFAIL (server failure)',
+    3: 'NXDOMAIN (domain does not exist)', 4: 'NOTIMP (not implemented)', 5: 'REFUSED (query refused)',
   };
   return map[code] ?? `RCODE ${code}`;
 }
