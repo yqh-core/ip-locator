@@ -98,6 +98,10 @@ jobs:
           }
           if (!home) throw new Error('Production homepage did not expose expected English HTML after exact deployment');
 
+          if (!home.body.includes('>🌍 IP Geolocation Lookup</h1>')) throw new Error('English IP lookup H1 missing from source HTML');
+          if (!home.body.includes('Look up detailed geolocation info for any IP address')) throw new Error('English IP lookup hero description missing from source HTML');
+          if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
+
           const canonical = home.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
           if (canonical !== origin + '/') throw new Error('Unexpected homepage canonical: ' + canonical);
           if (!home.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
