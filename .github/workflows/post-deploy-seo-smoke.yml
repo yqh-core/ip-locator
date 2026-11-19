@@ -102,6 +102,12 @@ jobs:
           if (!home.body.includes('Look up detailed geolocation info for any IP address')) throw new Error('English IP lookup hero description missing from source HTML');
           if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
 
+          const visibleHtml = home.body.replace(/<script\b[\s\S]*?<\/script>/gi, '').replace(/<style\b[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
+          const cjkCount = (visibleHtml.match(/[\u3400-\u9fff]/g) || []).length;
+          if (cjkCount > 0) throw new Error('English homepage source HTML contains ' + cjkCount + ' CJK characters outside scripts, styles and comments');
+          if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
+          if (!home.body.includes('What can this IP lookup show?')) throw new Error('English IP lookup guide missing from source HTML');
+
           const canonical = home.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
           if (canonical !== origin + '/') throw new Error('Unexpected homepage canonical: ' + canonical);
           if (!home.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
