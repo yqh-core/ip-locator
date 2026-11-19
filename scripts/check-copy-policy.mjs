@@ -29,7 +29,7 @@ const ok = (name, cond, detail) => {
 
 /* ---------------- 判据 A：各页必须含的限定语 ---------------- */
 const REQUIRED = {
-  'index.html': ['IP geolocation reflects provider databases', 'usually approximate at city level', "not proof of a device's physical location", 'network registration', 'treat the result as an investigation clue'],
+  'index.html': ['IP geolocation reflects provider databases', 'usually approximate at city level', "not proof of a device's physical location", 'network registration', 'Treat the result as an investigation clue'],
   'terms.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不判断、也不输出'],
   'guides.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不等同于实际服务运营商'],
   // 裁定④（本轮新增授权页）：FAQ 里必须把"登记归属组织"和"实际接入运营商"分开说
