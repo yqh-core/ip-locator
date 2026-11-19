@@ -81,7 +81,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <a href="https://digdevbox.com/" data-i18n="nav.devtools">Dev Toolbox</a>
                 <a href="https://play.digdevbox.com/" data-i18n="nav.player">StreamPlay</a>
                 <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP Lookup</a>
-                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">Loan Calculator</a>
+                
                 <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">Image Compressor</a>
         </nav>
 
@@ -283,30 +283,24 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div id="dns-result" class="net-result"></div>
         </div>
 
-        <div class="instructions">
-            <h3>📖 使用说明</h3>
+        <div class="instructions" lang="en">
+            <h3>📖 How to use the IP lookup</h3>
             <ul>
-                <li>在输入框中输入要查询的IP地址（支持 IPv4 / IPv6 格式）</li>
-                <li>点击"查询"按钮获取该IP的归属地信息</li>
-                <li>点击"查询我的IP"按钮可以快速查询您当前的IP地址信息</li>
-                <li>查询结果包括：国家、地区、城市、运营商、经纬度、时区等详细信息</li>
-                <li>支持查看IP地理位置的地图链接</li>
+                <li>Enter a public IPv4 or IPv6 address in the search field.</li>
+                <li>Select Query to retrieve the available network registration and geolocation data.</li>
+                <li>Select My IP to inspect the public IP address used by your current connection.</li>
+                <li>Available fields may include country, region, city, ISP, ASN, coordinates and timezone.</li>
+                <li>Use the map link to view the approximate location when coordinates are available.</li>
             </ul>
             <div class="api-notice">
-                <strong>提示：</strong>本工具同时向多个免费 IP 库发起查询，先给出可用结果的应答；
-                查询结果是 <strong>IP 地理信息估算</strong>（本质是概率推断），<strong>通常只能精确到城市级</strong>，
-                <strong>不代表设备或用户的实际物理位置</strong>，仅供参考。
-                国家、省份/州、城市与组织等字段属于<strong>资源登记归属信息</strong>；
-                ASN 与「运营商 / 组织」来自第三方库的归属记录，<strong>不等同于该地址的实际服务运营商</strong>，
-                也<strong>不能用来判断使用者是住宅、移动网络还是机房</strong>。
-                查询请求默认经本站服务器转发完成（用于缓存与限流保护，本站不存储你的查询内容），
-                结果下方会标出本次实际应答的数据库。
+                <strong>Accuracy and privacy:</strong> IP geolocation is an estimate, not a device-tracking method. Results are usually accurate only to city level and do not establish a person's physical location. Country, region, city and organization describe network-registration records; ASN and ISP labels come from third-party datasets and do not prove the actual service provider or whether an address belongs to a home, mobile network or data centre. Manual lookup requests may be forwarded to public IP data providers. The site does not persistently store submitted queries; a short-lived technical cache of up to one hour may be used for performance and rate limiting. The responding data source is shown with the result.
             </div>
 
-            <h3>🔗 同站工具</h3>
+            <h3>🔗 Related tools</h3>
             <ul class="sibling-links">
-                <li><a href="https://digdevbox.com" target="_blank" rel="noopener">开发者工具集</a> — 常用在线开发工具</li>
-                <li><a href="https://fangdai.digdevbox.com" target="_blank" rel="noopener">房贷计算器</a> — 月供与利息测算</li>
+                <li><a href="https://www.digdevbox.com/tools/" target="_blank" rel="noopener">Developer tools</a> — practical utilities for developers and IT teams.</li>
+                <li><a href="https://play.digdevbox.com/" target="_blank" rel="noopener">StreamPlay</a> — test and inspect M3U8 / HLS streams.</li>
+                <li><a href="https://img.digdevbox.com/" target="_blank" rel="noopener">DigImg</a> — compress and compare image formats in your browser.</li>
             </ul>
         </div>
 
@@ -333,63 +327,47 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             .seo-guide a{color:var(--dd-primary,#0f766e)}
             @media (max-width:640px){.seo-guide h2{font-size:1.15rem}}
         </style>
-        <section class="seo-guide">
-            <h2>这个工具能查到什么</h2>
-            <p>
-                输入任意 IPv4 或 IPv6 地址，即可查询它的归属地信息：国家/地区、省份/州、城市、邮编、
-                ASN（自治系统号）、运营商（ISP）、所属组织、经纬度、时区，以及地理位置地图链接。
-                也可以点击「查询我的IP」直接查看你当前网络出口 IP 的归属信息。IPv6 的归属覆盖度因数据源
-                与地址段而异，部分地址可能仅能精确到国家级。
-            </p>
-            <h2>数据来源与精度说明</h2>
-            <p>
-                本工具分两条路径提供归属数据：查询您自己的 IP 时，使用的是 Cloudflare 边缘节点
-                随请求附带的地理信息，不调用任何第三方数据库；查询您手动输入的 IP 时，会同时向
-                <a href="https://ipwho.is" target="_blank" rel="noopener">ipwho.is</a>、
-                <a href="https://ipinfo.io" target="_blank" rel="noopener">IPinfo</a>
-                等公开 IP 库发起查询，先给出可用结果的应答。查询请求经本站服务器转发（用于缓存与
-                限流保护，本站不在服务器端存储你的查询内容，缓存为不超过 1 小时的短周期技术缓存）。
-                结果下方会标出本次实际应答的数据源、是否命中缓存，并附应答方的数据许可/署名链接
-                （IPinfo 免费层按 CC BY-SA 要求署名）。定位精度以城市级为主、因数据源而异：IP 归属
-                数据库反映的是运营商注册地与骨干网接入点，不一定等于设备的物理位置；不同数据源之间
-                也可能存在差异，结果仅供参考。
-            </p>
-            <h2>常见场景</h2>
+        <section class="seo-guide" lang="en">
+            <h2>What can this IP lookup show?</h2>
+            <p>Enter a public IPv4 or IPv6 address to view the network-registration and approximate geolocation data available for that address: country or region, city, postal code, ASN (Autonomous System Number), ISP or organization, coordinates and timezone. Select My IP to inspect the public egress address used by your current connection. IPv6 coverage varies by provider and prefix; some addresses may resolve only to country-level data.</p>
+
+            <h2>Data sources and accuracy</h2>
+            <p>When you look up your own IP, the tool uses geolocation data supplied with the request by Cloudflare's edge network; that path does not query third-party IP databases. For a manually entered address, the service requests multiple public IP datasets, including <a href="https://ipwho.is" target="_blank" rel="noopener">ipwho.is</a> and <a href="https://ipinfo.io" target="_blank" rel="noopener">IPinfo</a>, and returns the first usable response. Requests are proxied through this site for caching and rate limiting. Submitted queries are not persistently stored on our servers; a short-lived technical cache of up to one hour may be used. The result identifies the responding data provider and cache status, with attribution or licensing links where required. IP geolocation reflects provider databases, network registration and routing infrastructure. It is usually approximate at city level and may differ between providers; it is not proof of a device's physical location.</p>
+
+            <h2>Common use cases</h2>
             <ul class="use-cases">
-                <li><strong>查本机出口 IP：</strong>点击「<a href="#myIpBtn">查询我的IP</a>」，一键查看当前网络出口 IP 的归属地与运营商登记信息。</li>
-                <li><strong>排查异地登录：</strong>账号出现陌生登录地时，把日志里的 IP 填入「<a href="#ipInput">查询框</a>」核对归属与 ASN。归属是登记信息与城市级估算，只作排查线索，不作唯一判定依据。</li>
-                <li><strong>确认服务器归属：</strong>把服务器公网 IP 填入「<a href="#ipInput">查询框</a>」，核对 ASN 与组织字段是否与预期一致。</li>
-                <li><strong>划分子网：</strong>用「<a href="#cidr">CIDR / 子网计算器</a>」算网络地址、掩码、广播与可用主机范围；域名解析与 IP 反查见「<a href="#dns">DNS / rDNS 查询</a>」。</li>
+                <li><strong>Check your public IP:</strong> Select <a href="#myIpBtn">My IP</a> to view the network egress address and its available registration details.</li>
+                <li><strong>Investigate an unfamiliar login location:</strong> Enter the IP from an account log in the <a href="#ipInput">lookup field</a> and review its country, city and ASN. Treat the result as an investigation clue, not proof of a person's identity or location.</li>
+                <li><strong>Review a server's network:</strong> Enter the server's public IP in the <a href="#ipInput">lookup field</a> and compare the returned ASN and organization with the expected network.</li>
+                <li><strong>Plan or troubleshoot a subnet:</strong> Use the <a href="#cidr">CIDR subnet calculator</a> for network addresses and host ranges, and the <a href="#dns">DNS / reverse DNS lookup</a> for DNS records and PTR checks.</li>
             </ul>
-            <h2>常见问题</h2>
+
+            <h2>Frequently asked questions</h2>
             <details>
-                <summary>支持查询哪类 IP 地址？</summary>
-                <p>支持 IPv4 与 IPv6 格式的公网地址查询（如 8.8.8.8 或 2001:4860:4860::8888）。IPv6 的归属覆盖度因数据源与地址段而异，部分地址可能仅能精确到国家级。</p>
+                <summary>Which IP address types are supported?</summary>
+                <p>The lookup accepts public IPv4 and IPv6 addresses, such as 8.8.8.8 or 2001:4860:4860::8888. IPv6 coverage depends on the provider and address range; some results may be limited to country-level information.</p>
             </details>
             <details>
-                <summary>我的查询会被记录吗？</summary>
-                <p>查询请求经本站服务器转发（用于缓存与限流保护），本站不在服务器端存储你的查询内容。结果数据来自第三方 IP 数据服务。</p>
+                <summary>Are my lookup queries stored?</summary>
+                <p>Requests for manually entered IP addresses may be forwarded to third-party data providers. The site does not persistently store submitted queries on its servers. A short-lived technical cache of up to one hour may be used for performance and rate limiting.</p>
             </details>
             <details>
-                <summary>为什么不同网站的 IP 归属结果不一样？</summary>
-                <p>各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。</p>
+                <summary>Why do IP lookup services return different locations?</summary>
+                <p>Providers maintain different datasets, update schedules and address-range coverage. Their results can differ, especially for mobile, VPN, cloud and recently reassigned networks. Compare the provider shown with each result and treat city-level geolocation as an estimate.</p>
             </details>
             <details>
-                <summary>可以查看原始 JSON、客户端信息或查询历史吗？</summary>
-                <p>可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。</p>
+                <summary>Can I inspect raw JSON, client details or lookup history?</summary>
+                <p>Yes. The result area includes a normalized raw JSON view with source and cache details. Client and browser information is read locally in your browser and is not uploaded. Lookup history is stored only in your local browser and can be cleared at any time.</p>
             </details>
             <details>
-                <summary>CIDR / 子网计算器能算什么？</summary>
-                <p>输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。</p>
+                <summary>What does the CIDR subnet calculator do?</summary>
+                <p>Enter a CIDR range such as 192.168.1.0/24 or a single IP address to calculate the network address, subnet mask, wildcard mask, broadcast address, first and last usable addresses, total address count and usable host count. It supports IPv4 and IPv6, including /31 point-to-point ranges and RFC 5952 IPv6 formatting. Calculations run locally in your browser.</p>
             </details>
             <details>
-                <summary>DNS / rDNS 查询的数据从哪里来？</summary>
-                <p>来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。</p>
+                <summary>Where do DNS and reverse DNS results come from?</summary>
+                <p>DNS queries use Cloudflare's public 1.1.1.1 DNS-over-HTTPS service directly from your browser, not through this site's server. Supported record types include A, AAAA, CNAME, MX, TXT, NS, SOA and CAA. Entering an IP address performs a PTR reverse lookup using the corresponding in-addr.arpa or ip6.arpa name. Non-existent domains are reported as NXDOMAIN.</p>
             </details>
-            <p>
-                更多用法见<a href="/guides">使用教程</a>，字段含义见<a href="/docs">IP 知识文档</a>，
-                其余疑问见<a href="/faq">常见问题</a>。
-            </p>
+            <p>For step-by-step instructions, see the <a href="/guides">IP lookup guides</a>. For field definitions, read the <a href="/docs">IP reference documentation</a>. For additional questions, visit the <a href="/faq">FAQ</a>.</p>
         </section>
         <script type="application/ld+json">
         {
@@ -398,41 +376,41 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "支持查询哪类 IP 地址？",
-              "acceptedAnswer": { "@type": "Answer", "text": "支持 IPv4 与 IPv6 格式的公网地址查询（如 8.8.8.8 或 2001:4860:4860::8888）。IPv6 的归属覆盖度因数据源与地址段而异，部分地址可能仅能精确到国家级。" }
+              "name": "Which IP address types are supported?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The lookup accepts public IPv4 and IPv6 addresses, such as 8.8.8.8 or 2001:4860:4860::8888. IPv6 coverage depends on the provider and address range; some results may be limited to country-level information." }
             },
             {
               "@type": "Question",
-              "name": "我的查询会被记录吗？",
-              "acceptedAnswer": { "@type": "Answer", "text": "查询请求经本站服务器转发（用于缓存与限流保护），本站不在服务器端存储你的查询内容。结果数据来自第三方 IP 数据服务。" }
+              "name": "Are my lookup queries stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Requests for manually entered IP addresses may be forwarded to third-party data providers. The site does not persistently store submitted queries on its servers. A short-lived technical cache of up to one hour may be used for performance and rate limiting." }
             },
             {
               "@type": "Question",
-              "name": "为什么不同网站的 IP 归属结果不一样？",
-              "acceptedAnswer": { "@type": "Answer", "text": "各网站使用不同的 IP 归属数据库，更新时间与覆盖范围不同，因此结果可能存在差异。本站会向多家数据库取先给出的可用结果，并在结果下方标出本次实际应答的数据库，你可以据此判断这条结果出自哪一家。" }
+              "name": "Why do IP lookup services return different locations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Providers maintain different datasets, update schedules and address-range coverage. Their results can differ, especially for mobile, VPN, cloud and recently reassigned networks. Compare the provider shown with each result and treat city-level geolocation as an estimate." }
             },
             {
               "@type": "Question",
-              "name": "可以查看原始 JSON、客户端信息或查询历史吗？",
-              "acceptedAnswer": { "@type": "Answer", "text": "可以。结果下方提供「原始 JSON」视图，展示本次归一化字段（含数据来源与缓存态）并可一键复制；「你的客户端信息」面板在本机读取浏览器与设备自报信息（不上传）；「查询历史」仅存于本机浏览器，点击即可重查，可随时清空。" }
+              "name": "Can I inspect raw JSON, client details or lookup history?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. The result area includes a normalized raw JSON view with source and cache details. Client and browser information is read locally in your browser and is not uploaded. Lookup history is stored only in your local browser and can be cleared at any time." }
             },
             {
               "@type": "Question",
-              "name": "CIDR / 子网计算器能算什么？",
-              "acceptedAnswer": { "@type": "Answer", "text": "输入 CIDR（如 192.168.1.0/24）或单个 IP，即可算出网络地址、子网掩码、通配符掩码、广播地址、首个/末个可用地址、地址总数与可用主机数，并按 RFC 标注地址分类（私有/环回/链路本地/公网等）。支持 IPv4 与 IPv6（含 /31 点对点与 RFC 5952 压缩格式），计算完全在本机浏览器完成，不发出任何请求。" }
+              "name": "What does the CIDR subnet calculator do?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Enter a CIDR range such as 192.168.1.0/24 or a single IP address to calculate the network address, subnet mask, wildcard mask, broadcast address, first and last usable addresses, total address count and usable host count. It supports IPv4 and IPv6, including /31 point-to-point ranges and RFC 5952 IPv6 formatting. Calculations run locally in your browser." }
             },
             {
               "@type": "Question",
-              "name": "DNS / rDNS 查询的数据从哪里来？",
-              "acceptedAnswer": { "@type": "Answer", "text": "来自 Cloudflare 1.1.1.1 的 DNS-over-HTTPS 公共解析服务，由浏览器直连查询，不经本站服务器。支持 A/AAAA/CNAME/MX/TXT/NS/SOA/CAA 记录；输入 IP 会自动构造 in-addr.arpa / ip6.arpa 反查 rDNS（PTR）。域名不存在时如实返回 NXDOMAIN。" }
+              "name": "Where do DNS and reverse DNS results come from?",
+              "acceptedAnswer": { "@type": "Answer", "text": "DNS queries use Cloudflare's public 1.1.1.1 DNS-over-HTTPS service directly from your browser, not through this site's server. Supported record types include A, AAAA, CNAME, MX, TXT, NS, SOA and CAA. Entering an IP address performs a PTR reverse lookup using the corresponding in-addr.arpa or ip6.arpa name. Non-existent domains are reported as NXDOMAIN." }
             }
           ]
         }
         </script>
 
         <footer>
-            <p>© 2026 <a href="/">IP 归属地查询</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
-            <p><a href="/about">关于</a> | <a href="/guides">使用教程</a> | <a href="/docs">文档</a> | <a href="/faq">常见问题</a> | <a href="/contact">联系</a> | <a href="/privacy">隐私政策</a> | <a href="/terms">服务条款</a></p>
+            <p>© 2026 <a href="/">IP Geolocation Lookup</a> · <a href="https://digdevbox.com/" target="_blank" rel="noopener">DigDevBox</a></p>
+            <p><a href="/about">About</a> | <a href="/guides">Guides</a> | <a href="/docs">Documentation</a> | <a href="/faq">FAQ</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </footer>
     </div>
 
@@ -443,12 +421,12 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
 <footer class="dd-brandfoot compact">
     <div class="dd-shell-inner">
-        <p class="dd-brandfoot-title">DigDevBox · 免费在线开发者工具集</p>
+        <p class="dd-brandfoot-title">DigDevBox · Free online tools for developers</p>
         <nav class="dd-brandfoot-nav">
-                <a href="https://digdevbox.com/">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/">流影播放器</a>
-                <a href="https://fangdai.digdevbox.com/">房贷计算器</a>
-                <a href="https://img.digdevbox.com/">图片压缩</a>
+                <a href="https://www.digdevbox.com/tools/">Developer tools</a>
+                <a href="https://play.digdevbox.com/">StreamPlay</a>
+                <a href="https://notes.digdevbox.com/">Forge Notes</a>
+                <a href="https://img.digdevbox.com/">DigImg</a>
         </nav>
     </div>
 </footer>
