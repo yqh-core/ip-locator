@@ -112,7 +112,7 @@
     if (!root.isConnected) document.body.appendChild(root);
     root.replaceChildren();
     var message = document.createElement('p');
-    message.textContent = 'Help us improve DigDevBox? Optional analytics measures visits and page usage only after you agree. Tool inputs, files, and form contents are never sent. You can reject and continue using the site.';
+    message.textContent = 'Optional Google Analytics measures page views only after you agree. We never send the IP address you look up, lookup results, or URL query parameters. Rejecting Google Analytics does not affect IP lookup.';
     message.style.cssText = 'margin:0 0 12px';
     var actions = document.createElement('div');
     actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
