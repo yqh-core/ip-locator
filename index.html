@@ -85,7 +85,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">Image Compressor</a>
         </nav>
 
-        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
+        <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
     </div>
 </div>
     <div class="container">
@@ -110,7 +110,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <input
                     type="text"
                     id="ipInput"
-                    placeholder="请输入IP地址（如：8.8.8.8）" data-i18n-attr="placeholder:placeholder.ipInput"
+                    placeholder="Enter an IP address (e.g. 8.8.8.8)" data-i18n-attr="placeholder:placeholder.ipInput"
                     autocomplete="off"
                 >
                 <button id="searchBtn" type="button">
@@ -122,9 +122,9 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                 <button id="myIpBtn" class="btn-secondary" type="button">
                     <span data-i18n="btn.queryMyIp">📍 My IP</span>
                 </button>
-                <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="用 Google 公共 DNS 的 IPv6 地址试一下">🌐 IPv6 示例</button>
-                <a class="btn-secondary quick-anchor" href="#cidr">🧮 子网计算器</a>
-                <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS 查询</a>
+                <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="Try a public IPv6 address from Google Public DNS">🌐 IPv6 sample</button>
+                <a class="btn-secondary quick-anchor" href="#cidr">🧮 Subnet calculator</a>
+                <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS lookup</a>
             </div>
         </div>
 
@@ -135,7 +135,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         <!-- 加载提示 -->
         <div id="loading" class="loading" style="display: none;">
             <div class="spinner"></div>
-            <p>正在查询IP信息...</p>
+            <p>Looking up IP information...</p>
         </div>
 
         <!-- 错误提示 -->
@@ -146,7 +146,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div class="info-header">
                 <div class="ip-head-left">
                     <h2 id="ipAddress"></h2>
-                    <button id="copyIpBtn" class="copy-btn" type="button" data-i18n-attr="aria-label:aria.copyIp,title:aria.copyIp" aria-label="复制 IP 地址">
+                    <button id="copyIpBtn" class="copy-btn" type="button" data-i18n-attr="aria-label:aria.copyIp,title:aria.copyIp" aria-label="Copy IP address">
                         <span class="copy-ico" aria-hidden="true">📋</span>
                         <span class="copy-txt" data-i18n="btn.copy">Copy</span>
                     </button>
@@ -155,19 +155,19 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             </div>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">🌏 国家/地区</span>
+                    <span class="info-label">🌏 Country / region</span>
                     <span class="info-value" id="country"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">📍 省份/州</span>
+                    <span class="info-label">📍 State / region</span>
                     <span class="info-value" id="region"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">🏙️ 城市</span>
+                    <span class="info-label">🏙️ City</span>
                     <span class="info-value" id="city"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">📮 邮编</span>
+                    <span class="info-label">📮 Postal code</span>
                     <span class="info-value" id="zip"></span>
                 </div>
                 <div class="info-item">
@@ -175,26 +175,26 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <span class="info-value" id="asn"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">🌐 运营商</span>
+                    <span class="info-label">🌐 ISP</span>
                     <span class="info-value" id="isp"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">🏢 组织</span>
+                    <span class="info-label">🏢 Organization</span>
                     <span class="info-value" id="org"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">📡 经纬度</span>
+                    <span class="info-label">📡 Coordinates</span>
                     <span class="info-value" id="location"></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">⏰ 时区</span>
+                    <span class="info-label">⏰ Time zone</span>
                     <span class="info-value" id="timezone"></span>
                 </div>
             </div>
 
             <!-- 地图容器 -->
             <div class="map-container">
-                <h3>🗺️ 地理位置</h3>
+                <h3>🗺️ Approximate location</h3>
                 <div id="mapEmbed" class="map-embed" hidden></div>
                 <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>Show map here</button>
                 <div id="mapLink" class="map-link"></div>
@@ -207,42 +207,42 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         <!-- 第二轮：原始 JSON 视图（对标 ipinfo 的开发者友好输出，随结果出现） -->
         <div id="extraTools" class="ip-info extra-tools" hidden>
             <div class="tool-head">
-                <h3>🧾 原始 JSON</h3>
-                <button id="jsonCopyBtn" class="btn-secondary" type="button"><span class="copy-txt">复制 JSON</span></button>
+                <h3>🧾 Raw JSON</h3>
+                <button id="jsonCopyBtn" class="btn-secondary" type="button"><span class="copy-txt">Copy JSON</span></button>
             </div>
-            <p class="tool-sub">本次结果的归一化字段（含数据来源与缓存态），可直接复制用于调试。</p>
+            <p class="tool-sub">Normalized fields for this result, including data source and cache status. Copy them for debugging.</p>
             <pre id="jsonView" class="json-view"></pre>
         </div>
 
         <!-- 第二轮：客户端信息（对标 whatismyip，纯本机读取，不发出任何请求） -->
         <div class="ip-info client-card">
             <div class="tool-head">
-                <h3>💻 你的客户端信息</h3>
-                <button id="clientToggle" class="btn-secondary" type="button" aria-expanded="false">展开</button>
+                <h3>💻 Your client information</h3>
+                <button id="clientToggle" class="btn-secondary" type="button" aria-expanded="false">Expand</button>
             </div>
-            <p class="tool-sub">浏览器与设备自报的信息，仅在本机读取展示，不上传。</p>
+            <p class="tool-sub">Browser- and device-reported details are read and displayed locally. They are not uploaded.</p>
             <div id="clientInfo" class="client-info" hidden></div>
         </div>
 
-        <!-- 第二轮：查询历史（仅存本机 localStorage，点击重查） -->
+        <!-- 第二轮：Look up历史（仅存本机 localStorage，点击重查） -->
         <div class="ip-info history-card">
             <div class="tool-head">
-                <h3>🕘 查询历史 <span id="historyCount" class="hist-count">0</span></h3>
-                <button id="historyClear" class="btn-secondary" type="button">清空</button>
+                <h3>🕘 Lookup history <span id="historyCount" class="hist-count">0</span></h3>
+                <button id="historyClear" class="btn-secondary" type="button">Clear</button>
             </div>
-            <ul id="historyList" class="history-list" aria-label="查询历史"></ul>
-            <p id="historyEmpty" class="tool-sub">查询过的 IP 会记在这里（仅存本机浏览器），点击即可重查。</p>
+            <ul id="historyList" class="history-list" aria-label="Look up历史"></ul>
+            <p id="historyEmpty" class="tool-sub">Previously queried IP addresses are kept only in this browser. Select an entry to run the lookup again.</p>
         </div>
 
-        <!-- 第四轮：CIDR / 子网计算器（对标 ipinfo 工具簇，纯本机计算，不发任何请求） -->
+        <!-- 第四轮：CIDR / 子网Calculate器（对标 ipinfo 工具簇，纯本机Calculate，不发任何请求） -->
         <div class="ip-info net-card" id="cidr">
             <div class="tool-head">
-                <h3>🧮 CIDR / 子网计算器</h3>
+                <h3>🧮 CIDR subnet calculator</h3>
             </div>
-            <p class="tool-sub">输入 CIDR（如 192.168.1.0/24）或单个 IP，计算网络地址、掩码、广播、可用主机范围与地址分类。支持 IPv4 / IPv6，纯本机计算。</p>
+            <p class="tool-sub">Enter a CIDR range (such as 192.168.1.0/24) or a single IP address to calculate the network address, mask, broadcast address, usable host range and address classification. Supports IPv4 and IPv6; calculations run locally.</p>
             <div class="net-row">
-                <input type="text" id="cidr-input" placeholder="192.168.1.0/24 或 2001:db8::/32" autocomplete="off" spellcheck="false">
-                <button id="cidr-calc" class="btn-secondary" type="button">计算</button>
+                <input type="text" id="cidr-input" placeholder="192.168.1.0/24 or 2001:db8::/32" autocomplete="off" spellcheck="false">
+                <button id="cidr-calc" class="btn-secondary" type="button">Calculate</button>
             </div>
             <div class="net-examples">
                 <button type="button" class="btn-secondary net-example" data-cidr="192.168.1.0/24">192.168.1.0/24</button>
@@ -253,15 +253,15 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div id="cidr-result" class="net-result"></div>
         </div>
 
-        <!-- 第四轮：DNS / rDNS 查询（Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器） -->
+        <!-- 第四轮：DNS / rDNS Look up（Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器） -->
         <div class="ip-info net-card" id="dns">
             <div class="tool-head">
-                <h3>🔎 DNS / rDNS 查询</h3>
+                <h3>🔎 DNS / reverse DNS lookup</h3>
             </div>
-            <p class="tool-sub">查域名的 A/AAAA/CNAME/MX/TXT/NS 等记录；输入 IP 自动反查 rDNS（PTR）。数据来自 Cloudflare 1.1.1.1 DoH，浏览器直连，不经本站服务器。</p>
+            <p class="tool-sub">Look up A, AAAA, CNAME, MX, TXT, NS and other DNS records. Enter an IP address to run a reverse DNS (PTR) lookup. Queries use Cloudflare 1.1.1.1 DNS-over-HTTPS directly from your browser, not through this site's server.</p>
             <div class="net-row">
-                <input type="text" id="dns-input" placeholder="example.com 或 8.8.8.8（自动 rDNS）" autocomplete="off" spellcheck="false">
-                <select id="dns-type" aria-label="记录类型">
+                <input type="text" id="dns-input" placeholder="example.com or 8.8.8.8 (automatic reverse DNS)" autocomplete="off" spellcheck="false">
+                <select id="dns-type" aria-label="Record type">
                     <option value="A" selected>A</option>
                     <option value="AAAA">AAAA</option>
                     <option value="CNAME">CNAME</option>
@@ -272,7 +272,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <option value="CAA">CAA</option>
                     <option value="PTR">PTR</option>
                 </select>
-                <button id="dns-query" class="btn-secondary" type="button">查询</button>
+                <button id="dns-query" class="btn-secondary" type="button">Look up</button>
             </div>
             <div class="net-examples">
                 <button type="button" class="btn-secondary net-example" data-dns="example.com" data-dns-type="A">example.com A</button>
@@ -306,7 +306,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
 
         <!--
             SEO 静态正文（2026-10-24）：此前首页可见正文约 596 字符，工具界面全靠 JS 渲染。
-            本节为纯静态 HTML，不依赖 JS；内容以页面既有表述为据（查询字段、多库降级、
+            本节为纯静态 HTML，不依赖 JS；内容以页面既有表述为据（Look up字段、多库降级、
             城市级精度、服务器转发缓存限流），不编造。未加 data-i18n：英文词条化需走
             locales 注入链，列为后续待办，避免手改内联词条被注入器覆盖。
         -->
