@@ -26,7 +26,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <meta property="og:title" content="IP Geolocation Lookup — Free IPv4 &amp; IPv6, ASN, CIDR and DNS Tools">
     <meta property="og:description" content="Look up public IPv4 and IPv6 addresses, inspect ASN and ISP details, calculate CIDR subnets, and query DNS or reverse DNS records.">
     <meta property="og:url" content="https://ip.digdevbox.com/">
-    <meta property="og:site_name" content="IP 归属地查询">
+    <meta property="og:site_name" content="IP Geolocation Lookup">
     <meta property="og:locale" content="en_US">
     <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="180x180" href="images/favicon.png">
@@ -78,11 +78,11 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <div class="dd-shell-inner">
         <a class="dd-brand" href="https://digdevbox.com/"><span class="dd-brand-mark">DB</span>DigDevBox</a>
         <nav>
-                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Dev 工具箱</a>
-                <a href="https://play.digdevbox.com/" data-i18n="nav.player">流影播放器</a>
-                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP 查询</a>
-                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">房贷计算器</a>
-                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">图片压缩</a>
+                <a href="https://digdevbox.com/" data-i18n="nav.devtools">Dev Toolbox</a>
+                <a href="https://play.digdevbox.com/" data-i18n="nav.player">StreamPlay</a>
+                <a href="https://ip.digdevbox.com/" aria-current="page" data-i18n="nav.ip">IP Lookup</a>
+                <a href="https://fangdai.digdevbox.com/" data-i18n="nav.loan">Loan Calculator</a>
+                <a href="https://img.digdevbox.com/" data-i18n="nav.imgtools">Image Compressor</a>
         </nav>
 
         <button id="dd-theme-toggle" class="dd-theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式" data-i18n-attr="aria-label:aria.themeToggle,title:aria.themeToggle">🌙</button>
@@ -91,17 +91,17 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
     <div class="container">
         <nav class="top-nav">
             <ul>
-                <li><a href="/" class="active" data-i18n="topnav.home">首页</a></li>
-                <li><a href="/guides" data-i18n="topnav.guides">使用教程</a></li>
-                <li><a href="/docs" data-i18n="topnav.docs">文档</a></li>
-                <li><a href="/faq" data-i18n="topnav.faq">常见问题</a></li>
-                <li><a href="/about" data-i18n="topnav.about">关于</a></li>
+                <li><a href="/" class="active" data-i18n="topnav.home">Home</a></li>
+                <li><a href="/guides" data-i18n="topnav.guides">Guides</a></li>
+                <li><a href="/docs" data-i18n="topnav.docs">Docs</a></li>
+                <li><a href="/faq" data-i18n="topnav.faq">FAQ</a></li>
+                <li><a href="/about" data-i18n="topnav.about">About</a></li>
             </ul>
         </nav>
 
         <header>
-            <h1 data-i18n="h1.title">🌍 IP归属地查询</h1>
-            <p class="subtitle" data-i18n="hero.subtitle">查 IP 归属地与运营商，一键看本机公网 IP；内置 CIDR 子网计算与 DNS/rDNS 查询</p>
+            <h1 data-i18n="h1.title">🌍 IP Geolocation Lookup</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">Look up detailed geolocation info for any IP address</p>
         </header>
 
         <!-- 搜索区域 -->
@@ -114,13 +114,13 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     autocomplete="off"
                 >
                 <button id="searchBtn" type="button">
-                    <span class="btn-text" data-i18n="btn.query">查询</span>
+                    <span class="btn-text" data-i18n="btn.query">Query</span>
                     <span class="btn-icon">🔍</span>
                 </button>
             </div>
             <div class="quick-actions">
                 <button id="myIpBtn" class="btn-secondary" type="button">
-                    <span data-i18n="btn.queryMyIp">📍 查询我的IP</span>
+                    <span data-i18n="btn.queryMyIp">📍 My IP</span>
                 </button>
                 <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="用 Google 公共 DNS 的 IPv6 地址试一下">🌐 IPv6 示例</button>
                 <a class="btn-secondary quick-anchor" href="#cidr">🧮 子网计算器</a>
@@ -148,7 +148,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <h2 id="ipAddress"></h2>
                     <button id="copyIpBtn" class="copy-btn" type="button" data-i18n-attr="aria-label:aria.copyIp,title:aria.copyIp" aria-label="复制 IP 地址">
                         <span class="copy-ico" aria-hidden="true">📋</span>
-                        <span class="copy-txt" data-i18n="btn.copy">复制</span>
+                        <span class="copy-txt" data-i18n="btn.copy">Copy</span>
                     </button>
                 </div>
                 <span id="ipType" class="ip-type"></span>
@@ -196,7 +196,7 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
             <div class="map-container">
                 <h3>🗺️ 地理位置</h3>
                 <div id="mapEmbed" class="map-embed" hidden></div>
-                <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>在页面内显示地图</button>
+                <button id="mapShowBtn" class="btn-secondary map-show-btn" type="button" data-i18n="map.show" hidden>Show map here</button>
                 <div id="mapLink" class="map-link"></div>
             </div>
 
