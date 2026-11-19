@@ -165,7 +165,27 @@ jobs:
 
           // Chinese-only secondary pages are intentionally excluded from the US/EU index
           // until English source HTML is published. They remain crawlable for link discovery.
-          const excludedChinesePages = ['/about', '/docs', '/guides', '/faq', '/contact', '/privacy', '/terms'];
+          const englishSupportPages = [
+            { path: '/docs', heading: 'IP Address Documentation' },
+            { path: '/guides', heading: 'IP Lookup Guides' },
+            { path: '/faq', heading: 'Frequently Asked Questions' },
+          ];
+          for (const item of englishSupportPages) {
+            const page = await get(item.path);
+            if (!page.response.ok) throw new Error(item.path + ' returned HTTP ' + page.response.status);
+            if (!page.body.includes('<html lang="en"')) throw new Error(item.path + ' must serve English source HTML');
+            if (!page.body.includes(item.heading)) throw new Error(item.path + ' is missing its English content heading');
+            if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(page.body)) {
+              throw new Error(item.path + ' unexpectedly carries noindex');
+            }
+            const canonical = page.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
+            if (canonical !== origin + item.path) throw new Error(item.path + ' has an unexpected canonical: ' + canonical);
+            if (!sitemap.body.includes(origin + item.path + '</loc>')) {
+              throw new Error(item.path + ' is missing from the canonical sitemap');
+            }
+          }
+
+          const excludedChinesePages = ['/about', '/contact', '/privacy', '/terms'];
           for (const path of excludedChinesePages) {
             const page = await get(path);
             if (!page.response.ok) throw new Error(path + ' should remain accessible (HTTP ' + page.response.status + ')');
@@ -177,5 +197,5 @@ jobs:
             }
           }
 
-          console.log('PASS: exact Cloudflare commit, English homepage and landing page, canonical, robots, sitemap, and noindex policy for Chinese-only support pages');
+          console.log('PASS: exact Cloudflare commit, English homepage, landing page, docs, guides and FAQ; canonical, sitemap and noindex policy for untranslated support pages');
           NODE
