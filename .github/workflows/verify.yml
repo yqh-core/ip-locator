@@ -31,6 +31,14 @@ jobs:
       - name: 组装发布目录
         run: node scripts/build.mjs
 
+      - name: 验证英文 IP 落地页与 sitemap 已进入产物
+        run: |
+          set -euo pipefail
+          test -f dist/ip-geolocation/index.html
+          grep -q 'https://ip.digdevbox.com/ip-geolocation/' dist/sitemap.xml
+          grep -q 'lang="en"' dist/ip-geolocation/index.html
+          echo "English IP landing page and sitemap entry verified"
+
       - name: 校验产物内容
         run: |
           set -euo pipefail
