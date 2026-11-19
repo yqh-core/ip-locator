@@ -17,13 +17,14 @@
   "trust.text": "Privacy: results come from third-party IP geolocation services (the IP/domain you query is sent to them); apart from this we do not store your input on our servers.",
   "aria.themeToggle": "Toggle dark mode",
   "aria.langToggle": "Switch language",
-  "seo.title": "IP Geolocation Lookup — Free IPv4 & IPv6, ASN, CIDR and DNS Tools",
-  "seo.description": "Look up public IPv4 and IPv6 addresses by country, region, city, ASN, ISP and timezone. Includes CIDR subnet calculation and DNS / reverse DNS lookup, with source details and multi-provider fallback.",
+  "seo.title": "IP Geolocation Lookup — IP Address, ASN & DNS | DigDevBox",
+  "seo.description": "Look up public IPv4 and IPv6 addresses by location, ISP and ASN. Check CIDR subnets plus DNS and reverse DNS records, with data-source and accuracy notes.",
   "btn.copy": "Copy",
   "aria.copyIp": "Copy IP address",
   "aria.copyField": "Copy this value",
   "feedback.copied": "Copied",
   "feedback.copyFailed": "Copy failed — select and copy manually",
   "map.show": "Show map here",
-  "map.embedTitle": "Approximate location map"
+  "map.embedTitle": "Approximate location map",
+  "seo.landingLink": "Read the English IP address lookup guide"
 }

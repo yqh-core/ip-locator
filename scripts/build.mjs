@@ -21,6 +21,7 @@ const OUT = join(ROOT, 'dist');
 /** 白名单：仓库根下这些条目会进入发布目录 */
 const ENTRIES = [
   'index.html',
+  'ip-address-lookup',
   'analytics-consent.js',
   'about.html',
   'privacy.html',
@@ -42,7 +43,7 @@ const ENTRIES = [
 ];
 
 /** 缺一个就让构建失败的文件 —— 缺了说明仓库不完整，上线也是坏站 */
-const REQUIRED = ['index.html'];
+const REQUIRED = ['index.html', 'ip-address-lookup/index.html'];
 
 /**
  * 备份/临时文件不入产物（裁定⑤：修构建排除规则，**原备份保留在仓库里不动**）。
