@@ -125,6 +125,7 @@ jobs:
           if (!home.body.includes('>🌍 IP Geolocation Lookup</h1>')) throw new Error('English IP lookup H1 missing from source HTML');
           if (!home.body.includes('<title>IP Geolocation Lookup — IP Address, ASN &amp; DNS | DigDevBox</title>')) throw new Error('IP lookup title snippet is not the concise search-target version');
           if (!home.body.includes('Look up public IPv4 and IPv6 addresses by location, ISP and ASN. Check CIDR subnets plus DNS and reverse DNS records')) throw new Error('IP lookup meta description is missing the concise search-intent summary');
+          if (!home.body.includes('href="/ip-address-lookup/"')) throw new Error('Homepage is missing the contextual English IP address lookup link');
           if (!home.body.includes('Look up detailed geolocation info for any IP address')) throw new Error('English IP lookup hero description missing from source HTML');
           if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
 
@@ -174,6 +175,33 @@ jobs:
             throw new Error('English landing page unexpectedly carries noindex');
           }
 
+          const lookupPage = await get('/ip-address-lookup/');
+          if (!lookupPage.response.ok) throw new Error('IP address lookup landing page returned HTTP ' + lookupPage.response.status);
+          if (!lookupPage.body.includes('<html lang="en"')) throw new Error('IP address lookup landing page is missing lang=en');
+          if (!lookupPage.body.includes('<title>IP Address Lookup — IPv4, IPv6, ASN &amp; CIDR | DigDevBox</title>')) {
+            throw new Error('IP address lookup landing page title is not the approved search-target title');
+          }
+          if (!lookupPage.body.includes('Look up public IPv4 and IPv6 addresses for approximate location, ISP and ASN. Includes CIDR and DNS/reverse-DNS lookup, with clear data-source and privacy notes.')) {
+            throw new Error('IP address lookup landing page description is missing the approved search-intent summary');
+          }
+          if (!lookupPage.body.includes('<h1>IP Address Lookup — Geolocation, ASN and ISP Details</h1>')) {
+            throw new Error('IP address lookup landing page H1 is missing');
+          }
+          const lookupCanonical = lookupPage.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
+          if (lookupCanonical !== origin + '/ip-address-lookup/') throw new Error('Unexpected IP address lookup canonical: ' + lookupCanonical);
+          if (!lookupPage.body.includes('"@type":"SoftwareApplication"') ||
+              !lookupPage.body.includes('"@type":"BreadcrumbList"')) {
+            throw new Error('IP address lookup landing page is missing SoftwareApplication or BreadcrumbList structured data');
+          }
+          if (!lookupPage.body.includes('Geolocation is an estimate based on provider databases') ||
+              !lookupPage.body.includes('The IP address or domain you choose to query is sent to those providers')) {
+            throw new Error('IP address lookup landing page is missing accuracy and third-party data disclosure');
+          }
+          if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(lookupPage.body) ||
+              /noindex/i.test(lookupPage.response.headers.get('x-robots-tag') || '')) {
+            throw new Error('IP address lookup landing page unexpectedly carries noindex');
+          }
+
           const robots = await get('/robots.txt');
           if (!robots.response.ok || !/sitemap:\s*https:\/\//i.test(robots.body.toLowerCase()) ||
               !robots.body.toLowerCase().includes((origin + '/sitemap.xml').toLowerCase())) {
@@ -193,6 +221,9 @@ jobs:
             await sleep(10000);
           }
           if (!sitemap) throw new Error('Production sitemap did not include the English landing page');
+          if (!sitemap.body.includes(origin + '/ip-address-lookup/')) {
+            throw new Error('Production sitemap is missing the English IP address lookup landing page');
+          }
 
           // Chinese-only secondary pages are intentionally excluded from the US/EU index
           // until English source HTML is published. They remain crawlable for link discovery.
