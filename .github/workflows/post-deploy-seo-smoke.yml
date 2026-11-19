@@ -7,75 +7,133 @@ on:
 
 permissions:
   contents: read
+  checks: read
 
 jobs:
   production-smoke:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    if: \${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 20
     steps:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Wait for Cloudflare Git deployment and verify crawler-facing pages
+      - name: Wait for the exact Cloudflare deployment, then verify Googlebot HTML
         env:
           SITE_ORIGIN: "https://ip.digdevbox.com"
           LANDING_PATH: "/ip-geolocation/"
           EXPECTED_TITLE: "IP Geolocation Lookup"
+          TARGET_SHA: \${{ github.event.workflow_run.head_sha }}
+          GITHUB_REPOSITORY: \${{ github.repository }}
+          GITHUB_TOKEN: \${{ github.token }}
         run: |
           node --input-type=module <<'NODE'
           const origin = process.env.SITE_ORIGIN;
           const landingPath = process.env.LANDING_PATH;
           const expectedTitle = process.env.EXPECTED_TITLE;
+          const targetSha = process.env.TARGET_SHA;
           const ua = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
           const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-          async function get(url) {
-            const response = await fetch(url, {
+          async function get(path) {
+            const response = await fetch(origin + path, {
               redirect: 'follow',
               headers: { 'user-agent': ua, 'cache-control': 'no-cache' },
+              signal: AbortSignal.timeout(10000),
             });
             return { response, body: await response.text() };
           }
 
-          let homepage = null;
+          // A successful smoke test must never race ahead of the Pages deployment.
+          // Match the Cloudflare check run to this workflow's exact source commit.
+          const checksUrl = 'https://api.github.com/repos/' + process.env.GITHUB_REPOSITORY +
+            '/commits/' + targetSha + '/check-runs';
+          let deployed = false;
+          for (let attempt = 1; attempt <= 90; attempt++) {
+            const response = await fetch(checksUrl, {
+              headers: {
+                authorization: 'Bearer ' + process.env.GITHUB_TOKEN,
+                accept: 'application/vnd.github+json',
+                'x-github-api-version': '2022-11-28',
+              },
+              signal: AbortSignal.timeout(10000),
+            });
+            if (!response.ok) throw new Error('GitHub check-run API returned HTTP ' + response.status);
+            const payload = await response.json();
+            const check = (payload.check_runs || []).find((item) =>
+              item.name === 'Cloudflare Pages' && item.head_sha === targetSha
+            );
+            if (check?.status === 'completed') {
+              if (check.conclusion !== 'success') {
+                throw new Error('Cloudflare Pages deployment concluded ' + check.conclusion +
+                  ': ' + (check.details_url || 'no details URL'));
+              }
+              deployed = true;
+              console.log('Cloudflare Pages deployment succeeded for exact commit ' + targetSha);
+              break;
+            }
+            console.log('Waiting for exact Cloudflare deployment (' + attempt + '/90): ' +
+              (check?.status || 'check not created'));
+            await sleep(10000);
+          }
+          if (!deployed) throw new Error('Exact Cloudflare Pages deployment did not complete within 15 minutes');
+
+          let home = null;
           for (let attempt = 1; attempt <= 20; attempt++) {
             try {
-              const result = await get(origin + '/');
+              const result = await get('/');
               const title = result.body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '';
               if (result.response.ok && result.body.includes('<html lang="en"') && title.includes(expectedTitle)) {
-                homepage = result;
-                console.log(`Production homepage updated and crawler-readable (attempt ${attempt})`);
+                home = result;
+                console.log('Googlebot received the expected English homepage (attempt ' + attempt + ')');
                 break;
               }
-              console.log(`Waiting for production deployment (${attempt}/20): HTTP ${result.response.status}, title="${title}"`);
+              console.log('Waiting for production HTML (' + attempt + '/20): HTTP ' +
+                result.response.status + ', title="' + title + '"');
             } catch (error) {
-              console.log(`Waiting for production origin (${attempt}/20): ${error.message}`);
+              console.log('Waiting for production origin (' + attempt + '/20): ' + error.message);
             }
-            await sleep(15000);
+            await sleep(10000);
           }
-          if (!homepage) throw new Error('Production homepage did not expose the expected English HTML within 5 minutes');
+          if (!home) throw new Error('Production homepage did not expose expected English HTML after exact deployment');
 
-          const canonical = homepage.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
-          if (canonical !== origin + '/') throw new Error(`Unexpected homepage canonical: ${canonical}`);
-          if (!homepage.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
-          if (!homepage.body.includes('"priceCurrency": "USD"')) throw new Error('USD offer metadata missing');
-
-          const landing = await get(origin + landingPath);
-          if (!landing.response.ok) throw new Error(`English landing page returned HTTP ${landing.response.status}`);
-          if (!landing.body.includes('lang="en"')) throw new Error('English landing page lang attribute missing');
-          if (!landing.body.includes('rel="canonical"')) throw new Error('English landing page canonical missing');
-
-          const robots = await get(origin + '/robots.txt');
-          if (!robots.response.ok || !/Sitemap:\s*https:\/\//i.test(robots.body)) {
-            throw new Error('robots.txt missing an absolute HTTPS Sitemap directive');
+          const canonical = home.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
+          if (canonical !== origin + '/') throw new Error('Unexpected homepage canonical: ' + canonical);
+          if (!home.body.includes('"inLanguage": "en"')) throw new Error('English structured-data language missing');
+          if (!home.body.includes('"priceCurrency": "USD"')) throw new Error('USD offer metadata missing');
+          if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(home.body)) {
+            throw new Error('Homepage unexpectedly carries noindex');
           }
 
-          const sitemap = await get(origin + '/sitemap.xml');
-          if (!sitemap.response.ok || !sitemap.body.includes(origin + landingPath)) {
-            throw new Error('sitemap.xml missing the English landing page URL');
+          const landing = await get(landingPath);
+          if (!landing.response.ok) throw new Error('English landing page returned HTTP ' + landing.response.status);
+          if (!landing.body.includes('<html lang="en"')) throw new Error('English landing page source lang missing');
+          const landingCanonical = landing.body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1];
+          if (landingCanonical !== origin + landingPath) throw new Error('Unexpected landing canonical: ' + landingCanonical);
+          if (/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(landing.body)) {
+            throw new Error('English landing page unexpectedly carries noindex');
           }
 
-          console.log('PASS: homepage metadata, canonical, structured data, English landing page, robots.txt and sitemap.xml');
+          const robots = await get('/robots.txt');
+          if (!robots.response.ok || !/sitemap:\s*https:\/\//i.test(robots.body.toLowerCase()) ||
+              !robots.body.toLowerCase().includes((origin + '/sitemap.xml').toLowerCase())) {
+            throw new Error('robots.txt does not reference the canonical production sitemap');
+          }
+
+          let sitemap = null;
+          for (let attempt = 1; attempt <= 20; attempt++) {
+            const candidate = await get('/sitemap.xml');
+            if (candidate.response.ok && candidate.body.includes('<urlset') &&
+                candidate.body.includes(origin + landingPath)) {
+              sitemap = candidate;
+              console.log('Production sitemap includes the English landing page (attempt ' + attempt + ')');
+              break;
+            }
+            console.log('Waiting for deployed sitemap (' + attempt + '/20): HTTP ' + candidate.response.status);
+            await sleep(10000);
+          }
+          if (!sitemap) throw new Error('Production sitemap did not include the English landing page');
+
+          console.log('PASS: exact Cloudflare commit, Googlebot English source HTML, canonical, structured data, robots, landing page and sitemap');
           NODE
