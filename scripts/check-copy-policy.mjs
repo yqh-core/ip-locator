@@ -29,7 +29,7 @@ const ok = (name, cond, detail) => {
 
 /* ---------------- 判据 A：各页必须含的限定语 ---------------- */
 const REQUIRED = {
-  'index.html': ['IP 地理信息估算', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '资源登记归属'],
+  'index.html': ['IP geolocation reflects provider databases', 'usually approximate at city level', "not proof of a device's physical location", 'network registration', 'Treat the result as an investigation clue'],
   'terms.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不判断、也不输出'],
   'guides.html': ['概率推断', '通常只能精确到城市级', '不代表设备或用户的实际物理位置', '仅供参考', '不等同于实际服务运营商'],
   // 裁定④（本轮新增授权页）：FAQ 里必须把"登记归属组织"和"实际接入运营商"分开说
@@ -205,6 +205,9 @@ const MUST_GREEN = [
   '国家级：在各精度层级里相对更可靠，但它反映的是注册归属，不等于设备的实际位置。',
   '街道级及以下：任何 IP 库都无法可靠提供，声称能做的一律不可信。',
   '通过 ASN 你看到的是这个 IP 段在注册数据库里的归属组织，它不等同于该地址当前由哪家运营商提供接入服务，也不能用来判断使用者属于住宅、移动还是机房网络。',
+  // English homepage copy: preserve the same accuracy and attribution limits after localization.
+  "IP geolocation reflects provider databases, network registration and routing infrastructure. It is usually approximate at city level and may differ between providers; it is not proof of a device's physical location.",
+  'Treat the result as an investigation clue, not proof of a person\'s identity or location.',
   // 英文合规否定句：放宽后的 datacenter 判据不得把它判红（否则等于逼产品删掉英文免责）
   'We do not classify IPs as data center or residential traffic, and we never expose such a field.',
   // 本轮三页新文案：不得被任何禁令误红（红了就是判据过宽）
