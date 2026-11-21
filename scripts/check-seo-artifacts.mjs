@@ -57,14 +57,18 @@ export function validateSitemapUrls(urls) {
 }
 
 function extractMeta(html, name) {
-  const tag = html.match(/<meta\b[^>]*>/gi)?.find(item =>
-    new RegExp('\\bname=["\\']' + name + '["\\']', 'i').test(item),
+  const tags = html.match(/<meta\b[^>]*>/gi) || [];
+  const tag = tags.find(item =>
+    item.includes('name="' + name + '"') || item.includes("name='" + name + "'"),
   );
   return tag?.match(/\bcontent=["']([^"']+)["']/i)?.[1]?.trim() || '';
 }
 
 function extractCanonical(html) {
-  const tag = html.match(/<link\b[^>]*>/gi)?.find(item => /\brel=["']canonical["']/i.test(item));
+  const tags = html.match(/<link\b[^>]*>/gi) || [];
+  const tag = tags.find(item =>
+    item.includes('rel="canonical"') || item.includes("rel='canonical'"),
+  );
   return tag?.match(/\bhref=["']([^"']+)["']/i)?.[1]?.trim() || '';
 }
 
