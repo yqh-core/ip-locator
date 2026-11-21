@@ -58,6 +58,11 @@ jobs:
           grep -q 'lang="en"' dist/ip-geolocation/index.html
           echo "English IP landing page and sitemap entry verified"
 
+      - name: SEO sitemap 与 indexability 产物契约
+        run: |
+          node scripts/check-seo-artifacts.mjs --self-test
+          node scripts/check-seo-artifacts.mjs dist
+
       - name: 校验产物内容
         run: |
           set -euo pipefail
