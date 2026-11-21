@@ -57,13 +57,15 @@ export function validateSitemapUrls(urls) {
 }
 
 function extractMeta(html, name) {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = html.match(new RegExp('<meta\\b(?=[^>]*\\bname=["\\']' + escaped + '["\\'])(?=[^>]*\\bcontent=["\\']([^"\\']+)["\\'])[^>]*>', 'i'));
-  return match?.[1]?.trim() || '';
+  const tag = html.match(/<meta\b[^>]*>/gi)?.find(item =>
+    new RegExp('\\bname=["\\']' + name + '["\\']', 'i').test(item),
+  );
+  return tag?.match(/\bcontent=["']([^"']+)["']/i)?.[1]?.trim() || '';
 }
 
 function extractCanonical(html) {
-  return html.match(/<link\\b(?=[^>]*\\brel=["']canonical["'])(?=[^>]*\\bhref=["']([^"']+)["'])[^>]*>/i)?.[1]?.trim() || '';
+  const tag = html.match(/<link\b[^>]*>/gi)?.find(item => /\brel=["']canonical["']/i.test(item));
+  return tag?.match(/\bhref=["']([^"']+)["']/i)?.[1]?.trim() || '';
 }
 
 async function main() {
@@ -91,25 +93,25 @@ async function main() {
   const urls = parseSitemap(sitemap);
   const errors = validateSitemapUrls(urls);
 
-  if (!/sitemap:\\s*https:\\/\\/ip\\.digdevbox\\.com\\/sitemap\\.xml/i.test(robots)) {
+  if (!/sitemap:\s*https:\/\/ip\.digdevbox\.com\/sitemap\.xml/i.test(robots)) {
     errors.push('robots.txt must reference the canonical production sitemap');
   }
-  if (/^\\s*disallow:\\s*\\/\\s*$/im.test(robots)) {
+  if (/^\s*disallow:\s*\/\s*$/im.test(robots)) {
     errors.push('robots.txt must not block the entire site');
   }
 
   for (const [path, file] of EXPECTED) {
     const html = await readFile(join(ROOT, file), 'utf8');
-    const title = html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1]?.trim() || '';
+    const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || '';
     const description = extractMeta(html, 'description');
     const canonical = extractCanonical(html);
     if (!title) errors.push(path + ' is missing a title');
     if (!description) errors.push(path + ' is missing a meta description');
     if (canonical !== ORIGIN + path) errors.push(path + ' canonical mismatch: ' + canonical);
-    if (/<meta\\b(?=[^>]*\\bname=["']robots["'])(?=[^>]*\\bcontent=["'][^"']*noindex)/i.test(html)) {
+    if (/<meta\b(?=[^>]*\bname=["']robots["'])(?=[^>]*\bcontent=["'][^"']*noindex)/i.test(html)) {
       errors.push(path + ' is noindex but listed in the sitemap');
     }
-    if (!/<h1\\b/i.test(html)) errors.push(path + ' is missing an H1');
+    if (!/<h1\b/i.test(html)) errors.push(path + ' is missing an H1');
   }
 
   if (errors.length) {
