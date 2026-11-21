@@ -24,7 +24,7 @@ export function parseSitemap(xml) {
   if (!/<urlset\b[^>]*>/i.test(xml)) throw new Error('sitemap.xml is missing a urlset root');
   const urls = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map(match => match[1].trim());
   if (urls.length === 0) throw new Error('sitemap.xml contains no loc entries');
-  if (/<loc>[^<]*<\/loc>/i.test(xml)) throw new Error('sitemap.xml contains an empty loc entry');
+  if (/<loc>\\s*<\\/loc>/i.test(xml)) throw new Error('sitemap.xml contains an empty loc entry');
   return urls;
 }
 
