@@ -86,11 +86,28 @@ test('CIDR IPv6：2001:db8::/32 已知答案', () => {
   const r = cidrInfo('2001:db8::1/32');
   assert.equal(r.version, 6);
   assert.equal(r.network, '2001:db8::');
-  assert.equal(r.firstUsable, '2001:db8::');
+  assert.equal(r.subnetRouterAnycast, '2001:db8::');
+  assert.equal(r.firstUsable, undefined);
   assert.equal(r.lastUsable, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
   assert.equal(r.totalAddresses, (2n ** 96n).toString());
   assert.equal(r.classification, '文档示例（2001:db8::/32）');
   assert.equal(r.broadcast, '');
+});
+
+test('CIDR IPv6：/48、/56、/64 与长前缀的 /64 子网数量', () => {
+  assert.equal(cidrInfo('2001:db8:1234:abcd::1/48').subnet64Count, '65536');
+  assert.equal(cidrInfo('2001:db8:1234:ab7f::1/56').subnet64Count, '256');
+  assert.equal(cidrInfo('2001:db8:1234:ab01::1/64').subnet64Count, '1');
+  assert.equal(cidrInfo('2001:db8:1234:ab01::1/65').subnet64Count, '0');
+  assert.equal(cidrInfo('::/0').subnet64Count, (2n ** 64n).toString());
+  assert.equal(cidrInfo('192.0.2.1/24').subnet64Count, undefined);
+});
+
+test('CIDR IPv6：Subnet-Router Anycast 不标记为普通 first usable', () => {
+  const r = cidrInfo('2001:db8:1234:ab01::1/64');
+  assert.equal(r.subnetRouterAnycast, '2001:db8:1234:ab01::');
+  assert.equal(r.firstUsable, undefined);
+  assert.match(r.note, /not a normal host address/i);
 });
 
 test('CIDR IPv6：/128 /64 /0 与分类', () => {
