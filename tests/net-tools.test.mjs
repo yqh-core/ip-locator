@@ -58,7 +58,7 @@ test('CIDR IPv4：192.168.1.0/24 已知答案', () => {
   assert.equal(r.wildcard, '0.0.0.255');
   assert.equal(r.totalAddresses, '256');
   assert.equal(r.usableHosts, '254');
-  assert.equal(r.classification, '私有（RFC1918）');
+  assert.equal(r.classification, 'Private (RFC 1918)');
 });
 
 test('CIDR IPv4：/8 /30 /31 /32 边界', () => {
@@ -73,7 +73,7 @@ test('CIDR IPv4：/8 /30 /31 /32 边界', () => {
   const r32 = cidrInfo('8.8.8.8');
   assert.equal(r32.prefix, 32);
   assert.equal(r32.totalAddresses, '1');
-  assert.equal(r32.classification, '公网');
+  assert.equal(r32.classification, 'Public');
 });
 
 test('CIDR IPv4：非法前缀拒绝（负对照）', () => {
@@ -90,7 +90,7 @@ test('CIDR IPv6：2001:db8::/32 已知答案', () => {
   assert.equal(r.firstUsable, undefined);
   assert.equal(r.lastUsable, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
   assert.equal(r.totalAddresses, (2n ** 96n).toString());
-  assert.equal(r.classification, '文档示例（2001:db8::/32）');
+  assert.equal(r.classification, 'Documentation range (2001:db8::/32)');
   assert.equal(r.broadcast, '');
 });
 
@@ -112,7 +112,7 @@ test('CIDR IPv6：Subnet-Router Anycast 不标记为普通 first usable', () => 
 
 test('CIDR IPv6：/128 /64 /0 与分类', () => {
   assert.equal(cidrInfo('::1').prefix, 128);
-  assert.equal(cidrInfo('::1').classification, '环回');
+  assert.equal(cidrInfo('::1').classification, 'Loopback');
   assert.equal(cidrInfo('2001:4860:4860::8888/64').network, '2001:4860:4860::');
   assert.equal(cidrInfo('::/0').totalAddresses, (2n ** 128n).toString());
   assert.equal(cidrInfo('fe80::1/64').classification, '链路本地');
@@ -136,7 +136,7 @@ test('rDNS 名称构造：IPv4 反序 + IPv6 nibble 反序', () => {
 });
 
 test('DNS 状态码文案', () => {
-  assert.equal(dnsStatusText(0), 'NOERROR（有应答）');
-  assert.equal(dnsStatusText(3), 'NXDOMAIN（域名不存在）');
+  assert.equal(dnsStatusText(0), 'NOERROR (response received)');
+  assert.equal(dnsStatusText(3), 'NXDOMAIN (domain does not exist)');
   assert.equal(dnsStatusText(99), 'RCODE 99');
 });
