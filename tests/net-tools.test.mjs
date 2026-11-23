@@ -88,7 +88,9 @@ test('CIDR IPv6：2001:db8::/32 已知答案', () => {
   assert.equal(r.network, '2001:db8::');
   assert.equal(r.subnetRouterAnycast, '2001:db8::');
   assert.equal(r.firstUsable, undefined);
-  assert.equal(r.lastUsable, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
+  assert.equal(r.lastAddress, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
+  assert.equal(r.lastUsable, undefined);
+  assert.equal(r.usableHosts, undefined);
   assert.equal(r.totalAddresses, (2n ** 96n).toString());
   assert.equal(r.classification, 'Documentation range (2001:db8::/32)');
   assert.equal(r.broadcast, '');
