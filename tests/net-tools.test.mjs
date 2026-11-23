@@ -115,10 +115,10 @@ test('CIDR IPv6：/128 /64 /0 与分类', () => {
   assert.equal(cidrInfo('::1').classification, 'Loopback');
   assert.equal(cidrInfo('2001:4860:4860::8888/64').network, '2001:4860:4860::');
   assert.equal(cidrInfo('::/0').totalAddresses, (2n ** 128n).toString());
-  assert.equal(cidrInfo('fe80::1/64').classification, '链路本地');
-  assert.equal(cidrInfo('febf::1/64').classification, '链路本地'); // /10 上界
-  assert.equal(cidrInfo('fec0::1/64').classification, '公网（全球单播）'); // 出 /10
-  assert.equal(cidrInfo('fd00::1/8').classification, '唯一本地（fc00::/7）');
+  assert.equal(cidrInfo('fe80::1/64').classification, 'Link-local');
+  assert.equal(cidrInfo('febf::1/64').classification, 'Link-local'); // /10 上界
+  assert.equal(cidrInfo('fec0::1/64').classification, 'Public (global unicast)'); // 出 /10
+  assert.equal(cidrInfo('fd00::1/8').classification, 'Unique local (fc00::/7)');
 });
 
 test('CIDR IPv6：非法前缀拒绝（负对照）', () => {
