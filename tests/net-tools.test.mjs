@@ -58,7 +58,7 @@ test('CIDR IPv4：192.168.1.0/24 已知答案', () => {
   assert.equal(r.wildcard, '0.0.0.255');
   assert.equal(r.totalAddresses, '256');
   assert.equal(r.usableHosts, '254');
-  assert.equal(r.classification, '私有（RFC1918）');
+  assert.equal(r.classification, 'Private (RFC 1918)');
 });
 
 test('CIDR IPv4：/8 /30 /31 /32 边界', () => {
@@ -73,7 +73,7 @@ test('CIDR IPv4：/8 /30 /31 /32 边界', () => {
   const r32 = cidrInfo('8.8.8.8');
   assert.equal(r32.prefix, 32);
   assert.equal(r32.totalAddresses, '1');
-  assert.equal(r32.classification, '公网');
+  assert.equal(r32.classification, 'Public');
 });
 
 test('CIDR IPv4：非法前缀拒绝（负对照）', () => {
@@ -86,22 +86,41 @@ test('CIDR IPv6：2001:db8::/32 已知答案', () => {
   const r = cidrInfo('2001:db8::1/32');
   assert.equal(r.version, 6);
   assert.equal(r.network, '2001:db8::');
-  assert.equal(r.firstUsable, '2001:db8::');
-  assert.equal(r.lastUsable, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
+  assert.equal(r.subnetRouterAnycast, '2001:db8::');
+  assert.equal(r.firstUsable, undefined);
+  assert.equal(r.lastAddress, '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff');
+  assert.equal(r.lastUsable, undefined);
+  assert.equal(r.usableHosts, undefined);
   assert.equal(r.totalAddresses, (2n ** 96n).toString());
-  assert.equal(r.classification, '文档示例（2001:db8::/32）');
+  assert.equal(r.classification, 'Documentation range (2001:db8::/32)');
   assert.equal(r.broadcast, '');
+});
+
+test('CIDR IPv6：/48、/56、/64 与长前缀的 /64 子网数量', () => {
+  assert.equal(cidrInfo('2001:db8:1234:abcd::1/48').subnet64Count, '65536');
+  assert.equal(cidrInfo('2001:db8:1234:ab7f::1/56').subnet64Count, '256');
+  assert.equal(cidrInfo('2001:db8:1234:ab01::1/64').subnet64Count, '1');
+  assert.equal(cidrInfo('2001:db8:1234:ab01::1/65').subnet64Count, '0');
+  assert.equal(cidrInfo('::/0').subnet64Count, (2n ** 64n).toString());
+  assert.equal(cidrInfo('192.0.2.1/24').subnet64Count, undefined);
+});
+
+test('CIDR IPv6：Subnet-Router Anycast 不标记为普通 first usable', () => {
+  const r = cidrInfo('2001:db8:1234:ab01::1/64');
+  assert.equal(r.subnetRouterAnycast, '2001:db8:1234:ab01::');
+  assert.equal(r.firstUsable, undefined);
+  assert.match(r.note, /not a normal host address/i);
 });
 
 test('CIDR IPv6：/128 /64 /0 与分类', () => {
   assert.equal(cidrInfo('::1').prefix, 128);
-  assert.equal(cidrInfo('::1').classification, '环回');
+  assert.equal(cidrInfo('::1').classification, 'Loopback');
   assert.equal(cidrInfo('2001:4860:4860::8888/64').network, '2001:4860:4860::');
   assert.equal(cidrInfo('::/0').totalAddresses, (2n ** 128n).toString());
-  assert.equal(cidrInfo('fe80::1/64').classification, '链路本地');
-  assert.equal(cidrInfo('febf::1/64').classification, '链路本地'); // /10 上界
-  assert.equal(cidrInfo('fec0::1/64').classification, '公网（全球单播）'); // 出 /10
-  assert.equal(cidrInfo('fd00::1/8').classification, '唯一本地（fc00::/7）');
+  assert.equal(cidrInfo('fe80::1/64').classification, 'Link-local');
+  assert.equal(cidrInfo('febf::1/64').classification, 'Link-local'); // /10 上界
+  assert.equal(cidrInfo('fec0::1/64').classification, 'Public (global unicast)'); // 出 /10
+  assert.equal(cidrInfo('fd00::1/8').classification, 'Unique local (fc00::/7)');
 });
 
 test('CIDR IPv6：非法前缀拒绝（负对照）', () => {
@@ -119,7 +138,7 @@ test('rDNS 名称构造：IPv4 反序 + IPv6 nibble 反序', () => {
 });
 
 test('DNS 状态码文案', () => {
-  assert.equal(dnsStatusText(0), 'NOERROR（有应答）');
-  assert.equal(dnsStatusText(3), 'NXDOMAIN（域名不存在）');
+  assert.equal(dnsStatusText(0), 'NOERROR (response received)');
+  assert.equal(dnsStatusText(3), 'NXDOMAIN (domain does not exist)');
   assert.equal(dnsStatusText(99), 'RCODE 99');
 });

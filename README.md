@@ -1,6 +1,6 @@
 # IP Locator - Online IP Address Lookup Tool
 
-A lightweight, privacy-friendly web app to look up the geolocation of any IPv4 address — country, region, city, postal code, ISP, ASN, organization, coordinates and timezone. Queries run client-side against free IP data APIs; no records are stored.
+A lightweight, privacy-friendly web app for IPv4 and IPv6 geolocation lookup — country, region, city, postal code, ISP, ASN, organization, coordinates and timezone. It also includes a local CIDR subnet calculator and browser-based DNS/reverse-DNS lookup. Geolocation requests use the documented edge or upstream data-source paths; CIDR calculations run locally in the browser.
 
 **Part of [DigDevBox](https://digdevbox.com)** — a collection of free online developer tools.
 
@@ -14,12 +14,12 @@ A lightweight, privacy-friendly web app to look up the geolocation of any IPv4 a
 ## 功能特点
 
 - **零第三方依赖的自查路径**：查询自己 IP 走 Cloudflare 边缘注入数据；查任意 IP 并发竞速 ipinfo.io / ipwho.is（多源任一可用即返回，界面显示实际数据源）
-- **快速查询**：输入 IP 地址即可查询详细归属地信息
+- **IPv4 / IPv6 查询**：输入 IPv4 或 IPv6 地址即可查询可用的归属地信息
 - **自动定位**：页面加载时自动查询并显示当前 IP 地址信息
 - **详细信息**：显示国家、省份、城市、邮编、ASN、运营商、组织、经纬度、时区
 - **ASN 与组织分离**：修正旧版把 AS 号当成组织名显示的问题
 - **地图定位**：支持在 OpenStreetMap 和 Google Maps 上查看地理位置
-- **IP类型识别**：自动识别公网 IP 和内网 IP
+- **CIDR 子网计算**：支持 IPv4 / IPv6，显示网络边界、地址数量；IPv6 同时计算可容纳的 /64 子网数量，并明确标注 Subnet-Router Anycast 地址
 - **响应式设计**：完美适配 PC 端和移动端
 - **免费无限制**：使用免费 API，无需注册和申请密钥
 
@@ -138,7 +138,7 @@ ip_location/
 
 ## 常见问题
 
-### 1. 提示"请输入有效的 IPv4 地址"
+### 1. 提示"请输入有效的 IPv4 或 IPv6 地址"
 
 **解决方法**：
 - 检查 IP 地址格式是否正确（如：192.168.1.1）
