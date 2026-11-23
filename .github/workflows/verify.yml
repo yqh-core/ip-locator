@@ -28,6 +28,9 @@ jobs:
       - name: 校验 IP V1 商业口径（G3 文案限定语 / 接入类型断言禁令 / network_type 全链路）
         run: node scripts/check-copy-policy.mjs
 
+      - name: CIDR / IPv4 / IPv6 / DNS 纯逻辑单元测试
+        run: node --test tests/net-tools.test.mjs
+
       - name: GA4 consent 静态门禁（ID / 页面覆盖 / 隐私边界）
         run: node scripts/check-ga4-consent.mjs
 
