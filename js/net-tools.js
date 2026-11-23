@@ -172,7 +172,7 @@ export function cidrInfo(input) {
       input: s,
       network: formatIPv6(network),
       broadcast: '',
-      firstUsable: formatIPv6(network),
+      subnetRouterAnycast: formatIPv6(network),
       lastUsable: formatIPv6(last),
       mask: formatIPv6(mask),
       wildcard: '',
@@ -180,7 +180,8 @@ export function cidrInfo(input) {
       totalAddresses: size.toString(),
       usableHosts: size.toString(),
       classification: v6Classify(network),
-      note: 'IPv6 has no broadcast address; all addresses in the subnet are assignable (RFC 4291).',
+      subnet64Count: (prefix <= 64 ? (1n << BigInt(64 - prefix)) : 0n).toString(),
+      note: 'IPv6 has no broadcast address. The subnet prefix with an all-zero interface identifier is the Subnet-Router Anycast address (RFC 4291), not a normal host address. Reserved subnet anycast identifiers may also apply.',
     };
   }
 
