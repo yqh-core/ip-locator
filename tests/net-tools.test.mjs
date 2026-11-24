@@ -144,7 +144,7 @@ test('DNS 状态码文案', () => {
 });
 
 test('IANA-aware IP address classification for IPv4 special-purpose ranges', () => {
-  assert.equal(classifyIPAddress('8.8.8.8').key, 'publicUnicast');
+  assert.equal(classifyIPAddress('8.8.8.8').key, 'outsideSpecialPurpose');
   assert.equal(classifyIPAddress('10.1.2.3').key, 'privateUse');
   assert.equal(classifyIPAddress('172.31.255.1').key, 'privateUse');
   assert.equal(classifyIPAddress('192.168.1.1').key, 'privateUse');
