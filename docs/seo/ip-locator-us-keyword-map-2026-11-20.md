@@ -73,3 +73,16 @@ P2 — data-driven optimization:
 - Search-volume, ranking, indexing, backlink and traffic evidence for this domain was not retrieved in this pass.
 - All keyword phrases above are candidate intent variants only.
 - No production metadata or URL behavior is claimed verified by source inspection alone.
+
+
+## 2026-11-24 — address-space classification gap
+
+Competitor tool suites commonly surface network context alongside geolocation (IPinfo and WhatIsMyIPer expose IP/ASN/network diagnostics). The result header previously reduced every address to only `Private` or `Public`, so special-purpose ranges such as CGNAT, TEST-NET documentation, benchmarking, multicast and reserved space could be mislabeled as Public.
+
+The existing result badge now uses a client-side classifier sourced from the IANA IPv4 and IPv6 Special-Purpose Address Registries. It labels common registry blocks, IPv4-mapped IPv6 addresses and global-unicast space; it does **not** claim to test routing, reachability, provider coverage or geolocation accuracy. The existing public/private query flow and upstream providers are unchanged.
+
+Reference registries:
+- https://www.iana.org/assignments/iana-ipv4-special-registry
+- https://www.iana.org/assignments/iana-ipv6-special-registry
+
+Validation: unit tests cover RFC 1918, CGNAT, loopback, link-local, TEST-NET, benchmarking, multicast, reserved, IETF anycast, IPv6 documentation, ULA, global unicast, translation prefixes, SRv6 and IPv4-mapped IPv6. Exact-head CI, Verify, production deployment and smoke are tracked separately in the pull request.
