@@ -44,7 +44,6 @@
   "ip.type.as112": "AS112 service address",
   "ip.type.amt": "AMT service address",
   "ip.type.deprecated": "Deprecated transition range",
-  "ip.type.publicUnicast": "Public unicast",
   "ip.type.uniqueLocal": "IPv6 unique-local",
   "ip.type.unspecified": "Unspecified",
   "ip.type.ipv4Mapped": "IPv4-mapped IPv6",
@@ -61,5 +60,6 @@
   "ip.type.unknown": "Unknown",
   "ip.type.aria": "IP address type",
   "ip.type.scopeNote": "Address-space classification only; this is not a live reachability or routing test.",
-  "ip.type.embeddedIPv4": "Embedded IPv4 classification"
+  "ip.type.embeddedIPv4": "Embedded IPv4 classification",
+  "ip.type.outsideSpecialPurpose": "Outside listed special-purpose ranges"
 }
