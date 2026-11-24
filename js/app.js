@@ -5,7 +5,7 @@
  *   - 本文件不认识任何一家 API 的字段名，也不拼 URL
  *   - 数据源增删、顺序调整都在 ip-sources.js 里完成，这里零改动
  */
-import { fetchIPInfo, isPrivateIP, isValidIPv4, isValidIPv6, ipVersion, entityLabel } from './ip-sources.js';
+import { fetchIPInfo, isValidIPv4, isValidIPv6, ipVersion, entityLabel } from './ip-sources.js';
 import { classifyIPAddress } from './net-tools.js';
 
 // 测量闭环（隔离验证；analytics.iife.js 经经典 script 先加载暴露 window.DDAnalytics）。
