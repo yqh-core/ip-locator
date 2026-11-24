@@ -179,7 +179,7 @@ function classifyIPv4Value(value) {
   );
   return match
     ? { key: match.key, label: match.label, version: 4 }
-    : { key: 'publicUnicast', label: 'Public unicast (no special-purpose match)', version: 4 };
+    : { key: 'outsideSpecialPurpose', label: 'Outside listed special-purpose ranges', version: 4 };
 }
 
 /**
