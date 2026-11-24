@@ -311,6 +311,11 @@ button:active {
     border-radius: 6px;
     font-size: 0.85em;
     font-weight: 600;
+    line-height: 1.35;
+    max-width: 48%;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .info-grid {

@@ -5,7 +5,8 @@
  *   - 本文件不认识任何一家 API 的字段名，也不拼 URL
  *   - 数据源增删、顺序调整都在 ip-sources.js 里完成，这里零改动
  */
-import { fetchIPInfo, isPrivateIP, isValidIPv4, isValidIPv6, ipVersion, entityLabel } from './ip-sources.js';
+import { fetchIPInfo, isValidIPv4, isValidIPv6, ipVersion, entityLabel } from './ip-sources.js';
+import { classifyIPAddress } from './net-tools.js';
 
 // 测量闭环（隔离验证；analytics.iife.js 经经典 script 先加载暴露 window.DDAnalytics）。
 // ip 无下载动作 → download 标 NOT_COLLECTED，不估算。测量失败不阻塞产品。
@@ -243,7 +244,21 @@ function addFieldCopy(node) {
 function render(info) {
   el.ipAddress.textContent = info.ip ?? PLACEHOLDER;
   const ver = ipVersion(info.ip);
-  el.ipType.textContent = `${isPrivateIP(info.ip) ? 'Private' : 'Public'}${ver ? ' IPv' + ver : ' IP'}`;
+  const addressClass = classifyIPAddress(info.ip);
+  const classLabel = addressClass
+    ? t('ip.type.' + addressClass.key, addressClass.label)
+    : t('ip.type.unknown', 'Unknown');
+  const versionLabel = ver ? t('ip.type.ipv' + ver, 'IPv' + ver) : 'IP';
+  el.ipType.textContent = classLabel + ' · ' + versionLabel;
+  el.ipType.title = t(
+    'ip.type.scopeNote',
+    'Address-space classification only; this is not a live reachability or routing test.',
+  );
+  el.ipType.setAttribute('aria-label', t('ip.type.aria', 'IP address type') + ': ' + el.ipType.textContent);
+  if (addressClass?.embeddedKey) {
+    const embeddedLabel = t('ip.type.' + addressClass.embeddedKey, addressClass.embeddedLabel);
+    el.ipType.title += ' ' + t('ip.type.embeddedIPv4', 'Embedded IPv4 classification') + ': ' + embeddedLabel + '.';
+  }
 
   for (const field of FIELDS) {
     const node = el[field.id];

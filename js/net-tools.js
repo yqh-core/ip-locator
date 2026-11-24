@@ -85,6 +85,140 @@ export function formatIPv6(n) {
   return head + '::' + tail;
 }
 
+
+/*
+ * IANA special-purpose address classification for the IP result badge.
+ * Registry snapshot checked against the IANA IPv4/IPv6 Special-Purpose
+ * Address Registries (last updated 2025-10-09). This is address-space
+ * classification only; it does not test live routing or reachability.
+ */
+function prefixMatches(value, network, prefix, bits) {
+  if (prefix === 0) return true;
+  const shift = BigInt(bits - prefix);
+  return (value >> shift) === (network >> shift);
+}
+
+function compileV4Ranges(entries) {
+  return entries.map(([cidr, key, label]) => {
+    const [networkText, prefixText] = cidr.split('/');
+    const parsed = parseIPv4(networkText);
+    if (parsed === null) throw new Error('Invalid built-in IPv4 prefix: ' + cidr);
+    return { network: BigInt(parsed), prefix: Number(prefixText), key, label };
+  });
+}
+
+function compileV6Ranges(entries) {
+  return entries.map(([cidr, key, label]) => {
+    const [networkText, prefixText] = cidr.split('/');
+    const parsed = parseIPv6(networkText);
+    if (parsed === null) throw new Error('Invalid built-in IPv6 prefix: ' + cidr);
+    return { network: parsed, prefix: Number(prefixText), key, label };
+  });
+}
+
+// More-specific exceptions precede their containing registry allocations.
+const IANA_V4_SPECIAL_RANGES = compileV4Ranges([
+  ['255.255.255.255/32', 'limitedBroadcast', 'Limited broadcast'],
+  ['192.0.0.9/32', 'protocolAnycast', 'Protocol anycast'],
+  ['192.0.0.10/32', 'protocolAnycast', 'Protocol anycast'],
+  ['192.0.0.170/31', 'specialPurpose', 'NAT64/DNS64 discovery'],
+  ['192.0.0.8/32', 'specialPurpose', 'IPv4 dummy address'],
+  ['192.0.0.0/29', 'serviceContinuity', 'IPv4 service-continuity prefix'],
+  ['192.88.99.2/32', 'deprecated', 'Legacy 6a44 relay anycast'],
+  ['0.0.0.0/8', 'thisNetwork', 'This network'],
+  ['10.0.0.0/8', 'privateUse', 'Private-use'],
+  ['100.64.0.0/10', 'sharedAddress', 'Shared address space (CGNAT)'],
+  ['127.0.0.0/8', 'loopback', 'Loopback'],
+  ['169.254.0.0/16', 'linkLocal', 'Link-local'],
+  ['172.16.0.0/12', 'privateUse', 'Private-use'],
+  ['192.0.0.0/24', 'ietfAssignments', 'IETF protocol assignments'],
+  ['192.0.2.0/24', 'documentation', 'Documentation-only (TEST-NET-1)'],
+  ['192.31.196.0/24', 'as112', 'AS112 service address'],
+  ['192.52.193.0/24', 'amt', 'Automatic Multicast Tunneling (AMT)'],
+  ['192.88.99.0/24', 'deprecated', 'Deprecated 6to4 relay range'],
+  ['192.168.0.0/16', 'privateUse', 'Private-use'],
+  ['192.175.48.0/24', 'as112', 'AS112 service address'],
+  ['198.18.0.0/15', 'benchmarking', 'Benchmarking'],
+  ['198.51.100.0/24', 'documentation', 'Documentation-only (TEST-NET-2)'],
+  ['203.0.113.0/24', 'documentation', 'Documentation-only (TEST-NET-3)'],
+  ['224.0.0.0/4', 'multicast', 'Multicast'],
+  ['240.0.0.0/4', 'reserved', 'Reserved'],
+]);
+
+const IANA_V6_SPECIAL_RANGES = compileV6Ranges([
+  ['::1/128', 'loopback', 'Loopback'],
+  ['::/128', 'unspecified', 'Unspecified'],
+  ['::ffff:0:0/96', 'ipv4Mapped', 'IPv4-mapped IPv6'],
+  ['64:ff9b:1::/48', 'localTranslation', 'Local-use IPv4/IPv6 translation'],
+  ['64:ff9b::/96', 'translation', 'IPv4/IPv6 translation prefix'],
+  ['100:0:0:1::/64', 'specialPurpose', 'Dummy IPv6 prefix'],
+  ['100::/64', 'discardOnly', 'Discard-only address block'],
+  ['2001:1::1/128', 'protocolAnycast', 'Port Control Protocol anycast'],
+  ['2001:1::2/128', 'protocolAnycast', 'Traversal Using Relays around NAT anycast'],
+  ['2001:1::3/128', 'protocolAnycast', 'DNS-SD service registration anycast'],
+  ['2001:2::/48', 'benchmarking', 'Benchmarking'],
+  ['2001:3::/32', 'amt', 'Automatic Multicast Tunneling (AMT)'],
+  ['2001:4:112::/48', 'as112', 'AS112 service address'],
+  ['2001:20::/28', 'ietfAssignments', 'ORCHIDv2 special-purpose range'],
+  ['2001:30::/28', 'ietfAssignments', 'Drone Remote ID special-purpose range'],
+  ['2001::/32', 'teredo', 'Teredo transition'],
+  ['2001:db8::/32', 'documentation', 'Documentation-only'],
+  ['2001::/23', 'ietfAssignments', 'IETF protocol assignments'],
+  ['2002::/16', 'sixToFour', '6to4 transition'],
+  ['2620:4f:8000::/48', 'as112', 'AS112 service address'],
+  ['3fff::/20', 'documentation', 'Documentation-only'],
+  ['5f00::/16', 'srv6', 'Segment Routing (SRv6) identifiers'],
+  ['fc00::/7', 'uniqueLocal', 'IPv6 unique-local'],
+  ['fe80::/10', 'linkLocal', 'Link-local'],
+  ['ff00::/8', 'multicast', 'Multicast'],
+]);
+
+function classifyIPv4Value(value) {
+  const match = IANA_V4_SPECIAL_RANGES.find(range =>
+    prefixMatches(BigInt(value), range.network, range.prefix, 32),
+  );
+  return match
+    ? { key: match.key, label: match.label, version: 4 }
+    : { key: 'outsideSpecialPurpose', label: 'Outside listed special-purpose ranges', version: 4 };
+}
+
+/**
+ * Classify an IPv4/IPv6 address against common IANA special-purpose ranges.
+ * "Public/global" labels describe address space, not whether a host responds,
+ * a route exists, or a provider has geolocation coverage.
+ */
+export function classifyIPAddress(input) {
+  const value = String(input ?? '').trim();
+  const ipv4 = parseIPv4(value);
+  if (ipv4 !== null) return classifyIPv4Value(ipv4);
+
+  const ipv6 = parseIPv6(value);
+  if (ipv6 === null) return null;
+
+  const mappedPrefix = parseIPv6('::ffff:0:0');
+  if (prefixMatches(ipv6, mappedPrefix, 96, 128)) {
+    const embedded = Number(ipv6 & 0xffffffffn);
+    const embeddedClass = classifyIPv4Value(embedded);
+    return {
+      key: 'ipv4Mapped',
+      label: 'IPv4-mapped IPv6',
+      version: 6,
+      embeddedKey: embeddedClass.key,
+      embeddedLabel: embeddedClass.label,
+    };
+  }
+
+  const match = IANA_V6_SPECIAL_RANGES.find(range =>
+    prefixMatches(ipv6, range.network, range.prefix, 128),
+  );
+  if (match) return { key: match.key, label: match.label, version: 6 };
+
+  if (prefixMatches(ipv6, parseIPv6('2000::'), 3, 128)) {
+    return { key: 'globalUnicast', label: 'Global unicast space', version: 6 };
+  }
+  return { key: 'outsideGlobal', label: 'Outside IPv6 global-unicast space', version: 6 };
+}
+
 /* ---------------- CIDR 计算 ---------------- */
 
 const V4_SPECIALS = [

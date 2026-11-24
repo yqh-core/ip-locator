@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  parseIPv4, formatIPv4, parseIPv6, formatIPv6, cidrInfo, ptrName, dnsStatusText,
+  parseIPv4, formatIPv4, parseIPv6, formatIPv6, cidrInfo, ptrName, dnsStatusText, classifyIPAddress,
 } from '../js/net-tools.js';
 
 test('IPv4 解析与格式化', () => {
@@ -141,4 +141,37 @@ test('DNS 状态码文案', () => {
   assert.equal(dnsStatusText(0), 'NOERROR (response received)');
   assert.equal(dnsStatusText(3), 'NXDOMAIN (domain does not exist)');
   assert.equal(dnsStatusText(99), 'RCODE 99');
+});
+
+test('IANA-aware IP address classification for IPv4 special-purpose ranges', () => {
+  assert.equal(classifyIPAddress('8.8.8.8').key, 'outsideSpecialPurpose');
+  assert.equal(classifyIPAddress('10.1.2.3').key, 'privateUse');
+  assert.equal(classifyIPAddress('172.31.255.1').key, 'privateUse');
+  assert.equal(classifyIPAddress('192.168.1.1').key, 'privateUse');
+  assert.equal(classifyIPAddress('100.72.1.1').key, 'sharedAddress');
+  assert.equal(classifyIPAddress('127.0.0.1').key, 'loopback');
+  assert.equal(classifyIPAddress('169.254.10.20').key, 'linkLocal');
+  assert.equal(classifyIPAddress('192.0.2.10').key, 'documentation');
+  assert.equal(classifyIPAddress('198.18.0.1').key, 'benchmarking');
+  assert.equal(classifyIPAddress('224.0.0.1').key, 'multicast');
+  assert.equal(classifyIPAddress('240.0.0.1').key, 'reserved');
+  assert.equal(classifyIPAddress('192.0.0.9').key, 'protocolAnycast');
+  assert.equal(classifyIPAddress('255.255.255.255').key, 'limitedBroadcast');
+});
+
+test('IANA-aware IP address classification for IPv6 and IPv4-mapped addresses', () => {
+  assert.equal(classifyIPAddress('2001:4860:4860::8888').key, 'globalUnicast');
+  assert.equal(classifyIPAddress('2001:db8::1').key, 'documentation');
+  assert.equal(classifyIPAddress('3fff::1').key, 'documentation');
+  assert.equal(classifyIPAddress('fc00::1').key, 'uniqueLocal');
+  assert.equal(classifyIPAddress('fe80::1').key, 'linkLocal');
+  assert.equal(classifyIPAddress('ff02::1').key, 'multicast');
+  assert.equal(classifyIPAddress('::').key, 'unspecified');
+  assert.equal(classifyIPAddress('::1').key, 'loopback');
+  assert.equal(classifyIPAddress('64:ff9b::192.0.2.33').key, 'translation');
+  assert.equal(classifyIPAddress('5f00::1').key, 'srv6');
+  const mapped = classifyIPAddress('::ffff:192.0.2.33');
+  assert.equal(mapped.key, 'ipv4Mapped');
+  assert.equal(mapped.embeddedKey, 'documentation');
+  assert.equal(classifyIPAddress('not-an-ip'), null);
 });
