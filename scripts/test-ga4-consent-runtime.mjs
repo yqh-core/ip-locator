@@ -49,7 +49,7 @@ function boot(initialConsent = null, noindex = false) {
   const body = new Element('body');
   body.appendChild = function (child) { this.children.push(child); markConnected(child); return child; };
   const head = new Element('head');
-  head.appendChild = function (child) { scripts.push(child); child.isConnected = true; return child; };
+  head.appendChild = function (child) { if (child.tagName === 'SCRIPT') scripts.push(child); child.isConnected = true; return child; };
   const noindexMeta = noindex ? { getAttribute: () => 'noindex, nofollow' } : null;
   documentRef = {
     readyState: 'complete',
