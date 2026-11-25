@@ -107,6 +107,7 @@ async function copyText(text, btn) {
 document.addEventListener('DOMContentLoaded', () => {
   const ids = ['ipInput', 'loading', 'error', 'ipInfo', 'searchBtn', 'myIpBtn', 'ipv6DemoBtn', 'ipAddress', 'ipType', 'mapLink', 'sourceNote', 'copyIpBtn', 'mapEmbed', 'mapShowBtn', 'extraTools', 'jsonView', 'jsonCopyBtn', 'clientInfo', 'clientToggle', 'historyList', 'historyCount', 'historyEmpty', 'historyClear'];
   for (const id of ids) el[id] = document.getElementById(id);
+  el.resultZone = document.getElementById('result-zone');
   for (const f of FIELDS) el[f.id] = document.getElementById(f.id);
 
   el.searchBtn.addEventListener('click', () => queryIP());
@@ -142,9 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showLoading() {
-  el.loading.style.display = 'block';
+  el.resultZone?.classList.remove('is-error');
+  el.resultZone?.classList.add('is-loading');
+  el.loading.style.display = 'grid';
   const lp = el.loading.querySelector('p');
-  if (lp) lp.textContent = 'Looking up IP information...';
+  if (lp) lp.textContent = t('loading.title', 'Looking up IP information…');
   el.error.style.display = 'none';
   el.ipInfo.style.display = 'none';
   if (el.extraTools) el.extraTools.hidden = true;
@@ -155,6 +158,9 @@ function hideLoading() {
 }
 
 function showError(message) {
+  el.loading.style.display = 'none';
+  el.resultZone?.classList.remove('is-loading');
+  el.resultZone?.classList.add('is-error');
   el.error.textContent = `❌ ${message}`;
   el.error.style.display = 'block';
   el.ipInfo.style.display = 'none';
@@ -204,7 +210,12 @@ async function runQuery(ip) {
         attempted.push({ label: src.pathLabel || src.label, ok });
         if (!ok) {
           const lp = el.loading.querySelector('p');
-          if (lp) lp.textContent = `Trying another data source… (${attempted.length} attempted)`;
+          if (lp) {
+            lp.textContent = t(
+              'loading.retrying',
+              'Trying another data source… ({count} attempted)',
+            ).replace('{count}', String(attempted.length));
+          }
         }
       },
     });
@@ -284,7 +295,9 @@ function render(info) {
 
   renderMap(hasCoord ? info : null);
 
+  el.resultZone?.classList.remove('is-loading', 'is-error');
   el.error.style.display = 'none';
+  el.loading.style.display = 'none';
   el.ipInfo.style.display = 'block';
 
   // 第二轮：原始 JSON 视图 + 查询历史（均本地，不外发）
