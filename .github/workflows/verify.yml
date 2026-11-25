@@ -34,6 +34,9 @@ jobs:
       - name: 首页移动端任务入口布局回归
         run: node --test tests/homepage-layout.test.mjs
 
+      - name: Mobile cross-site navigation scroll affordance regression
+        run: node --test tests/shell-mobile-nav.test.mjs
+
       - name: GA4 consent 静态门禁（ID / 页面覆盖 / 隐私边界）
         run: node scripts/check-ga4-consent.mjs
 
