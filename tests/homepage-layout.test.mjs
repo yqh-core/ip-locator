@@ -33,7 +33,8 @@ test('mobile prioritizes the lookup and preserves a one-row input plus Query act
 });
 
 test('homepage SEO title, description and canonical remain unchanged', () => {
-  assert.match(html, /<title>IP Geolocation Lookup — IP Address, ASN &amp; DNS \| DigDevBox<\/title>/);
+  assert.match(html, /<title>IP Address Lookup &amp; Geolocation — IPv4, IPv6, ASN &amp; DNS \| DigDevBox<\/title>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/ip\.digdevbox\.com\/">/);
-  assert.match(html, /Look up public IPv4 and IPv6 addresses by location, ISP and ASN/);
+  assert.match(html, /<h1 data-i18n="h1\.title">🌍 IP Address Lookup &amp; Geolocation<\/h1>/);
+  assert.match(html, /Find your public IP address or look up any IPv4\/IPv6 address/);
 });

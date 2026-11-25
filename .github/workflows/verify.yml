@@ -113,8 +113,9 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq '<html lang="en" data-i18n-page="home">' index.html
-          grep -Fq '<title>IP Geolocation Lookup' index.html
-          grep -Fq 'name="description" content="Look up public IPv4 and IPv6 addresses' index.html
+          grep -Fq '<title>IP Address Lookup &amp; Geolocation' index.html
+          grep -Fq 'name="description" content="Find your public IP address or look up any IPv4/IPv6 address' index.html
+          grep -Fq 'IP Address Lookup &amp; Geolocation</h1>' index.html
           grep -Fq 'property="og:locale" content="en_US"' index.html
           grep -Fq '"inLanguage": "en"' index.html
           grep -Fq '"priceCurrency": "USD"' index.html
