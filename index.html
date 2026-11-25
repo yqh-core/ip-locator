@@ -175,9 +175,35 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
         <div id="result-zone">
 
         <!-- 加载提示 -->
-        <div id="loading" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>Looking up IP information...</p>
+        <div id="loading" class="loading" style="display: none;" role="status" aria-live="polite" aria-atomic="false">
+            <div class="loading-intro">
+                <span class="spinner" aria-hidden="true"></span>
+                <div class="loading-copy">
+                    <p data-i18n="loading.title">Looking up IP information…</p>
+                    <small data-i18n="loading.description">Checking your public IP and preparing location and network details.</small>
+                </div>
+            </div>
+            <div class="lookup-skeleton" aria-hidden="true">
+                <div class="lookup-skeleton-summary">
+                    <span class="lookup-skeleton-pill"></span>
+                    <span class="lookup-skeleton-line lookup-skeleton-line--wide"></span>
+                </div>
+                <div class="lookup-skeleton-grid">
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                    <div class="lookup-skeleton-field"><span></span><b></b></div>
+                </div>
+                <div class="lookup-skeleton-map">
+                    <span class="lookup-skeleton-line lookup-skeleton-line--map-title"></span>
+                    <span class="lookup-skeleton-map-canvas"><i></i></span>
+                </div>
+            </div>
         </div>
 
         <!-- 错误提示 -->

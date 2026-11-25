@@ -61,5 +61,8 @@
   "ip.type.aria": "IP address type",
   "ip.type.scopeNote": "Address-space classification only; this is not a live reachability or routing test.",
   "ip.type.embeddedIPv4": "Embedded IPv4 classification",
-  "ip.type.outsideSpecialPurpose": "Outside listed special-purpose ranges"
+  "ip.type.outsideSpecialPurpose": "Outside listed special-purpose ranges",
+  "loading.title": "Looking up IP information…",
+  "loading.description": "Checking your public IP and preparing location and network details.",
+  "loading.retrying": "Trying another data source… ({count} attempted)"
 }
