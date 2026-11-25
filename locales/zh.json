@@ -61,5 +61,8 @@
   "ip.type.aria": "IP 地址类型",
   "ip.type.scopeNote": "仅表示地址空间分类，不代表实时可达性或路由检测结果。",
   "ip.type.embeddedIPv4": "内嵌 IPv4 地址分类",
-  "ip.type.outsideSpecialPurpose": "未匹配已登记的特殊用途地址段"
+  "ip.type.outsideSpecialPurpose": "未匹配已登记的特殊用途地址段",
+  "loading.title": "正在查询 IP 信息…",
+  "loading.description": "正在检测你的公网 IP，并准备位置与网络信息。",
+  "loading.retrying": "正在尝试其他数据源…（已尝试 {count} 个）"
 }
