@@ -1,334 +1,130 @@
-# IP Locator - Online IP Address Lookup Tool
+# IP Address Lookup & Network Tools
 
-A lightweight, privacy-friendly web app for IPv4 and IPv6 geolocation lookup — country, region, city, postal code, ISP, ASN, organization, coordinates and timezone. It also includes a local CIDR subnet calculator and browser-based DNS/reverse-DNS lookup. Geolocation requests use the documented edge or upstream data-source paths; CIDR calculations run locally in the browser.
+**Live site:** https://ip.digdevbox.com/  
+**Repository:** https://github.com/yqh-core/ip-locator  
+**Portfolio status:** Maintenance / selective growth. Keep fixes evidence-led; do not assume this repository is a Tier A feature-expansion target.
 
-**Part of [DigDevBox](https://digdevbox.com)** — a collection of free online developer tools.
+IP Locator is an English-first browser tool for looking up your public IP or a specified IPv4/IPv6 address. It also includes IP address classification, IPv4/IPv6 CIDR calculations, DNS and reverse-DNS utilities.
 
-| | |
-| --- | --- |
-| **Website** | <https://ip.digdevbox.com/> |
-| **Source code** | <https://github.com/yqh-core/ip-locator> |
+## Features
 
-![IP lookup result](.github/assets/ip-lookup.png)
+- Detect your current public IP and look up a specified IPv4 or IPv6 address.
+- Display approximate country, region, city, postal code, coordinates, time zone, ASN, ISP and organization when upstream data provides them.
+- Show the responding data source and preserve source/provenance fields.
+- Copy individual values and inspect normalized JSON.
+- Keep recent lookup history in the browser.
+- Classify special-purpose, private, loopback, link-local and global address ranges.
+- Calculate IPv4 and IPv6 networks and subnets locally in the browser.
+- Query DNS records and reverse DNS through Cloudflare DNS-over-HTTPS.
+- Responsive interface with English-first page metadata and shared DigDevBox shell styling.
 
-## 功能特点
+Geolocation is approximate network-registration data, not a device's precise physical location. VPNs, proxies, mobile carriers and CDNs can make the reported location differ from the end user's location.
 
-- **零第三方依赖的自查路径**：查询自己 IP 走 Cloudflare 边缘注入数据；查任意 IP 并发竞速 ipinfo.io / ipwho.is（多源任一可用即返回，界面显示实际数据源）
-- **IPv4 / IPv6 查询**：输入 IPv4 或 IPv6 地址即可查询可用的归属地信息
-- **自动定位**：页面加载时自动查询并显示当前 IP 地址信息
-- **详细信息**：显示国家、省份、城市、邮编、ASN、运营商、组织、经纬度、时区
-- **ASN 与组织分离**：修正旧版把 AS 号当成组织名显示的问题
-- **地图定位**：支持在 OpenStreetMap 和 Google Maps 上查看地理位置
-- **CIDR 子网计算**：支持 IPv4 / IPv6，显示网络边界、地址数量；IPv6 同时计算可容纳的 /64 子网数量，并明确标注 Subnet-Router Anycast 地址
-- **响应式设计**：完美适配 PC 端和移动端
-- **免费无限制**：使用免费 API，无需注册和申请密钥
+## Data flow, providers and privacy
 
-## 使用说明
+The implementation has two IP-geolocation paths:
 
-### 第一步：启动应用
+1. **Lookup of the visitor's own IP:** the Pages Function reads Cloudflare request metadata (`request.cf`) when the required fields are available. If that metadata is insufficient, the server may fall back to the configured upstream providers.
+2. **Lookup of a specified IP:** the Pages Function checks its edge cache, then concurrently requests the configured upstreams and uses the first valid response. The current server-side upstream list in `functions/api/ip.js` contains **ipwho.is** and **ipinfo.io**. The response includes source attribution. The browser adapter in `js/ip-sources.js` also contains direct-provider fallback paths for cases where the Pages Function is unavailable.
 
-> ⚠️ 需要通过 HTTP 服务访问，直接双击打开 `index.html` 不行。
-> 前端按 ES Module 拆成了 `js/ip-sources.js`（数据源适配）与 `js/app.js`（界面），
-> 浏览器对 `file://` 协议下的模块加载有 CORS 限制，会直接报错。
+The code currently sets a one-hour cache for specified-IP results and a shorter cache for visitor self-lookups. Verify the current source before changing cache behavior or making retention claims.
 
-```bash
-# 如果安装了 Python 3
-python -m http.server 8000
+**Provider terms are not interchangeable with code availability.** The repository's historical notes record a concern about commercial-use terms for anonymous/free provider tiers, but this README does not certify that either provider's current terms authorize every use case. Before changing providers, enabling additional traffic, or making commercial-compliance claims, review the providers' current official terms/pricing and obtain any required plan or written permission. Do not re-enable `ipapi.co` without a documented authorization decision.
 
-# 如果安装了 Node.js
-npx http-server
-```
+Privacy and release checks:
+- The IP address being looked up is sent to the selected geolocation provider(s); this is necessary for third-party lookup.
+- DNS questions are sent to Cloudflare's public DNS-over-HTTPS endpoint.
+- The app includes analytics and advertising integrations in its HTML/runtime. Review the consent implementation and current privacy policy before changing tracking or third-party scripts.
+- Lookup history and client information are handled in browser code; inspect the current implementation before making absolute claims about local storage or data retention.
+- Never add credentials, personal data or provider secrets to the repository.
 
-然后在浏览器访问 `http://localhost:8000`
+## Repository structure
 
-### 第二步：查询IP地址
-
-1. **自动查询当前IP**：
-   - 打开页面后会自动查询您当前的IP地址
-   - 显示您的公网IP及其归属地信息
-
-2. **手动输入IP查询**：
-   - 在输入框输入要查询的IP地址（如：8.8.8.8）
-   - 点击"查询"按钮或按回车键
-   - 支持任意IPv4格式的IP地址
-
-3. **快速查询我的IP**：
-   - 点击"查询我的IP"按钮
-   - 一键快速查询当前公网IP信息
-
-## 功能说明
-
-![Network details](.github/assets/network-details.png)
-
-### 显示的信息
-
-查询结果包含以下详细信息：
-
-- **IP地址**：显示查询的IP地址
-- **IP类型**：标识为公网IP或内网IP
-- **国家/地区**：IP所在的国家或地区
-- **省份/州**：IP所在的省份或州
-- **城市**：IP所在的城市
-- **邮编**：所在地区的邮政编码
-- **ASN**：自治系统号（如 AS15169）
-- **运营商**：Internet 服务提供商（ISP），ASN 与组织名分开显示
-- **组织**：IP 所属的组织名（不再显示为 AS 号）
-- **经纬度**：地理坐标位置
-- **时区**：所在地的时区信息
-- **地图链接**：Google Maps和OpenStreetMap查看链接
-
-### IP类型识别
-
-应用会自动识别IP类型：
-
-- **公网IP**：可以在互联网上访问的IP地址
-- **内网IP**：私有网络IP地址，包括：
-  - 10.0.0.0 - 10.255.255.255
-  - 172.16.0.0 - 172.31.255.255
-  - 192.168.0.0 - 192.168.255.255
-  - 127.0.0.0 - 127.255.255.255（回环地址）
-  - 169.254.0.0 - 169.254.255.255（链路本地）
-
-## 技术栈
-
-- **HTML5**：页面结构
-- **CSS3**：响应式布局与加载动画
-- **JavaScript (ES Module)**：`js/ip-sources.js` 数据源适配 + `js/app.js` 界面渲染
-- **Fetch API + AbortSignal**：请求超时与并发竞态控制
-
-## 文件结构
-
-```
-ip_location/
-├── index.html          # 主页面
-├── about.html          # 关于
-├── privacy.html        # 隐私政策
-├── 404.html            # 404
-├── css/
-│   └── style.css       # 样式
+```text
+.
+├── index.html                 # Main lookup interface
+├── about.html                 # About page
+├── privacy.html               # Privacy policy
+├── terms.html                 # Terms
+├── contact.html               # Contact page
+├── faq.html                   # FAQ
+├── guides.html                # Guides
+├── docs.html                  # Documentation
+├── ip-address-lookup/         # English search landing page
+├── ip-geolocation/            # Geolocation landing content
+├── css/                       # Site and shared-shell styles
 ├── js/
-│   ├── ip-sources.js   # 数据源适配层：URL 拼装 + 字段归一化 + 多源降级（无 DOM）
-│   └── app.js          # 界面层：DOM 渲染与交互（不认识任何一家 API 的字段）
-├── scripts/
-│   └── build.mjs       # 组装 Cloudflare Pages 发布目录
-└── README.md
+│   ├── app.js                 # UI, events and result rendering
+│   ├── ip-sources.js          # IP providers, validation and normalization
+│   ├── net-tools.js           # IP classification, CIDR and DNS logic
+│   └── ...
+├── functions/
+│   └── api/ip.js              # Cloudflare Pages Function for IP lookup
+└── scripts/
+    └── build.mjs              # Explicit Cloudflare Pages dist/ assembly
 ```
 
-## 数据源说明（2026-11-17 合规改造后）
+The Pages build script uses an allowlist to assemble `dist/`, checks required files, excludes backup/temp files, checks Pages file-size/count limits and rejects internal links ending in `.html`. Keep the allowlist synchronized when adding publishable files or routes.
 
-- **查询自己的 IP（默认路径）**：使用 Cloudflare 边缘节点随请求注入的地理信息
-  （`request.cf`），**不产生任何第三方 API 调用**，界面来源显示 `Cloudflare 边缘节点自带信息`。
-- **查询任意指定 IP**：Cloudflare 不提供他人 IP 的归属数据，这条路径仍并发请求第三方 IP 库，
-  任一先成功即返回（并发竞速，非串行），界面显示本次实际应答方：
+## Local development and preview
 
-| 数据源 | 许可状态（核验日 2026-11-17） |
-| --- | --- |
-| [ipinfo.io](https://ipinfo.io) | 官方定价页：免费 Lite 可商用，**要求署名**（VERIFIED） |
-| [ipwho.is](https://ipwho.is) | 商用/展示条款**未能一手核验**（站点不可达）——待核验项，不得宣称合规 |
+This repository is a static HTML/CSS/JavaScript project with a Cloudflare Pages Function. No root `package.json`, lockfile or npm test/build scripts were found during the README audit. Do not document `npm install`, `npm test` or `npm run build` as supported commands unless a package manifest is added and verified.
 
-- **ipapi.co 已整体移除**：其官方定价明确免费计划仅供测试/开发、不适用于生产部署（VERIFIED），
-  本站为商业部署（AdSense），未经许可不得使用；取得针对公开 IP 展示产品的书面授权之前不得恢复。
-
-单个上游超时上限 6 秒；自检查询零上游调用。任意 IP 查询最坏 6 秒内必有结论。
-
-### 为什么要有超时
-
-实测部分网络下数据源会解析到不可达的 IPv6 地址，请求既不成功也不失败，
-会一直挂到浏览器默认超时（几十秒），界面就一直转圈。加了 6 秒超时后会被快速跳过。
-
-## 常见问题
-
-### 1. 提示"请输入有效的 IPv4 或 IPv6 地址"
-
-**解决方法**：
-- 检查 IP 地址格式是否正确（如：192.168.1.1）
-- 确保 IP 地址的每个数字在 0-255 之间
-- 不要输入域名，本工具只支持 IPv4
-
-### 2. 提示"全部数据源均不可用"
-
-**解决方法**：
-- 检查网络连接是否正常
-- 确认防火墙 / 广告拦截插件没有拦掉对上面三个域名的请求
-- 三个源都免费且无需密钥，任何一个可用就能出结果
-
-### 3. 内网 IP 无法查询详细信息
-
-**说明**：内网 IP（如 192.168.x.x）是私有地址，各家数据源都查不到归属地，只能查询公网 IP。
-
-### 4. 显示的位置不准确
-
-**说明**：IP 定位基于运营商分配的 IP 段，可能与实际位置有偏差，通常精确到城市级别。
-
-
-## 生产环境部署
-
-### 使用 Nginx 部署
-
-#### 1. 安装 Nginx
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update
-sudo apt install nginx
-```
-
-**CentOS/RHEL:**
-```bash
-sudo yum install nginx
-```
-
-**macOS:**
-```bash
-brew install nginx
-```
-
-#### 2. 配置 Nginx
-
-创建站点配置文件：
+For a simple static UI preview, use Python 3 from the repository root:
 
 ```bash
-sudo nano /etc/nginx/sites-available/ip-location
+python -m http.server 8000
 ```
 
-添加以下配置：
+Open http://localhost:8000 and stop the server with Ctrl+C.
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;  # 替换为你的域名或IP
+**Important:** this static server does not execute `functions/api/ip.js`. The `/api/ip` route, Cloudflare request metadata, edge cache and DNS/network behavior must be verified in a Cloudflare Pages-compatible local environment or on an authorized Preview deployment. A static preview is not a production test.
 
-    root /var/www/ip-location;  # 项目文件路径
-    index index.html;
+## Build output
 
-    # 启用 gzip 压缩
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml text/javascript;
-    gzip_min_length 1000;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # 静态资源缓存
-    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg)$ {
-        expires 7d;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # 安全头部
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-}
-```
-
-#### 3. 部署项目文件
+When Node.js is available, the repository's explicit packaging script can assemble the static Pages output:
 
 ```bash
-# 创建项目目录
-sudo mkdir -p /var/www/ip-location
-
-# 复制项目文件
-sudo cp -r . /var/www/ip-location/
-
-# 设置权限
-sudo chown -R www-data:www-data /var/www/ip-location
-sudo chmod -R 755 /var/www/ip-location
+node scripts/build.mjs
 ```
 
-#### 4. 启用站点配置
+Expected output is `dist/`. The script is not a substitute for the Cloudflare Pages deployment pipeline and does not itself publish the site. Review its allowlist and inspect the resulting directory before deployment.
 
-```bash
-# 创建符号链接
-sudo ln -s /etc/nginx/sites-available/ip-location /etc/nginx/sites-enabled/
+## Maintenance and verification checklist
 
-# 测试配置
-sudo nginx -t
+Before changing code:
 
-# 重启 Nginx
-sudo systemctl restart nginx
-```
+1. Check the default branch, working tree, recent commits, open PRs and current execution-board task.
+2. Read the relevant HTML, JavaScript, CSS, Pages Function and build allowlist.
+3. Preserve the separation between UI (`js/app.js`), provider normalization (`js/ip-sources.js`), network tools (`js/net-tools.js`) and server lookup (`functions/api/ip.js`).
+4. For IP validation, test valid/invalid IPv4 and IPv6, compressed IPv6, IPv4-mapped IPv6, private/special-purpose ranges and malformed inputs.
+5. For geolocation, test visitor self-lookup, specified-IP lookup, cache hit/miss, each upstream failing, malformed responses, timeout and source attribution.
+6. For CIDR and DNS, test IPv4/IPv6 boundaries, /0 and host prefixes, invalid masks, common DNS record types, PTR and upstream failure.
+7. Check mobile and desktop layouts, keyboard operation, error/retry states, copy controls and local history behavior.
+8. Inspect browser Network activity and consent behavior when modifying analytics, advertising, provider requests or DNS.
+9. Verify the Pages Function and production domain separately from static preview; record the exact commit and deployment evidence.
 
-#### 5. 配置 HTTPS（推荐）
+No automated test suite or package-manager workflow was confirmed during this documentation audit. Record any test commands actually discovered and executed; do not infer a pass from a successful static preview or packaging script.
 
-使用 Let's Encrypt 免费 SSL 证书：
+## Deployment boundary
 
-```bash
-# 安装 Certbot
-sudo apt install certbot python3-certbot-nginx
+The repository contains a Cloudflare Pages Function and a custom `dist/` assembly script. Deployment should use the authorized Cloudflare Pages project configuration and the exact intended build output. Do not use the generic Nginx/Docker snippets from older README revisions as the canonical production procedure; they do not reproduce the Pages Function runtime or `request.cf` behavior.
 
-# 获取证书并自动配置
-sudo certbot --nginx -d your-domain.com
+Before release, confirm:
+- Cloudflare Pages project, build command and output directory.
+- Pages Function routing for `/api/ip`.
+- Production domain and HTTPS response.
+- Exact deployed commit / deployment identifier.
+- Self-lookup and specified-IP lookup against real upstream behavior.
+- Privacy, consent, provider terms and attribution.
+- Rollback target and owner authorization.
 
-# 自动续期测试
-sudo certbot renew --dry-run
-```
+## License and third-party notices
 
-### 使用 Docker 部署
+The repository includes an MIT license and a notice that portions are derived from `mzlong/ip`, also MIT-licensed. Preserve the upstream attribution when modifying or redistributing those portions. Review the `LICENSE` file before changing licensing or distribution terms.
 
-创建 `Dockerfile`:
+## Related DigDevBox tools
 
-```dockerfile
-FROM nginx:alpine
-
-# 复制项目文件
-COPY . /usr/share/nginx/html/
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-构建并运行：
-
-```bash
-# 构建镜像
-docker build -t ip-location .
-
-# 运行容器
-docker run -d -p 80:80 --name ip-location ip-location
-```
-
-## 注意事项
-
-1. **API使用**：
-   - 三个数据源均为免费匿名额度，各家限制不同（见「数据源说明」）
-   - 请勿滥用，高频场景建议自行申请密钥或改用商业服务
-
-2. **隐私保护**：
-   - 本工具不存储任何查询记录
-   - 所有查询通过客户端直接访问API
-   - 不收集用户个人信息
-
-3. **网络安全**：
-   - IP地址是公开信息，不属于敏感数据
-   - 通过IP无法获取具体的个人信息
-   - 仅能查询到运营商和大致地理位置
-
-4. **HTTPS部署**：
-   - 生产环境必须使用 HTTPS，否则浏览器会因页面不安全而拦截对外请求
-   - 可以使用 Let's Encrypt 免费证书，或直接部署到 Cloudflare Pages 等自带 HTTPS 的平台
-
-
-
-## 许可证
-
-本项目采用 MIT 许可证，可自由使用和修改。
-
-## 相关链接
-
-- [ipinfo.io](https://ipinfo.io) — 任意 IP 查询数据源（免费 Lite 可商用，须署名）
-- [ipwho.is](https://ipwho.is) — 任意 IP 查询数据源（商用条款一手核验中）
-- Cloudflare Workers `request.cf` — 自查 IP 路径的地理信息来源（无第三方调用）
-- ~~ipapi.co~~ — 2026-11-17 因免费计划不适用于生产部署而整体移除
-- [DigDevBox — 免费在线开发者工具](https://digdevbox.com)
-- [StreamPlay — 在线 HLS / m3u8 播放器](https://play.digdevbox.com)
-
-## 联系方式
-
-如有问题或建议，欢迎通过 GitHub Issues 反馈！
-
----
-
-**快速查询IP归属地，让网络世界更透明！** 🌍
+- [DigDevBox Developer Toolbox](https://digdevbox.com/)
+- [DigImg Image Compressor](https://img.digdevbox.com/)
+- [StreamPlay HLS Player](https://play.digdevbox.com/)
