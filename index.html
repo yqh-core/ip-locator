@@ -135,38 +135,37 @@ else{h.removeAttribute('data-theme');h.setAttribute('data-dd-auto','');}
                     <span>IP location is approximate, not an exact address. The response shows its data source.</span>
                 </div>
             </aside>
-        </header>
-
-        <!-- 搜索区域 -->
-        <div class="search-section lookup-panel">
-            <div class="lookup-heading">
-                <div>
-                    <span class="lookup-kicker">START A LOOKUP</span>
-                    <h2>Enter an IP address</h2>
+        <!-- Mobile-first lookup: keep the primary task directly under the hero copy. -->
+            <div class="search-section lookup-panel" aria-label="IP address lookup">
+                <div class="lookup-heading">
+                    <div>
+                        <span class="lookup-kicker">START A LOOKUP</span>
+                        <h2>Enter an IP address</h2>
+                    </div>
+                    <span class="lookup-accepted">IPv4 or IPv6 · Free</span>
                 </div>
-                <span class="lookup-accepted">IPv4 or IPv6 · Free</span>
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="ipInput" aria-label="IP address to look up"
+                        placeholder="Enter an IP address (e.g. 8.8.8.8)" data-i18n-attr="placeholder:placeholder.ipInput"
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" type="button">
+                        <span class="btn-text" data-i18n="btn.query">Query</span>
+                        <span class="btn-icon" aria-hidden="true">🔍</span>
+                    </button>
+                </div>
+                <div class="quick-actions">
+                    <button id="myIpBtn" class="btn-secondary" type="button">
+                        <span data-i18n="btn.queryMyIp">📍 My IP</span>
+                    </button>
+                    <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="Try a public IPv6 address from Google Public DNS">🌐 IPv6 sample</button>
+                    <a class="btn-secondary quick-anchor" href="#cidr">🧮 Subnet calculator</a>
+                    <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS lookup</a>
+                </div>
             </div>
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="ipInput" aria-label="IP address to look up"
-                    placeholder="Enter an IP address (e.g. 8.8.8.8)" data-i18n-attr="placeholder:placeholder.ipInput"
-                    autocomplete="off"
-                >
-                <button id="searchBtn" type="button">
-                    <span class="btn-text" data-i18n="btn.query">Query</span>
-                    <span class="btn-icon">🔍</span>
-                </button>
-            </div>
-            <div class="quick-actions">
-                <button id="myIpBtn" class="btn-secondary" type="button">
-                    <span data-i18n="btn.queryMyIp">📍 My IP</span>
-                </button>
-                <button id="ipv6DemoBtn" class="btn-secondary" type="button" title="Try a public IPv6 address from Google Public DNS">🌐 IPv6 sample</button>
-                <a class="btn-secondary quick-anchor" href="#cidr">🧮 Subnet calculator</a>
-                <a class="btn-secondary quick-anchor" href="#dns">🔎 DNS lookup</a>
-            </div>
-        </div>
+        </header>
 
         <!-- CLS 修复：结果区稳定高度容器。预留值=实测各态最大高度（桌面 690px / 移动 1341px，见 style.css），
              防止 loading→结果 切换时把下方"使用说明"推挤（基线 CLS 0.305 = 0.2219+0.0835，均归因于 .instructions）。 -->
