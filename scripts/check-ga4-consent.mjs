@@ -16,6 +16,14 @@ const htmlFiles = [
   'terms.html',
 ];
 const failures = [];
+const consentScript = fs.readFileSync(path.join(root, 'analytics-consent.js'), 'utf8');
+for (const [label, pattern] of [
+  ['mobile consent prompt has a dedicated responsive marker', /data-dd-consent-prompt/],
+  ['mobile consent prompt compacts at 640px', /max-width:640px/],
+  ['mobile consent choices remain side by side', /flex-wrap:nowrap/],
+  ['mobile consent controls retain a readable minimum target height', /min-height:36px/],
+]) if (!pattern.test(consentScript)) failures.push('analytics-consent.js: ' + label);
+
 for (const file of htmlFiles) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   if (!html.includes('/analytics-consent.js')) failures.push(file + ': missing consent script');
