@@ -452,3 +452,204 @@ html[data-theme="dark"] .hero-brief-footer {
     transition: none;
   }
 }
+
+
+/* Lookup feedback: fill the reserved result region with useful structure,
+   rather than leaving a tall blank area while the automatic lookup is running. */
+#result-zone.is-error {
+  min-height: 0;
+}
+
+#result-zone.is-loading .loading {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 650px;
+  padding: clamp(18px, 2.5vw, 26px);
+  border: 1px solid var(--dd-border);
+  border-radius: 15px;
+  background: var(--dd-surface);
+  color: var(--dd-text);
+  text-align: left;
+}
+
+.loading-intro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--dd-border);
+}
+
+.loading-intro .spinner {
+  flex: none;
+  margin: 0;
+  border-color: var(--dd-surface-2);
+  border-top-color: var(--dd-primary);
+}
+
+.loading-copy {
+  min-width: 0;
+}
+
+.loading-copy p {
+  margin: 0 0 4px;
+  color: var(--dd-text);
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.loading-copy small {
+  display: block;
+  color: var(--dd-text-soft);
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.lookup-skeleton {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 18px;
+}
+
+.lookup-skeleton-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lookup-skeleton-pill,
+.lookup-skeleton-line,
+.lookup-skeleton-field span,
+.lookup-skeleton-field b,
+.lookup-skeleton-map-canvas::before {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--dd-surface-2) 0%, var(--dd-bg) 48%, var(--dd-surface-2) 100%);
+  background-size: 220% 100%;
+  animation: lookup-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.lookup-skeleton-pill {
+  width: 58px;
+  height: 24px;
+  flex: none;
+}
+
+.lookup-skeleton-line {
+  height: 10px;
+}
+
+.lookup-skeleton-line--wide {
+  width: min(260px, 52%);
+}
+
+.lookup-skeleton-grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-auto-rows: minmax(72px, 1fr);
+  gap: 12px;
+}
+
+.lookup-skeleton-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--dd-border);
+  border-radius: 9px;
+  background: var(--dd-bg);
+}
+
+.lookup-skeleton-field span {
+  width: 42%;
+  height: 8px;
+}
+
+.lookup-skeleton-field b {
+  width: 68%;
+  height: 13px;
+}
+
+.lookup-skeleton-map {
+  display: flex;
+  min-height: 155px;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--dd-border);
+}
+
+.lookup-skeleton-line--map-title {
+  width: 150px;
+}
+
+.lookup-skeleton-map-canvas {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-height: 112px;
+  overflow: hidden;
+  border: 1px solid var(--dd-border);
+  border-radius: 9px;
+  background:
+    linear-gradient(30deg, transparent 48%, var(--dd-border) 49%, var(--dd-border) 50%, transparent 51%) 0 0 / 48px 42px,
+    linear-gradient(150deg, transparent 48%, var(--dd-border) 49%, var(--dd-border) 50%, transparent 51%) 0 0 / 48px 42px,
+    var(--dd-bg);
+}
+
+.lookup-skeleton-map-canvas i {
+  position: absolute;
+  top: 48%;
+  left: 52%;
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--dd-surface);
+  border-radius: 50%;
+  background: var(--dd-primary);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--dd-primary) 18%, transparent);
+}
+
+.lookup-skeleton-map-canvas::before {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 72px;
+  height: 7px;
+  content: "";
+}
+
+@keyframes lookup-skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -120% 0; }
+}
+
+@media (max-width: 768px) {
+  #result-zone.is-loading .loading {
+    min-height: 1290px;
+  }
+
+  .lookup-skeleton-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(72px, 1fr);
+  }
+
+  .lookup-skeleton-map {
+    min-height: 205px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lookup-skeleton-pill,
+  .lookup-skeleton-line,
+  .lookup-skeleton-field span,
+  .lookup-skeleton-field b,
+  .lookup-skeleton-map-canvas::before {
+    animation: none;
+  }
+}
