@@ -127,12 +127,12 @@ jobs:
           if (!home.body.includes('Find your public IP address or look up any IPv4/IPv6 address. Check approximate geolocation, ISP, ASN and network details, plus CIDR and DNS tools.')) throw new Error('IP address lookup meta description is missing the current search-intent summary');
           if (!home.body.includes('href="/ip-address-lookup/"')) throw new Error('Homepage is missing the contextual English IP address lookup link');
           if (!home.body.includes('Find your public IP, or look up any IPv4 or IPv6 address to inspect its approximate location, ISP and ASN.')) throw new Error('English IP address lookup hero description missing from source HTML');
-          if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
+          if (!home.body.includes('content="IP Address Lookup &amp; Geolocation"')) throw new Error('English Open Graph site name missing');
 
           const visibleHtml = home.body.replace(/<script\b[\s\S]*?<\/script>/gi, '').replace(/<style\b[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
           const cjkCount = (visibleHtml.match(/[\u3400-\u9fff]/g) || []).length;
           if (cjkCount > 0) throw new Error('English homepage source HTML contains ' + cjkCount + ' CJK characters outside scripts, styles and comments');
-          if (!home.body.includes('content="IP Geolocation Lookup"')) throw new Error('English Open Graph site name missing');
+          if (!home.body.includes('content="IP Address Lookup &amp; Geolocation"')) throw new Error('English Open Graph site name missing');
           if (!home.body.includes('What can this IP lookup show?')) throw new Error('English IP lookup guide missing from source HTML');
 
           const networkLinks = [
